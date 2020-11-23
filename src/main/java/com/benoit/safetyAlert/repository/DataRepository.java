@@ -2,11 +2,15 @@ package com.benoit.safetyAlert.repository;
 
 
 import com.benoit.safetyAlert.model.DatabaseJson;
+import com.benoit.safetyAlert.model.Firestation;
+import com.benoit.safetyAlert.model.Persons;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class DataRepository {
@@ -15,13 +19,63 @@ public class DataRepository {
     //c'est le fichier Json en memoire
     private static DatabaseJson databaseJson;
 
+
     public DataRepository() throws IOException {
+        //lecture du json
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("data.json");
-        databaseJson = OBJECT_MAPPER.readerFor(DatabaseJson.class).readValue(inputStream);
+//        databaseJson = OBJECT_MAPPER.readerFor(DatabaseJson.class).readValue(inputStream);
+        databaseJson = OBJECT_MAPPER.readValue(inputStream, DatabaseJson.class);
+
     }
 
-    public static void main(String[] args) throws IOException {
-        DataRepository dataRepository = new DataRepository();
-        System.out.println(dataRepository.databaseJson.getPersons().size());
+    public List<Persons> getPersonByCity(String city) {
+
+        List<Persons> personsCollection = new ArrayList<Persons>();
+
+        for (Persons person : databaseJson.getPersons()) {
+            if (person.getCity().equalsIgnoreCase(city)) {
+                personsCollection.add(person);
+            }
+        }
+        return personsCollection;
     }
+//recupere les firestations avec le numero "station" et renvoi une list
+    public List<Firestation> getFirestationByStationNumber(String stationNumber) {
+
+        List<Firestation> firestationAddress = new ArrayList<>();
+        for (Firestation station : databaseJson.getFirestations()) {
+            if (station.getStation().equals(stationNumber)) {
+                firestationAddress.add(station);
+            }
+        }
+        return firestationAddress;
+    }
+
+    public List<Firestation> getFirestationByAddress(String address){
+
+        List<Firestation> stationNumber = new ArrayList<>();
+        for (Firestation station : databaseJson.getFirestations()) {
+            if (station.getStation().equals(address)) {
+                stationNumber.add(station);
+            }
+        }
+        return stationNumber;
+    }
+
+
+    public List<Persons> getPersonByAddress(String address) {
+        List<Persons> personsCollection = new ArrayList<>();
+        for (Persons person : databaseJson.getPersons()) {
+            if (person.getAddress().equalsIgnoreCase(address)) {
+                personsCollection.add(person);
+            }
+        }
+        return personsCollection;
+
+    }
+
+//    public static void main(String[] args) throws IOException {
+//        DataRepository dataRepository2 = new DataRepository();
+//        System.out.println(dataRepository2.getFirestationByStationNumber("5"));
+//    }
 }
