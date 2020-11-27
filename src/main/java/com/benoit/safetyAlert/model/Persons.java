@@ -1,22 +1,8 @@
 package com.benoit.safetyAlert.model;
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "firstName",
-        "lastName",
-        "address",
-        "city",
-        "zip",
-        "phone",
-        "email"
-})
 public class Persons {
-    @JsonProperty("firstName")
+
     private String firstName;
     @JsonProperty("lastName")
     private String lastName;
@@ -31,7 +17,7 @@ public class Persons {
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("firstName")
+
     public String getFirstName() {
         return firstName;
     }
@@ -90,7 +76,7 @@ public class Persons {
 
     @Override
     public String toString() {
-        return  "{" +
+        return "{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", address=" + address +

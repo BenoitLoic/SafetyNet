@@ -7,8 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"persons", "firestations", "medicalrecords"})
+
 public class DatabaseJson {
 
     @JsonProperty("persons")

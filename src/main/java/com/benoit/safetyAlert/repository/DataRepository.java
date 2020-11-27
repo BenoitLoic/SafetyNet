@@ -3,6 +3,7 @@ package com.benoit.safetyAlert.repository;
 
 import com.benoit.safetyAlert.model.DatabaseJson;
 import com.benoit.safetyAlert.model.Firestation;
+import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.model.Persons;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
@@ -23,14 +24,14 @@ public class DataRepository {
     public DataRepository() throws IOException {
         //lecture du json
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("data.json");
-//        databaseJson = OBJECT_MAPPER.readerFor(DatabaseJson.class).readValue(inputStream);
-        databaseJson = OBJECT_MAPPER.readValue(inputStream, DatabaseJson.class);
+        databaseJson = OBJECT_MAPPER.readerFor(DatabaseJson.class).readValue(inputStream);
+//        databaseJson = OBJECT_MAPPER.readValue(inputStream, DatabaseJson.class);
 
     }
 
     public List<Persons> getPersonByCity(String city) {
 
-        List<Persons> personsCollection = new ArrayList<Persons>();
+        List<Persons> personsCollection = new ArrayList<>();
 
         for (Persons person : databaseJson.getPersons()) {
             if (person.getCity().equalsIgnoreCase(city)) {
@@ -39,8 +40,9 @@ public class DataRepository {
         }
         return personsCollection;
     }
-//recupere les firestations avec le numero "station" et renvoi une list
-    public List<Firestation> getFirestationByStationNumber(String stationNumber) {
+
+    //recupere les firestations avec le numero "station" et renvoi une list
+    public List<Firestation> getFireStationByStationNumber(String stationNumber) {
 
         List<Firestation> firestationAddress = new ArrayList<>();
         for (Firestation station : databaseJson.getFirestations()) {
@@ -51,11 +53,11 @@ public class DataRepository {
         return firestationAddress;
     }
 
-    public List<Firestation> getFirestationByAddress(String address){
+    public List<Firestation> getFirestationByAddress(String address) {
 
         List<Firestation> stationNumber = new ArrayList<>();
         for (Firestation station : databaseJson.getFirestations()) {
-            if (station.getStation().equals(address)) {
+            if (station.getStation().equalsIgnoreCase(address)) {
                 stationNumber.add(station);
             }
         }
@@ -74,8 +76,25 @@ public class DataRepository {
 
     }
 
-//    public static void main(String[] args) throws IOException {
-//        DataRepository dataRepository2 = new DataRepository();
-//        System.out.println(dataRepository2.getFirestationByStationNumber("5"));
-//    }
+    public List<Persons> getPersonByID(String firstName, String lastName) {
+        List<Persons> personsCollection = new ArrayList<>();
+        for (Persons person : databaseJson.getPersons()) {
+            if (person.getFirstName().equalsIgnoreCase(firstName) && person.getLastName().equalsIgnoreCase(lastName)) {
+                personsCollection.add(person);
+            }
+        }
+        return personsCollection;
+    }
+
+    public List<Medicalrecords> getMedicalRecordByID(String firstName, String lastName) {
+        List<Medicalrecords> medicalRecordsCollection = new ArrayList<>();
+        for (Medicalrecords medicalrecords : databaseJson.getMedicalrecords()) {
+            if (medicalrecords.getFirstName().equalsIgnoreCase(firstName) && medicalrecords.getLastName().equalsIgnoreCase(lastName)) {
+                medicalRecordsCollection.add(medicalrecords);
+            }
+        }
+        return medicalRecordsCollection;
+    }
+
+
 }

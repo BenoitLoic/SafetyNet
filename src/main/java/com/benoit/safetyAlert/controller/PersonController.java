@@ -1,13 +1,10 @@
 package com.benoit.safetyAlert.controller;
 
-import com.benoit.safetyAlert.services.FirestationService;
 import com.benoit.safetyAlert.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,30 +14,47 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
-    @Autowired
-    private FirestationService firestationService;
-
-
     @GetMapping("/communityEmail")
     public Collection<String> communityEmail(@RequestParam String city) {
 
-        Collection<String> communityEmail = personService.getCommunityEmail(city);
-
-        return communityEmail;
+        return personService.getCommunityEmail(city);
     }
 
     @GetMapping("/phoneAlert")
     public Collection<String> phoneAlert(@RequestParam String station) {
 
-        //recuperation des adresses de la station
-        List<String> firestationAddress = firestationService.getFirestationAddress(station);
+        return personService.getPhoneNumber(station);
+    }
 
-        List<String> phoneNumber =new ArrayList<>();
-        //boucle pour récupérer les tel des utilisateurs
-        for (int i=0; i<firestationAddress.size(); i++){
-            phoneNumber.add(personService.getPhoneNumber(firestationAddress.get(i)).toString());
-        }
-    return phoneNumber;
+    @GetMapping("/firestation")
+    public Collection<Object> fireStationCoverage(@RequestParam String stationNumber) {
+
+        return personService.getPersonCoveredByFirestation(stationNumber);
+    }
+
+    @GetMapping("/personInfo")
+    public Collection personInfo(@RequestParam String firstName, @RequestParam String lastName) {
+
+        return personService.getPersonInfo(firstName, lastName);
+
+    }
+
+    @GetMapping("/fire")
+    public Collection fire(@RequestParam String address) {
+
+        return personService.getFireAddress(address);
+    }
+
+    @GetMapping("/flood/stations")
+    public Collection<Object> floodStations(@RequestParam List<String> station) {
+
+        return personService.getFloodStations(station);
+    }
+
+    @GetMapping("/childAlert")
+    public Collection<Object> childAlert(@RequestParam String address) {
+
+        return personService.getChildAlert(address);
     }
 
 }
