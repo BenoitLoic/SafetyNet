@@ -11,6 +11,7 @@ public class PersonInfo {
     private int age;
     private String phone;
     private String email;
+    private List<String> station;
     private List<String> medication = new ArrayList<>();
     private List<String> allergies = new ArrayList<>();
 
@@ -28,6 +29,14 @@ public class PersonInfo {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<String> getStation() {
+        return station;
+    }
+
+    public void setStation(List<String> station) {
+        this.station = station;
     }
 
     public String getAddress() {

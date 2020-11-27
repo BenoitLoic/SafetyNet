@@ -42,7 +42,7 @@ public class DataRepository {
     }
 
     //recupere les firestations avec le numero "station" et renvoi une list
-    public List<Firestation> getFirestationByStationNumber(String stationNumber) {
+    public List<Firestation> getFireStationByStationNumber(String stationNumber) {
 
         List<Firestation> firestationAddress = new ArrayList<>();
         for (Firestation station : databaseJson.getFirestations()) {
@@ -57,7 +57,7 @@ public class DataRepository {
 
         List<Firestation> stationNumber = new ArrayList<>();
         for (Firestation station : databaseJson.getFirestations()) {
-            if (station.getStation().equals(address)) {
+            if (station.getStation().equalsIgnoreCase(address)) {
                 stationNumber.add(station);
             }
         }
@@ -79,7 +79,7 @@ public class DataRepository {
     public List<Persons> getPersonByID(String firstName, String lastName) {
         List<Persons> personsCollection = new ArrayList<>();
         for (Persons person : databaseJson.getPersons()) {
-            if (person.getFirstName().equalsIgnoreCase(firstName)&&person.getLastName().equalsIgnoreCase(lastName)) {
+            if (person.getFirstName().equalsIgnoreCase(firstName) && person.getLastName().equalsIgnoreCase(lastName)) {
                 personsCollection.add(person);
             }
         }
