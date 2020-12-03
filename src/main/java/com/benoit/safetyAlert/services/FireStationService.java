@@ -46,7 +46,7 @@ public class FireStationService implements IFireStationService {
     @Override
     public List<String> getFireStationStationNumber(String address) {
 
-        List<Firestation> fireStationsAddress = dataRepository.getFireStationByStationNumber(address);
+        List<Firestation> fireStationsAddress = dataRepository.getFirestationByAddress(address);
         List<String> listOfFireStationNumber = new ArrayList<>();
         for (Firestation fireStation : fireStationsAddress) {
             listOfFireStationNumber.add(fireStation.getStation());

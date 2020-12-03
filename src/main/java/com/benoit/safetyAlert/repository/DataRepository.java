@@ -41,7 +41,7 @@ public class DataRepository {
         return personsCollection;
     }
 
-    //recupere les firestations avec le numero "station" et renvoi une list
+    //recupere les firestations avec le numero de station et renvoi une list
     public List<Firestation> getFireStationByStationNumber(String stationNumber) {
 
         List<Firestation> firestationAddress = new ArrayList<>();
