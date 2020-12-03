@@ -29,14 +29,13 @@ public class PersonController {
     @GetMapping("/firestation")
     public Collection<Object> fireStationCoverage(@RequestParam String stationNumber) {
 
-        return personService.getPersonCoveredByFirestation(stationNumber);
+        return personService.getPersonCoveredByFireStation(stationNumber);
     }
 
     @GetMapping("/personInfo")
     public Collection personInfo(@RequestParam String firstName, @RequestParam String lastName) {
 
         return personService.getPersonInfo(firstName, lastName);
-
     }
 
     @GetMapping("/fire")
@@ -46,9 +45,9 @@ public class PersonController {
     }
 
     @GetMapping("/flood/stations")
-    public Collection<Object> floodStations(@RequestParam List<String> station) {
+    public Collection<Object> floodStations(@RequestParam List<String> stations) {
 
-        return personService.getFloodStations(station);
+        return personService.getFloodStations(stations);
     }
 
     @GetMapping("/childAlert")

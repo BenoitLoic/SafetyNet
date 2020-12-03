@@ -4,8 +4,8 @@ import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 /**
  * This class contains some method to extract fire station data from DataRepository.
@@ -25,6 +25,7 @@ public class FireStationService implements IFireStationService {
      * @param station the station number
      * @return list of address
      */
+    @Override
     public List<String> getFireStationAddress(String station) {
 
         List<Firestation> fireStations = dataRepository.getFireStationByStationNumber(station);
@@ -42,6 +43,7 @@ public class FireStationService implements IFireStationService {
      * @param address the address
      * @return list of station that cover this address
      */
+    @Override
     public List<String> getFireStationStationNumber(String address) {
 
         List<Firestation> fireStationsAddress = dataRepository.getFireStationByStationNumber(address);
@@ -55,17 +57,17 @@ public class FireStationService implements IFireStationService {
 
     /**
      * This method take a list of station number to extract all the addresses
-     * @param station list of station number
+     * @param stationNumber list of station number
      * @return list of address
      */
     @Override
-    public List<String> getFireStationAddress(List<String> station) {
-        List<String> listOfFireStationAddress = new ArrayList<>();
-
-        for (int i = 0; i < station.size(); i++) {
-            List<Firestation> fireStations = dataRepository.getFireStationByStationNumber(String.valueOf(i));
-            for (Firestation fireStation : fireStations) {
-                listOfFireStationAddress.add(fireStation.getAddress());
+    public Collection<String> getFireStationAddress(List<String> stationNumber) {
+        Set<String> stationNumberNoDuplicate =new HashSet<>(stationNumber);
+        Collection<String> listOfFireStationAddress = new HashSet<>();
+        for (String station : stationNumberNoDuplicate) {
+            List<Firestation> fireStations = dataRepository.getFireStationByStationNumber(station);
+            for (Firestation firestation : fireStations) {
+                listOfFireStationAddress.add(firestation.getAddress());
             }
         }
         return listOfFireStationAddress;

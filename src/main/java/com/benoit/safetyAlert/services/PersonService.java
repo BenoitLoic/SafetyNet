@@ -19,7 +19,7 @@ public class PersonService implements IPersonService {
     @Autowired
     FireStationService firestationService;
 
-
+    @Override
     public Collection<String> getCommunityEmail(String city) {
 
         List<Persons> personByCity = dataRepository.getPersonByCity(city);
@@ -31,6 +31,7 @@ public class PersonService implements IPersonService {
         return collectionEmail;
     }
 
+    @Override
     public Collection<String> getPhoneNumber(String station) {
 
         //recuperation des adresses de la station
@@ -50,7 +51,8 @@ public class PersonService implements IPersonService {
         return phoneNumber;
     }
 
-    public Collection<Object> getPersonCoveredByFirestation(String stationNumber) {
+    @Override
+    public Collection<Object> getPersonCoveredByFireStation(String stationNumber) {
 
         //recupération des address de la station
         Counter counter = new Counter();
@@ -82,10 +84,10 @@ public class PersonService implements IPersonService {
         return personCovered;
     }
 
-
-    public Collection getPersonInfo(String firstName, String lastName) {
+    @Override
+    public Collection<Object> getPersonInfo(String firstName, String lastName) {
         PersonInfo tmp = getFullPersonInfo(firstName, lastName);
-        Collection personInfo = new ArrayList<>();
+        Collection<Object> personInfo = new ArrayList<>();
         Collections.addAll(personInfo,
                 tmp.getFirstName(),
                 tmp.getLastName(),
@@ -96,6 +98,7 @@ public class PersonService implements IPersonService {
         return personInfo;
     }
 
+    @Override
     public Collection getFireAddress(String address) {
         List<Persons> personByAddress = dataRepository.getPersonByAddress(address);
         Collection<Collection<String>> personInfo = new ArrayList<>();
@@ -115,17 +118,51 @@ public class PersonService implements IPersonService {
         return personInfo;
     }
 
-
+    @Override
     public Collection<Object> getFloodStations(List<String> station) {
+Counter counter=new Counter();
+        //LVL 1 collection
+        Collection<Object> floodStations = new ArrayList<>();
+        Collection<String> fireStationsAddress;
+//        récupération des adresses des stations
+        if (station.size() > 1) {
+            fireStationsAddress = firestationService.getFireStationAddress(station);
+        } else {
+            fireStationsAddress = firestationService.getFireStationAddress(station);
+        }
+        for (String address : fireStationsAddress) {
+            //LVL2 collection
+            Collection<Object> floodStationsAddress = new ArrayList<>();
+//        récupération des personnes
+            Collection<Persons> personsList = dataRepository.getPersonByAddress(address);
+//          récupération des info perso de chaque personne
+            for (Persons person : personsList) {
+                //LVL3 collection
+                Collection<Object> personInfos = new ArrayList<>();
+                PersonInfo tmpPersonInfo = getFullPersonInfo(person.getFirstName(), person.getLastName());
+                //LVL 4 collection
+                List<Object> medicalRecords = new ArrayList<>();
+                Collections.addAll(medicalRecords,
+                        tmpPersonInfo.getMedication(),
+                        tmpPersonInfo.getAllergies());
+                //LVL4->3
+                Collections.addAll(personInfos,
+                        tmpPersonInfo.getFirstName(),
+                        tmpPersonInfo.getLastName(),
+                        medicalRecords,
+                        tmpPersonInfo.getAge(),
+                        tmpPersonInfo.getPhone());
+                //LVL3->2
+                floodStationsAddress.add(personInfos);
+                counter.incrementAdult();
+            }
+            //LVL2->1
+            Collections.addAll(floodStations, address, floodStationsAddress);
 
-//        Cette url doit retourner une liste de tous les foyers desservis par la caserne.
-//        Cette liste doit regrouper les personnes par adresse.
-//        Elle doit aussi inclure le nom, le numéro de téléphone et l'âge des habitants,
-//        et faire figurer leurs antécédents médicaux (médicaments, posologie et allergies)
-//        à côté de chaque nom.
-
-
-        return null;
+        }
+        floodStations.add(counter.getAdult());
+        counter.reset();
+        return floodStations;
     }
 
     @Override
@@ -160,6 +197,7 @@ public class PersonService implements IPersonService {
         return childAlertList;
     }
 
+    @Override
     public PersonInfo getFullPersonInfo(String firstName, String lastName) {
 
         PersonInfo personInfo = new PersonInfo();

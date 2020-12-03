@@ -10,41 +10,33 @@ import java.util.List;
 
 public class DatabaseJson {
 
-    @JsonProperty("persons")
+
     private List<Persons> persons = new ArrayList<Persons>();
 
-    @JsonProperty("medicalrecords")
     private List<Medicalrecords> medicalrecords = new ArrayList<Medicalrecords>();
 
-    @JsonProperty("firestations")
     private List<Firestation> firestations = new ArrayList<Firestation>();
 
-    @JsonProperty("persons")
     public List<Persons> getPersons() {
         return persons;
     }
 
-    @JsonProperty("persons")
     public void setPersons(List<Persons> persons) {
         this.persons = persons;
     }
 
-    @JsonProperty("medicalrecords")
     public List<Medicalrecords> getMedicalrecords() {
         return medicalrecords;
     }
 
-    @JsonProperty("medicalrecords")
     public void setMedicalrecords(List<Medicalrecords> medicalrecords) {
         this.medicalrecords = medicalrecords;
     }
 
-    @JsonProperty("firestations")
     public List<Firestation> getFirestations() {
         return firestations;
     }
 
-    @JsonProperty("firestations")
     public void setFirestations(List<Firestation> firestations) {
         this.firestations = firestations;
     }

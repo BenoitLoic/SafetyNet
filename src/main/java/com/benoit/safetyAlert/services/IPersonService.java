@@ -1,5 +1,7 @@
 package com.benoit.safetyAlert.services;
 
+import com.benoit.safetyAlert.dto.PersonInfo;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +33,9 @@ public interface IPersonService {
      * @param address the address
      * @return the person covered by firestation
      */
-    Collection<Object> getPersonCoveredByFirestation(String address);
+    Collection<Object> getPersonCoveredByFireStation(String address);
+
+    Collection getPersonInfo(String firstName, String lastName);
 
     /**
      * Gets fire address.
@@ -57,4 +61,12 @@ public interface IPersonService {
      */
     Collection<Object> getChildAlert(String address);
 
+    /**
+     * Gets personInformation from both Person and MedicalRecords repository
+     *
+     * @param firstName first name in repository
+     * @param lastName  last name in repository
+     * @return Dto PersonInfo
+     */
+    PersonInfo getFullPersonInfo(String firstName, String lastName);
 }
