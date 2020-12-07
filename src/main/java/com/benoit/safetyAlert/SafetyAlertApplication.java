@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SafetyAlertApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SafetyAlertApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(SafetyAlertApplication.class, args);
+  }
 }
