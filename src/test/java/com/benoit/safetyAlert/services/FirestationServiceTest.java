@@ -2,17 +2,12 @@ package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.repository.DataRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FireStationServiceTest {
+class FirestationServiceTest {
 
 //    @BeforeEach
 //    void setUp() {
@@ -54,10 +49,10 @@ class FireStationServiceTest {
         List<Firestation> testList = new ArrayList<>();
         testList.add(firestationTest1);
 
-        when(dataRepository.getFireStationByStationNumber(anyString())).thenReturn(testList);
+        when(dataRepository.getFirestationByStationNumber(anyString())).thenReturn(testList);
 
-        FireStationService fireStationService = new FireStationService();
-        fireStationService.getFireStationAddress(anyString());
+        FirestationServiceImpl fireStationService = new FirestationServiceImpl();
+        fireStationService.getFirestationAddress(anyString());
         assertEquals("Test Address 1", testList.get(0).getAddress());
     }
 }

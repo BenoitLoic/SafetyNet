@@ -4,9 +4,9 @@ import com.benoit.safetyAlert.model.Persons;
 
 public interface PersonDao {
 
-  boolean createPerson(Persons person);
+    boolean createPerson(Persons person);
 
-  boolean deletePerson(Persons person);
+    boolean deletePerson(Persons person);
 
-  boolean updatePerson(Persons person);
+    boolean updatePerson(Persons person);
 }

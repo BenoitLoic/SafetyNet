@@ -19,11 +19,11 @@ import java.util.List;
 public class DataRepository {
   // cet obj va permettre de mapper du json en obj java
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  // pour log4j
+  private static final Logger logger = LogManager.getLogger(DataRepository.class);
   // c'est le fichier Json en memoire
   private static DatabaseJson databaseJson;
   private final String DATA_JSON = "data.json";
-  // pour log4j
-  private static final Logger logger = LogManager.getLogger(DataRepository.class);
   // pour éviter de commit dans les tests
   private boolean commit = true;
 
@@ -64,7 +64,6 @@ public class DataRepository {
 
         logger.info("KO - I/O error :" + DATA_JSON);
         throw new DataRepositoryException("KO - I/O error", ioe);
-
       }
     }
   }
@@ -86,7 +85,7 @@ public class DataRepository {
   }
 
   // recupere les firestations avec le numero de station et renvoi une list
-  public List<Firestation> getFireStationByStationNumber(String stationNumber) {
+  public List<Firestation> getFirestationByStationNumber(String stationNumber) {
 
     List<Firestation> firestationAddress = new ArrayList<>();
     for (Firestation station : databaseJson.getFirestations()) {
@@ -98,10 +97,9 @@ public class DataRepository {
   }
 
   public List<Firestation> getFirestationByAddress(String address) {
-
     List<Firestation> stationNumber = new ArrayList<>();
     for (Firestation station : databaseJson.getFirestations()) {
-      if (station.getStation().equalsIgnoreCase(address)) {
+      if (station.getAddress().equalsIgnoreCase(address)) {
         stationNumber.add(station);
       }
     }
