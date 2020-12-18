@@ -1,6 +1,9 @@
 package com.benoit.safetyAlert.services;
 
+import com.benoit.safetyAlert.dao.PersonDao;
+import com.benoit.safetyAlert.dao.PersonDaoImpl;
 import com.benoit.safetyAlert.dto.PersonInfo;
+import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ public class PersonServiceImpl implements PersonService {
   @Autowired DataRepository dataRepository;
   @Autowired FirestationServiceImpl firestationService;
   @Autowired MedicalRecordsService medicalRecordsService;
+  @Autowired
+  PersonDao personDao;
 
   @Override
   public Collection<String> getCommunityEmail(String city) {
@@ -30,14 +35,13 @@ public class PersonServiceImpl implements PersonService {
   }
 
   @Override
-  public Collection <Object>getFireAddress(String address) {
+  public Collection<Object> getFireAddress(String address) {
     List<Persons> personByAddress = dataRepository.getPersonByAddress(address);
     Collection firestation = firestationService.getFirestationNumber(address);
     Collection<Object> personInfo = new ArrayList<>();
     for (Persons person : personByAddress) {
       Collection<Object> user = new ArrayList<>();
-      PersonInfo tmp =
-          medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
+      PersonInfo tmp = medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
 
       user.add(tmp.getFirstName());
       user.add(tmp.getLastName());
@@ -85,5 +89,27 @@ public class PersonServiceImpl implements PersonService {
     }
 
     return childAlertList;
+  }
+
+  @Override
+  public boolean createPerson(Persons person) {
+//on verifie que la personne n'existe pas dans la dao
+    if (!dataRepository.getDatabaseJson().getPersons().contains(person)){
+      personDao.createPerson(person);
+      return true;
+    }else {
+      throw new DataAlreadyExistException("la personne "+person.getFirstName()+" "+person.getLastName()+" existe déjà.");
+    }
+
+  }
+
+  @Override
+  public boolean deletePerson(Persons person) {
+    return false;
+  }
+
+  @Override
+  public boolean updatePerson(Persons person) {
+    return false;
   }
 }

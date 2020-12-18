@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class EndPointNotFindException extends RuntimeException {
 
-    public EndPointNotFindException(String message) {
-        super(message);
-    }
+  public EndPointNotFindException(String message) {
+    super(message);
+  }
 }

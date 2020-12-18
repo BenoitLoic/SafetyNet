@@ -15,7 +15,6 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
   @Override
   @GetMapping("/personInfo")
   public Collection<Object> personInfo(String firstName, String lastName) {
-
     return medicalRecordsService.getPersonInfo(firstName, lastName);
   }
 }

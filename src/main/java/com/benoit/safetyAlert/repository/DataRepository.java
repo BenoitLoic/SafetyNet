@@ -27,8 +27,14 @@ public class DataRepository {
   // pour éviter de commit dans les tests
   private boolean commit = true;
 
+
+
   public DataRepository() {
     this.init();
+  }
+
+  public DatabaseJson getDatabaseJson(){
+    return DataRepository.databaseJson;
   }
 
   public void init() {

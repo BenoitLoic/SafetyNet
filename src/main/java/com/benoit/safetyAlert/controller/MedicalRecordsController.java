@@ -4,6 +4,5 @@ import java.util.Collection;
 
 public interface MedicalRecordsController {
 
-    Collection<Object> personInfo(String firstName, String lastName);
-
+  Collection<Object> personInfo(String firstName, String lastName);
 }

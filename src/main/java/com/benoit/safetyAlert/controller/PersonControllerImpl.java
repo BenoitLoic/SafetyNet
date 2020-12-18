@@ -1,17 +1,21 @@
 package com.benoit.safetyAlert.controller;
 
+import com.benoit.safetyAlert.dao.PersonDao;
+import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.services.PersonServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
 public class PersonControllerImpl implements PersonController {
 
   @Autowired private PersonServiceImpl personService;
+
+
 
   @Override
   @GetMapping("/communityEmail")
@@ -32,5 +36,12 @@ public class PersonControllerImpl implements PersonController {
   public Collection<Object> childAlert(@RequestParam String address) {
 
     return personService.getChildAlert(address);
+  }
+
+  @Override
+  @PostMapping("/person")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void createPerson(@RequestBody @Valid Persons person) {
+    personService.createPerson(person);
   }
 }

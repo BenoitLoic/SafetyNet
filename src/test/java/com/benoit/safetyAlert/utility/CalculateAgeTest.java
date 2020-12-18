@@ -2,6 +2,7 @@ package com.benoit.safetyAlert.utility;
 
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.format.DateTimeParseException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
+@SpringBootTest
 class CalculateAgeTest {
 
 

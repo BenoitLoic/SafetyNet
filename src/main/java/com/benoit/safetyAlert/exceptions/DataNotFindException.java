@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class DataNotFindException extends RuntimeException {
 
-    public DataNotFindException(String message) {
-        super(message);
-    }
+  public DataNotFindException(String message) {
+    super(message);
+  }
 }

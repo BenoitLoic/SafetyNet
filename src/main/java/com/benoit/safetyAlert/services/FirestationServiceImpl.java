@@ -1,5 +1,7 @@
 package com.benoit.safetyAlert.services;
 
+import com.benoit.safetyAlert.dao.FirestationDao;
+import com.benoit.safetyAlert.dao.FirestationDaoImpl;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
@@ -77,16 +79,11 @@ public class FirestationServiceImpl implements FirestationService {
 
   @Override
   public Collection<String> getPhoneNumber(String station) {
-
-    // recuperation des adresses de la station
     List<String> fireStationAddress = getFirestationAddress(station);
-    // creation d'un hashset pour éviter les doublons
-    Collection<String> phoneNumber = new HashSet<>();
-    // boucle pour récupérer les tel des utilisateurs
+    Collection<String> phoneNumber =
+        new HashSet<>(); // creation d'un hashset pour éviter les doublons
     for (String address : fireStationAddress) {
-
       List<Persons> personByAddress = dataRepository.getPersonByAddress(address);
-
       for (Persons person : personByAddress) {
         phoneNumber.add(person.getPhone());
       }
@@ -96,9 +93,9 @@ public class FirestationServiceImpl implements FirestationService {
 
   @Override
   public Collection<Object> getPersonCoveredByFireStation(String stationNumber) {
+
     Counter counter = new Counter();
     Collection<Object> personCovered = new ArrayList<>();
-    // on déroule la liste desadresses
     for (String address : getFirestationAddress(stationNumber)) {
       List<Persons> personByAddress = dataRepository.getPersonByAddress(address);
       for (Persons person : personByAddress) {
@@ -111,16 +108,11 @@ public class FirestationServiceImpl implements FirestationService {
         user.add(tmp.getPhone());
         personCovered.add(user);
 
-        if (tmp.getAge() >= 18) {
-          counter.incrementAdult();
-        } else {
-          counter.incrementChild();
-        }
+        counter.process(tmp.getAge());
       }
     }
 
-    personCovered.add("Adult: " + counter.getAdult());
-    personCovered.add("Child: " + counter.getChild());
+    personCovered.add(counter.getAll());
     counter.reset();
 
     return personCovered;
@@ -128,48 +120,44 @@ public class FirestationServiceImpl implements FirestationService {
 
   @Override
   public Collection<Object> getFloodStations(List<String> station) {
-    Counter counter = new Counter();
-    // LVL 1 collection
+
     Collection<Object> floodStations = new ArrayList<>();
-    Collection<String> fireStationsAddress;
-    //        récupération des adresses des stations
-    if (station.size() > 1) {
-      fireStationsAddress = getFirestationAddress(station);
-    } else {
-      fireStationsAddress = getFirestationAddress(station);
-    }
-    for (String address : fireStationsAddress) {
-      // LVL2 collection
+
+    for (String address : getFirestationAddress(station)) {
+
       Collection<Object> floodStationsAddress = new ArrayList<>();
-      //        récupération des personnes
-      Collection<Persons> personsList = dataRepository.getPersonByAddress(address);
-      //          récupération des info perso de chaque personne
-      for (Persons person : personsList) {
-        // LVL3 collection
-        Collection<Object> personInfos = new ArrayList<>();
+
+      for (Persons person : dataRepository.getPersonByAddress(address)) {
+
+        Collection<String> personInfos = new ArrayList<>();
         PersonInfo tmpPersonInfo =
             medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
-        // LVL 4 collection
-        List<Object> medicalRecords = new ArrayList<>();
-        Collections.addAll(
-            medicalRecords, tmpPersonInfo.getMedication(), tmpPersonInfo.getAllergies());
-        // LVL4->3
+
         Collections.addAll(
             personInfos,
             tmpPersonInfo.getFirstName(),
             tmpPersonInfo.getLastName(),
-            medicalRecords,
-            tmpPersonInfo.getAge(),
+            "Medication: " + tmpPersonInfo.getMedication(),
+            "Allergies: " + tmpPersonInfo.getAllergies(),
+            String.valueOf(tmpPersonInfo.getAge()),
             tmpPersonInfo.getPhone());
-        // LVL3->2
+
         floodStationsAddress.add(personInfos);
-        counter.incrementAdult();
       }
-      // LVL2->1
+
       Collections.addAll(floodStations, address, floodStationsAddress);
     }
-    floodStations.add(counter.getAdult());
-    counter.reset();
+
     return floodStations;
+  }
+
+  @Override
+  public String addFirestation(Firestation firestation) {
+
+    FirestationDao firestationDao = new FirestationDaoImpl();
+    firestationDao.createFirestation(firestation);
+    return "Firestation added";
+
+
   }
 }
