@@ -54,5 +54,5 @@ public interface FirestationService {
    */
   Collection<Object> getFloodStations(List<String> station);
 
-  String addFirestation(Firestation firestation);
+  boolean addFirestation(Firestation firestation);
 }

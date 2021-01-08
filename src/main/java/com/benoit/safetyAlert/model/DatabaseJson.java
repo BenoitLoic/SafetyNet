@@ -2,6 +2,7 @@ package com.benoit.safetyAlert.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DatabaseJson {
 
@@ -36,14 +37,7 @@ public class DatabaseJson {
   }
 
   @Override
-  public String toString() {
-    return "{"
-        + "persons="
-        + persons
-        + ", medicalrecords="
-        + medicalrecords
-        + ", firestations="
-        + firestations
-        + '}';
+  public int hashCode() {
+    return getPersons().hashCode();
   }
 }

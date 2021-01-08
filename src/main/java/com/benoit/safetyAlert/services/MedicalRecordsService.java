@@ -1,6 +1,7 @@
 package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.dto.PersonInfo;
+import com.benoit.safetyAlert.model.Medicalrecords;
 
 import java.util.Collection;
 
@@ -16,4 +17,6 @@ public interface MedicalRecordsService {
    * @return Dto PersonInfo
    */
   PersonInfo getFullPersonInfo(String firstName, String lastName);
+
+  boolean createMedicalRecord(Medicalrecords medicalrecord);
 }

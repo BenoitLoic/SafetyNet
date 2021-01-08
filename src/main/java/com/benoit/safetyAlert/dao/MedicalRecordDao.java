@@ -2,7 +2,7 @@ package com.benoit.safetyAlert.dao;
 
 import com.benoit.safetyAlert.model.Medicalrecords;
 
-public interface MedicalRecordsDao {
+public interface MedicalRecordDao {
 
   boolean createMedicalRecords(Medicalrecords medicalrecords);
 

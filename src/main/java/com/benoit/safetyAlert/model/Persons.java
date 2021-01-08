@@ -1,12 +1,11 @@
 package com.benoit.safetyAlert.model;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class Persons {
-
-  private String firstName;
-
-  private String lastName;
+  @NotBlank private String firstName;
+  @NotBlank private String lastName;
 
   private String address;
 
@@ -76,15 +75,16 @@ public class Persons {
 
   @Override
   public String toString() {
-    return "{"
+    return "Persons{"
         + "firstName='"
         + firstName
         + '\''
         + ", lastName='"
         + lastName
         + '\''
-        + ", address="
+        + ", address='"
         + address
+        + '\''
         + ", zip='"
         + zip
         + '\''
@@ -105,8 +105,8 @@ public class Persons {
     if (this == o) return true;
     if (!(o instanceof Persons)) return false;
     Persons persons = (Persons) o;
-    return Objects.equals(getFirstName(), persons.getFirstName()) &&
-            Objects.equals(getLastName(), persons.getLastName());
+    return Objects.equals(getFirstName(), persons.getFirstName())
+        && Objects.equals(getLastName(), persons.getLastName());
   }
 
   @Override

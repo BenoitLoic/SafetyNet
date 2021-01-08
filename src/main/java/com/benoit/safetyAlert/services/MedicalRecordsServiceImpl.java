@@ -1,6 +1,8 @@
 package com.benoit.safetyAlert.services;
 
+import com.benoit.safetyAlert.dao.MedicalRecordDao;
 import com.benoit.safetyAlert.dto.PersonInfo;
+import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
@@ -17,6 +19,7 @@ import java.util.List;
 public class MedicalRecordsServiceImpl implements MedicalRecordsService {
 
   @Autowired private DataRepository dataRepository;
+  @Autowired private MedicalRecordDao medicalrecordDao;
 
   @Override
   public Collection<Object> getPersonInfo(String firstName, String lastName) {
@@ -58,5 +61,21 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
     }
 
     return personInfo;
+  }
+
+  @Override
+  public boolean createMedicalRecord(Medicalrecords medicalrecord) {
+    // on verifie que le medicalrecord n'existe pas dans la dao
+    if (!dataRepository.getDatabaseJson().getMedicalrecords().contains(medicalrecord)) {
+      medicalrecordDao.createMedicalRecords(medicalrecord);
+      return true;
+    } else {
+      throw new DataAlreadyExistException(
+          "Medical record for "
+              + medicalrecord.getFirstName()
+              + " "
+              + medicalrecord.getLastName()
+              + " already exist.");
+    }
   }
 }

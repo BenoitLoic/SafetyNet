@@ -3,8 +3,10 @@ package com.benoit.safetyAlert.controller;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.services.FirestationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,10 +37,12 @@ public class FirestationControllerImpl implements FirestationController {
   }
 
   @Override
-  @PostMapping("/firestations")
-  public String addFirestation(@RequestBody Firestation firestation){
-//    return firestationService.addFirestation(firestation);
-    return null;
+  @PostMapping("/firestation")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void addFirestation(@RequestBody @Valid Firestation firestation){
+
+    firestationService.addFirestation(firestation);
+
   }
 
 }

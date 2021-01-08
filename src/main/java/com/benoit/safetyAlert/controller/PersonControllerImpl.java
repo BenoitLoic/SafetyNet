@@ -33,6 +33,7 @@ public class PersonControllerImpl implements PersonController {
 
   @Override
   @GetMapping("/childAlert")
+  @ResponseStatus(HttpStatus.OK)
   public Collection<Object> childAlert(@RequestParam String address) {
 
     return personService.getChildAlert(address);

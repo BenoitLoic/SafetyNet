@@ -20,34 +20,32 @@ public class DataRepository {
   // cet obj va permettre de mapper du json en obj java
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   // pour log4j
-  private static final Logger logger = LogManager.getLogger(DataRepository.class);
+  private static final Logger LOGGER = LogManager.getLogger(DataRepository.class);
   // c'est le fichier Json en memoire
   private static DatabaseJson databaseJson;
-  private final String DATA_JSON = "data.json";
+  private final String data_Json = "data.json";
   // pour éviter de commit dans les tests
   private boolean commit = true;
-
-
 
   public DataRepository() {
     this.init();
   }
 
-  public DatabaseJson getDatabaseJson(){
+  public DatabaseJson getDatabaseJson() {
     return DataRepository.databaseJson;
   }
 
   public void init() {
-    try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(DATA_JSON)) {
+    try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(data_Json)) {
 
       databaseJson = OBJECT_MAPPER.readerFor(DatabaseJson.class).readValue(inputStream);
-      logger.info("OK - file_open :" + DATA_JSON);
+      LOGGER.info("OK - file_open :" + data_Json);
     } catch (FileNotFoundException fnfe) {
-      logger.info("KO - file_not_found :" + DATA_JSON);
-      throw new DataRepositoryException("KO - file_not_found", fnfe);
+      LOGGER.info("KO - file_not_found :" + data_Json);
+      throw new DataRepositoryException("KO - file_not_found (init)", fnfe);
     } catch (IOException ioe) {
-      logger.info("KO - I/O error :" + DATA_JSON);
-      throw new DataRepositoryException("KO - I/O error", ioe);
+      LOGGER.info("KO - I/O error :" + data_Json);
+      throw new DataRepositoryException("KO - I/O error (init)", ioe);
     }
   }
 
@@ -55,21 +53,21 @@ public class DataRepository {
     if (commit) {
 
       //            on récupére le path du json
-      URL url = ClassLoader.getSystemResource(DATA_JSON);
+      URL url = ClassLoader.getSystemResource(data_Json);
       try (OutputStream outputStream = new FileOutputStream(url.getFile())) {
 
         //  ecrire sur le fichier json avec formatage
         OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValue(outputStream, databaseJson);
-        logger.info("OK - fichier_json_mis_a_jour :" + DATA_JSON);
+        LOGGER.info("OK - fichier_json_mis_a_jour :" + data_Json);
       } catch (FileNotFoundException fnfe) {
 
-        logger.info("KO - file_not_found :" + DATA_JSON);
-        throw new DataRepositoryException("KO - file_not_found", fnfe);
+        LOGGER.info("KO - file_not_found :" + data_Json);
+        throw new DataRepositoryException("KO - file_not_found (commit)", fnfe);
 
       } catch (IOException ioe) {
 
-        logger.info("KO - I/O error :" + DATA_JSON);
-        throw new DataRepositoryException("KO - I/O error", ioe);
+        LOGGER.info("KO - I/O error :" + data_Json);
+        throw new DataRepositoryException("KO - I/O error (commit)", ioe);
       }
     }
   }
@@ -90,7 +88,6 @@ public class DataRepository {
     return personsCollection;
   }
 
-  // recupere les firestations avec le numero de station et renvoi une list
   public List<Firestation> getFirestationByStationNumber(String stationNumber) {
 
     List<Firestation> firestationAddress = new ArrayList<>();

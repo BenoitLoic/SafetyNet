@@ -1,8 +1,8 @@
 package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.dao.FirestationDao;
-import com.benoit.safetyAlert.dao.FirestationDaoImpl;
 import com.benoit.safetyAlert.dto.PersonInfo;
+import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
@@ -20,6 +20,7 @@ public class FirestationServiceImpl implements FirestationService {
   @Autowired private DataRepository dataRepository;
 
   @Autowired private MedicalRecordsService medicalRecordsService;
+  @Autowired private FirestationDao firestationDao;
 
   /**
    * This method take the station number to extract its addresses
@@ -152,12 +153,19 @@ public class FirestationServiceImpl implements FirestationService {
   }
 
   @Override
-  public String addFirestation(Firestation firestation) {
+  public boolean addFirestation(Firestation firestation) {
 
-    FirestationDao firestationDao = new FirestationDaoImpl();
-    firestationDao.createFirestation(firestation);
-    return "Firestation added";
+    if (!dataRepository.getDatabaseJson().getFirestations().contains(firestation)) {
 
-
+      firestationDao.createFirestation(firestation);
+      return true;
+    } else {
+      throw new DataAlreadyExistException(
+          "this firestation "
+              + firestation.getStation()
+              + " / address : "
+              + firestation.getAddress()
+              + " already exist");
+    }
   }
 }

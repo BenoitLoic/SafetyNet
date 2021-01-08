@@ -98,7 +98,7 @@ public class PersonServiceImpl implements PersonService {
       personDao.createPerson(person);
       return true;
     }else {
-      throw new DataAlreadyExistException("la personne "+person.getFirstName()+" "+person.getLastName()+" existe déjà.");
+      throw new DataAlreadyExistException("this person "+person.getFirstName()+" "+person.getLastName()+" already exist.");
     }
 
   }
