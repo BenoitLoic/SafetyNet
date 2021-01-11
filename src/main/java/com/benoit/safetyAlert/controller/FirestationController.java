@@ -16,5 +16,5 @@ public interface FirestationController {
   Collection<Object> floodStations(List<String> stations);
 
 
-  void addFirestation( Firestation firestation);
+  void createFirestation(Firestation firestation);
 }

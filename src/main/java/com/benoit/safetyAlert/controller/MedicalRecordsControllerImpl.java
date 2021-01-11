@@ -16,6 +16,7 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
 
   @Override
   @GetMapping("/personInfo")
+  @ResponseStatus(HttpStatus.OK)
   public Collection<Object> personInfo(String firstName, String lastName) {
     return medicalRecordsService.getPersonInfo(firstName, lastName);
   }

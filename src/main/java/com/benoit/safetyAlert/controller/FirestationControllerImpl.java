@@ -17,6 +17,7 @@ public class FirestationControllerImpl implements FirestationController {
 
   @Override
   @GetMapping("/phoneAlert")
+  @ResponseStatus(HttpStatus.OK)
   public Collection<String> phoneAlert(@RequestParam String station) {
 
     return firestationService.getPhoneNumber(station);
@@ -24,6 +25,7 @@ public class FirestationControllerImpl implements FirestationController {
 
   @Override
   @GetMapping("/firestation")
+  @ResponseStatus(HttpStatus.OK)
   public Collection<Object> fireStationCoverage(@RequestParam String stationNumber) {
 
     return firestationService.getPersonCoveredByFireStation(stationNumber);
@@ -31,6 +33,7 @@ public class FirestationControllerImpl implements FirestationController {
 
   @Override
   @GetMapping("/flood/stations")
+  @ResponseStatus(HttpStatus.OK)
   public Collection<Object> floodStations(@RequestParam List<String> stations) {
 
     return firestationService.getFloodStations(stations);
@@ -39,7 +42,7 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @PostMapping("/firestation")
   @ResponseStatus(HttpStatus.CREATED)
-  public void addFirestation(@RequestBody @Valid Firestation firestation){
+  public void createFirestation(@RequestBody @Valid Firestation firestation){
 
     firestationService.addFirestation(firestation);
 

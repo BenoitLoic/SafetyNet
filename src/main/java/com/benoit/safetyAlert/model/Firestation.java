@@ -1,11 +1,12 @@
 package com.benoit.safetyAlert.model;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class Firestation {
 
-  private String station;
-  private String address;
+  @NotBlank private String station;
+  @NotBlank private String address;
 
   public String getStation() {
     return station;

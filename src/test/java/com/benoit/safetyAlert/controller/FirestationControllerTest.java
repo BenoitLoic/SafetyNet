@@ -20,74 +20,67 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class PersonControllerTest {
+class FirestationControllerTest {
 
   @Autowired MockMvc mockMvc;
-  @MockBean PersonControllerImpl personController;
+  @MockBean FirestationControllerImpl firestationController;
 
-  String firstNameTest = "Homer Jay";
-  String lastNameTest = "Simpson";
+  String stationTest = "8";
   String addressTest = "742 Evergreen Terrace";
-  String cityTest = "Springfield";
-  String zipTest = "56800";
-  String phoneTest = "00112233";
-  String emailTest = "donut.test@email.com";
 
   @Test
-  public void createPersonValid() throws Exception {
+  void createFirestationValid() throws Exception {
     //        GIVEN
-    ObjectMapper obm = new ObjectMapper();
-    ObjectNode jsonPerson = obm.createObjectNode();
-    jsonPerson.set("firstName", TextNode.valueOf(firstNameTest));
-    jsonPerson.set("lastName", TextNode.valueOf(lastNameTest));
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonFirestation = objectMapper.createObjectNode();
+    jsonFirestation.set("station", TextNode.valueOf(stationTest));
+    jsonFirestation.set("address", TextNode.valueOf(addressTest));
     //        WHEN
 
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/person")
+            MockMvcRequestBuilders.post("/firestation")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonPerson.toString()))
+                .content(jsonFirestation.toString()))
         .andExpect(MockMvcResultMatchers.status().isCreated());
   }
 
   @Test
-  public void createPersonInvalid() throws Exception {
+  void createFirestationInvalid() throws Exception {
     //        GIVEN
-    ObjectMapper obm = new ObjectMapper();
-    ObjectNode jsonPerson = obm.createObjectNode();
-    jsonPerson.set("firstName", TextNode.valueOf(firstNameTest));
-    jsonPerson.set("lastName", TextNode.valueOf(""));
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonFirestation = objectMapper.createObjectNode();
+    jsonFirestation.set("station", TextNode.valueOf(" "));
+    jsonFirestation.set("address", TextNode.valueOf(addressTest));
     //        WHEN
 
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/person")
+            MockMvcRequestBuilders.post("/firestation")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonPerson.toString()))
+                .content(jsonFirestation.toString()))
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
   }
 
   @Test
-  public void createPersonWhenPersonAlreadyExist() throws Exception {
+  void createFirestationWhenDataAlreadyExist() throws Exception {
     //        GIVEN
-    ObjectMapper obm = new ObjectMapper();
-    ObjectNode jsonPerson = obm.createObjectNode();
-    jsonPerson.set("firstName", TextNode.valueOf(firstNameTest));
-    jsonPerson.set("lastName", TextNode.valueOf(lastNameTest));
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonFirestation = objectMapper.createObjectNode();
+    jsonFirestation.set("station", TextNode.valueOf(stationTest));
+    jsonFirestation.set("address", TextNode.valueOf(addressTest));
     //        WHEN
-    // on provoque l'exception DataAlreadyExistExc pour uniquement vérifier le code status de la
-    // requette
     Mockito.doThrow(DataAlreadyExistException.class)
-        .when(personController)
-        .createPerson(Mockito.any());
+        .when(firestationController)
+        .createFirestation(Mockito.any());
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/person")
+            MockMvcRequestBuilders.post("/firestation")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonPerson.toString()))
+                .content(jsonFirestation.toString()))
         .andExpect(MockMvcResultMatchers.status().isConflict());
   }
 }

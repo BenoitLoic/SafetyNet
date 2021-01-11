@@ -1,13 +1,14 @@
 package com.benoit.safetyAlert.model;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Medicalrecords {
 
-  private String firstName;
-  private String lastName;
-  private String birthdate;
+  @NotBlank private String firstName;
+  @NotBlank private String lastName;
+  @NotBlank private String birthdate;
   private List<String> medications = new ArrayList<>();
   private List<String> allergies = new ArrayList<>();
 

@@ -19,6 +19,7 @@ public class PersonControllerImpl implements PersonController {
 
   @Override
   @GetMapping("/communityEmail")
+  @ResponseStatus(HttpStatus.OK)
   public Collection<String> communityEmail(@RequestParam String city) {
 
     return personService.getCommunityEmail(city);
@@ -26,6 +27,7 @@ public class PersonControllerImpl implements PersonController {
 
   @Override
   @GetMapping("/fire")
+  @ResponseStatus(HttpStatus.OK)
   public Collection<Object> fire(@RequestParam String address) {
 
     return personService.getFireAddress(address);
