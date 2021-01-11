@@ -47,4 +47,13 @@ public class PersonControllerImpl implements PersonController {
   public void createPerson(@RequestBody @Valid Persons person) {
     personService.createPerson(person);
   }
+
+  @Override
+  @DeleteMapping("/person")
+  @ResponseStatus(HttpStatus.OK)
+  public void deletePerson(@RequestBody @Valid Persons person) {
+
+    personService.deletePerson(person);
+
+  }
 }

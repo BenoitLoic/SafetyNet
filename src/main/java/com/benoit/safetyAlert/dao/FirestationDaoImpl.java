@@ -26,6 +26,8 @@ public class FirestationDaoImpl implements FirestationDao {
 
   @Override
   public boolean deleteFirestation(Firestation firestation) {
-    return false;
+    dataRepository.getDatabaseJson().getFirestations().remove(firestation);
+    dataRepository.commit();
+    return true;
   }
 }

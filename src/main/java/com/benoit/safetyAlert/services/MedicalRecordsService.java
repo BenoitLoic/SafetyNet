@@ -19,4 +19,6 @@ public interface MedicalRecordsService {
   PersonInfo getFullPersonInfo(String firstName, String lastName);
 
   boolean createMedicalRecord(Medicalrecords medicalrecord);
+
+  boolean deleteMedicalRecord(Medicalrecords medicalRecord);
 }

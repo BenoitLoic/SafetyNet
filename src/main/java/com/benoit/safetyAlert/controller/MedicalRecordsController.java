@@ -9,4 +9,6 @@ public interface MedicalRecordsController {
   Collection<Object> personInfo(String firstName, String lastName);
 
   void createMedicalRecord(Medicalrecords medicalrecord);
+
+    void deleteMedicalRecord(Medicalrecords medicalrecords);
 }

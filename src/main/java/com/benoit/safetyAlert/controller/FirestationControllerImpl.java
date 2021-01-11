@@ -44,7 +44,16 @@ public class FirestationControllerImpl implements FirestationController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createFirestation(@RequestBody @Valid Firestation firestation){
 
-    firestationService.addFirestation(firestation);
+    firestationService.createFirestation(firestation);
+
+  }
+
+  @Override
+  @DeleteMapping("/firestation")
+  @ResponseStatus(HttpStatus.OK)
+  public void deleteFirestation(@RequestBody @Valid Firestation firestation) {
+
+    firestationService.deleteFirestation(firestation);
 
   }
 

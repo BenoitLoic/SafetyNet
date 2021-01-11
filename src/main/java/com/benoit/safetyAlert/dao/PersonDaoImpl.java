@@ -22,7 +22,9 @@ public class PersonDaoImpl implements PersonDao {
 
   @Override
   public boolean deletePerson(Persons person) {
-    return false;
+    dataRepository.getDatabaseJson().getPersons().remove(person);
+    dataRepository.commit();
+    return true;
   }
 
   @Override

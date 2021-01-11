@@ -1,6 +1,7 @@
 package com.benoit.safetyAlert.controller;
 
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
+import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -57,7 +58,7 @@ public class PersonControllerTest {
     ObjectMapper obm = new ObjectMapper();
     ObjectNode jsonPerson = obm.createObjectNode();
     jsonPerson.set("firstName", TextNode.valueOf(firstNameTest));
-    jsonPerson.set("lastName", TextNode.valueOf(""));
+    jsonPerson.set("lastName", TextNode.valueOf(" "));
     //        WHEN
 
     //        THEN
@@ -89,5 +90,60 @@ public class PersonControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
         .andExpect(MockMvcResultMatchers.status().isConflict());
+  }
+
+  @Test
+  public void deletePersonValid() throws Exception {
+    //    GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonPerson = objectMapper.createObjectNode();
+    jsonPerson.set("firstName", TextNode.valueOf(firstNameTest));
+    jsonPerson.set("lastName", TextNode.valueOf(lastNameTest));
+    //    WHEN
+
+    //    THEN
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.delete("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonPerson.toString()))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  public void deletePersonInvalid() throws Exception {
+    //   GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonPerson = objectMapper.createObjectNode();
+    jsonPerson.set("firstName", TextNode.valueOf("firstNameTest"));
+    jsonPerson.set("lastName", TextNode.valueOf(" "));
+    //    WHEN
+
+    //    THEN
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.delete("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonPerson.toString()))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  public void deletePersonWhenDataNotFindException() throws Exception {
+
+    //    GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonPerson = objectMapper.createObjectNode();
+    jsonPerson.set("firstName", TextNode.valueOf(firstNameTest));
+    jsonPerson.set("lastName", TextNode.valueOf(lastNameTest));
+    //    WHEN
+    Mockito.doThrow(DataNotFindException.class).when(personController).deletePerson(Mockito.any());
+    //  THEN
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.delete("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonPerson.toString()))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
 }

@@ -13,4 +13,6 @@ public interface PersonController {
   Collection<Object> childAlert(String address);
 
   void createPerson(Persons person);
+
+  void deletePerson(Persons person);
 }

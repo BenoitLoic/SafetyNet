@@ -29,4 +29,12 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
     medicalRecordsService.createMedicalRecord(medicalrecord);
   }
 
+  @Override
+  @DeleteMapping("/medicalRecord")
+  public void deleteMedicalRecord(@RequestBody @Valid Medicalrecords medicalRecord) {
+
+    medicalRecordsService.deleteMedicalRecord(medicalRecord);
+
+  }
+
 }

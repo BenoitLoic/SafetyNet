@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MedicalRecordDaoImpl implements MedicalRecordDao {
-@Autowired
-  DataRepository dataRepository;
+
+  @Autowired DataRepository dataRepository;
+
   @Override
   public boolean createMedicalRecords(Medicalrecords medicalrecords) {
     dataRepository.getDatabaseJson().getMedicalrecords().add(medicalrecords);
@@ -19,7 +20,9 @@ public class MedicalRecordDaoImpl implements MedicalRecordDao {
 
   @Override
   public boolean deleteMedicalRecords(Medicalrecords medicalrecords) {
-    return false;
+    dataRepository.getDatabaseJson().getMedicalrecords().remove(medicalrecords);
+    dataRepository.commit();
+    return true;
   }
 
   @Override

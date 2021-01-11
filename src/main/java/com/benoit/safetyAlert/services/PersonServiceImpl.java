@@ -1,9 +1,9 @@
 package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.dao.PersonDao;
-import com.benoit.safetyAlert.dao.PersonDaoImpl;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
+import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,7 @@ public class PersonServiceImpl implements PersonService {
   @Autowired DataRepository dataRepository;
   @Autowired FirestationServiceImpl firestationService;
   @Autowired MedicalRecordsService medicalRecordsService;
-  @Autowired
-  PersonDao personDao;
+  @Autowired PersonDao personDao;
 
   @Override
   public Collection<String> getCommunityEmail(String city) {
@@ -41,7 +40,8 @@ public class PersonServiceImpl implements PersonService {
     Collection<Object> personInfo = new ArrayList<>();
     for (Persons person : personByAddress) {
       Collection<Object> user = new ArrayList<>();
-      PersonInfo tmp = medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
+      PersonInfo tmp =
+          medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
 
       user.add(tmp.getFirstName());
       user.add(tmp.getLastName());
@@ -93,19 +93,25 @@ public class PersonServiceImpl implements PersonService {
 
   @Override
   public boolean createPerson(Persons person) {
-//on verifie que la personne n'existe pas dans la dao
-    if (!dataRepository.getDatabaseJson().getPersons().contains(person)){
+    // on verifie que la personne n'existe pas dans la dao
+    if (!dataRepository.getDatabaseJson().getPersons().contains(person)) {
       personDao.createPerson(person);
       return true;
-    }else {
-      throw new DataAlreadyExistException("this person "+person.getFirstName()+" "+person.getLastName()+" already exist.");
+    } else {
+      throw new DataAlreadyExistException(
+          "this person " + person.getFirstName() + " " + person.getLastName() + " already exist.");
     }
-
   }
 
   @Override
   public boolean deletePerson(Persons person) {
-    return false;
+    if (dataRepository.getDatabaseJson().getPersons().contains(person)) {
+      personDao.deletePerson(person);
+      return true;
+    } else {
+      throw new DataNotFindException(
+          "this person : " + person.getFirstName() + " " + person.getLastName() + " do not exist.");
+    }
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.benoit.safetyAlert.services;
 import com.benoit.safetyAlert.dao.FirestationDao;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
+import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
@@ -153,7 +154,7 @@ public class FirestationServiceImpl implements FirestationService {
   }
 
   @Override
-  public boolean addFirestation(Firestation firestation) {
+  public boolean createFirestation(Firestation firestation) {
 
     if (!dataRepository.getDatabaseJson().getFirestations().contains(firestation)) {
 
@@ -166,6 +167,23 @@ public class FirestationServiceImpl implements FirestationService {
               + " / address : "
               + firestation.getAddress()
               + " already exist");
+    }
+  }
+
+  @Override
+  public boolean deleteFirestation(Firestation firestation) {
+
+    if (dataRepository.getDatabaseJson().getFirestations().contains(firestation)) {
+
+      firestationDao.deleteFirestation(firestation);
+      return true;
+    } else {
+      throw new DataNotFindException(
+          "this firestation "
+              + firestation.getStation()
+              + "/ address : "
+              + firestation.getAddress()
+              + " doesn't exist.");
     }
   }
 }
