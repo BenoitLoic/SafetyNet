@@ -21,4 +21,6 @@ public interface MedicalRecordsService {
   boolean createMedicalRecord(Medicalrecords medicalrecord);
 
   boolean deleteMedicalRecord(Medicalrecords medicalRecord);
+
+  boolean updateMedicalRecord(Medicalrecords medicalrecord);
 }

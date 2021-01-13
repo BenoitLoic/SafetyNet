@@ -19,8 +19,8 @@ public class MedicalRecordDaoImpl implements MedicalRecordDao {
   }
 
   @Override
-  public boolean deleteMedicalRecords(Medicalrecords medicalrecords) {
-    dataRepository.getDatabaseJson().getMedicalrecords().remove(medicalrecords);
+  public boolean deleteMedicalRecords(Medicalrecords medicalrecord) {
+    dataRepository.getDatabaseJson().getMedicalrecords().remove(medicalrecord);
     dataRepository.commit();
     return true;
   }

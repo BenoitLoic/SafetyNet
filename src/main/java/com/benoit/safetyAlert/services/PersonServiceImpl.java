@@ -116,6 +116,8 @@ public class PersonServiceImpl implements PersonService {
 
   @Override
   public boolean updatePerson(Persons person) {
-    return false;
+
+    deletePerson(person);
+    return createPerson(person);
   }
 }

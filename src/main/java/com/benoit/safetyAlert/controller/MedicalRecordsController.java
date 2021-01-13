@@ -10,5 +10,7 @@ public interface MedicalRecordsController {
 
   void createMedicalRecord(Medicalrecords medicalrecord);
 
-    void deleteMedicalRecord(Medicalrecords medicalrecords);
+  void deleteMedicalRecord(Medicalrecords medicalrecords);
+
+  void updateMedicalRecord(Medicalrecords medicalrecord);
 }

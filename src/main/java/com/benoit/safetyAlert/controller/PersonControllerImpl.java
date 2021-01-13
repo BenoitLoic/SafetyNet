@@ -1,6 +1,5 @@
 package com.benoit.safetyAlert.controller;
 
-import com.benoit.safetyAlert.dao.PersonDao;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.services.PersonServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,6 @@ import java.util.Collection;
 public class PersonControllerImpl implements PersonController {
 
   @Autowired private PersonServiceImpl personService;
-
-
 
   @Override
   @GetMapping("/communityEmail")
@@ -54,6 +51,13 @@ public class PersonControllerImpl implements PersonController {
   public void deletePerson(@RequestBody @Valid Persons person) {
 
     personService.deletePerson(person);
+  }
 
+  @Override
+  @PutMapping("/person")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void updatePerson(@RequestBody @Valid Persons person) {
+
+    personService.updatePerson(person);
   }
 }

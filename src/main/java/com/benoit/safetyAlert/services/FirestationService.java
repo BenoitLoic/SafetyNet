@@ -56,5 +56,5 @@ public interface FirestationService {
 
   boolean createFirestation(Firestation firestation);
 
-    boolean deleteFirestation(Firestation firestation);
+  boolean deleteFirestation(Firestation firestation);
 }

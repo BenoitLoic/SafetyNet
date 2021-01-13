@@ -1,6 +1,5 @@
 package com.benoit.safetyAlert.utility;
 
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,53 +11,52 @@ import java.time.format.DateTimeParseException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @SpringBootTest
 class CalculateAgeTest {
 
+  @Test
+  void calculateAge() {
+    String birthdate = "03/23/1987";
+    assertEquals(
+        Period.between(LocalDate.of(1987, 3, 23), LocalDate.now()).getYears(),
+        CalculateAge.calculateAge(birthdate));
+  }
 
-    @Test
-    void calculateAge() {
-        String birthdate = "03/23/1987";
-        assertEquals(Period.between(LocalDate.of(1987, 3, 23), LocalDate.now()).getYears(), CalculateAge.calculateAge(birthdate));
-    }
+  @Test
+  void calculateAgeWithInvalidBirthdateString() {
 
-    @Test
-    void calculateAgeWithInvalidBirthdateString() {
+    String invalidBirthdate = "invalidString";
+    assertThrows(DateTimeParseException.class, () -> CalculateAge.calculateAge(invalidBirthdate));
+  }
 
-        String invalidBirthdate = "invalidString";
-        assertThrows(DateTimeParseException.class, () -> CalculateAge.calculateAge(invalidBirthdate));
-    }
+  @Test
+  void calculateAgeWithEmptyBirthdate() {
 
-    @Test
-    void calculateAgeWithEmptyBirthdate() {
+    String emptyBirthdate = "";
+    assertThrows(DateTimeParseException.class, () -> CalculateAge.calculateAge(emptyBirthdate));
+  }
 
-        String emptyBirthdate = "";
-        assertThrows(DateTimeParseException.class, () -> CalculateAge.calculateAge(emptyBirthdate));
+  @Test
+  void calculateAgeWithNullBirthdate() {
 
-    }
+    String nullBirthdate = null;
+    assertThrows(NullPointerException.class, () -> CalculateAge.calculateAge(nullBirthdate));
+  }
 
-    @Test
-    void calculateAgeWithNullBirthdate() {
+  @Test
+  void calculateAgeLessThanOneYearShouldReturnOne() {
 
-        String nullBirthdate = null;
-        assertThrows(NullPointerException.class, () -> CalculateAge.calculateAge(nullBirthdate));
+    String sixMonthFromNow =
+        LocalDate.now().minusMonths(6).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+    assertEquals(1, CalculateAge.calculateAge(sixMonthFromNow));
+  }
 
-    }
+  @Test
+  void calculateAgeWithBirthdateAfterNow() {
 
-    @Test
-    void calculateAgeLessThanOneYearShouldReturnOne() {
-
-        String sixMonthFromNow = LocalDate.now().minusMonths(6).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        assertEquals(1, CalculateAge.calculateAge(sixMonthFromNow));
-
-    }
-
-    @Test
-    void calculateAgeWithBirthdateAfterNow() {
-
-        String oneYearAfter = LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        assertThrows(DateTimeException.class, () -> CalculateAge.calculateAge(oneYearAfter));
-    }
-
-
+    String oneYearAfter =
+        LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+    assertThrows(DateTimeException.class, () -> CalculateAge.calculateAge(oneYearAfter));
+  }
 }

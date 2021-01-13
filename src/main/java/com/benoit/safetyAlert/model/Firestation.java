@@ -29,7 +29,8 @@ public class Firestation {
     if (this == o) return true;
     if (!(o instanceof Firestation)) return false;
     Firestation that = (Firestation) o;
-    return Objects.equals(getStation(), that.getStation()) && Objects.equals(getAddress(), that.getAddress());
+    return Objects.equals(getStation(), that.getStation())
+        && Objects.equals(getAddress(), that.getAddress());
   }
 
   @Override

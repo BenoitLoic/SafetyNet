@@ -94,4 +94,10 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
               + " does not exist.");
     }
   }
+
+  @Override
+  public boolean updateMedicalRecord(Medicalrecords medicalrecord) {
+    deleteMedicalRecord(medicalrecord);
+    return createMedicalRecord(medicalrecord);
+  }
 }

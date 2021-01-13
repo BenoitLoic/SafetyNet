@@ -152,4 +152,63 @@ class MedicalRecordsControllerTest {
                 .content(jsonMedicalRecord.toString()))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
+
+  @Test
+  public void updateMedicalRecordValid() throws Exception {
+    //    GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
+    jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
+    jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
+    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+    //    WHEN
+
+    //    THEN
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.put("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonMedicalRecord.toString()))
+        .andExpect(MockMvcResultMatchers.status().isCreated());
+  }
+
+  @Test
+  public void updateMedicalRecordInvalid() throws Exception {
+    //    GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
+    jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
+    jsonMedicalRecord.set("lastName", TextNode.valueOf(" "));
+    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+    //    WHEN
+
+    //    THEN
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.put("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonMedicalRecord.toString()))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+  }
+
+  @Test
+  public void updateMedicalRecordWhenDataNotFindException() throws Exception {
+    //    GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
+    jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
+    jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
+    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+    //    WHEN
+    Mockito.doThrow(DataNotFindException.class)
+        .when(medicalRecordsController)
+        .updateMedicalRecord(Mockito.any());
+    //    THEN
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.put("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonMedicalRecord.toString()))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
+  }
 }

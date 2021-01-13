@@ -42,10 +42,9 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @PostMapping("/firestation")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createFirestation(@RequestBody @Valid Firestation firestation){
+  public void createFirestation(@RequestBody @Valid Firestation firestation) {
 
     firestationService.createFirestation(firestation);
-
   }
 
   @Override
@@ -54,7 +53,5 @@ public class FirestationControllerImpl implements FirestationController {
   public void deleteFirestation(@RequestBody @Valid Firestation firestation) {
 
     firestationService.deleteFirestation(firestation);
-
   }
-
 }

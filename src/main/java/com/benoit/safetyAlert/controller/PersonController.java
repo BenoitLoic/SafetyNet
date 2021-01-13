@@ -15,4 +15,6 @@ public interface PersonController {
   void createPerson(Persons person);
 
   void deletePerson(Persons person);
+
+  void updatePerson(Persons person);
 }
