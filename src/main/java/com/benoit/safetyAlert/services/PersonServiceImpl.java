@@ -6,86 +6,86 @@ import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
+import com.benoit.safetyAlert.utility.CalculateAge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class PersonServiceImpl implements PersonService {
 
   @Autowired DataRepository dataRepository;
-  @Autowired FirestationServiceImpl firestationService;
-  @Autowired MedicalRecordsService medicalRecordsService;
   @Autowired PersonDao personDao;
 
   @Override
-  public Collection<String> getCommunityEmail(String city) {
+  public Collection<Persons> getCommunityEmail(String city) {
 
-    List<Persons> personByCity = dataRepository.getPersonByCity(city);
-    Collection<String> collectionEmail = new ArrayList<>();
-    for (Persons person : personByCity) {
-      collectionEmail.add(person.getEmail());
+    Collection<Persons> collectionEmail = new HashSet<>();
+    for (Persons person : dataRepository.getPersons()) {
+      Persons personInfo = new Persons();
+      personInfo.setEmail(person.getEmail());
+
+      collectionEmail.add(personInfo);
     }
     return collectionEmail;
   }
 
   @Override
-  public Collection<Object> getFireAddress(String address) {
-    List<Persons> personByAddress = dataRepository.getPersonByAddress(address);
-    Collection firestation = firestationService.getFirestationNumber(address);
-    Collection<Object> personInfo = new ArrayList<>();
-    for (Persons person : personByAddress) {
-      Collection<Object> user = new ArrayList<>();
-      PersonInfo tmp =
-          medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
+  public Collection<PersonInfo> getFireAddress(String address) {
+    List<PersonInfo> returnList = new ArrayList<>();
+    for (Persons person : dataRepository.getPersons()) {
+      if (person.getAddress().equals(address)) {
+        PersonInfo personInfo = new PersonInfo();
 
-      user.add(tmp.getFirstName());
-      user.add(tmp.getLastName());
-      user.add(tmp.getAge());
-      user.add("Medication: " + tmp.getMedication());
-      user.add("Allergies: " + tmp.getAllergies());
-      user.add("Firestation: " + firestation);
-      personInfo.add(user);
+        personInfo.setFirstName(person.getFirstName());
+        personInfo.setLastName(person.getLastName());
+        personInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+        personInfo.setMedication(person.getMedicalrecords().getMedications());
+        personInfo.setAllergies(person.getMedicalrecords().getAllergies());
+        personInfo.setStation(person.getFirestation().getStation());
+        returnList.add(personInfo);
+      }
     }
-    return personInfo;
+    return returnList;
   }
 
   @Override
-  public Collection<Object> getChildAlert(String address) {
-
+  public Collection<PersonInfo> getChildAlert(String address) {
     final int adultAge = 18;
-    Collection<Object> childAlertList = new ArrayList<>();
-    // recupération de la liste des personnes à cette adresse
-    Collection<Persons> listOfPersons = dataRepository.getPersonByAddress(address);
-    // recupération des info de chaque personnes
-    for (Persons person : listOfPersons) {
-      // verification de l'age
-      PersonInfo personInfo =
-          medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
-      if (personInfo.getAge() <= adultAge) {
-        // si age<= 18 on ajoute firstName, lastName, age à la collection
-        Collections.addAll(
-            childAlertList,
-            personInfo.getFirstName(),
-            personInfo.getLastName(),
-            personInfo.getAge());
-        // recupération des autres personnes avec le mm lastName ajoutés en temps que List
-        // dans la collection
+    Collection<PersonInfo> childAlertList = new ArrayList<>();
+    List<Persons> personsList = dataRepository.getPersons();
 
-        for (Persons family : listOfPersons) {
-          if (personInfo.getLastName().equalsIgnoreCase(family.getLastName())
-              && !personInfo.getFirstName().equalsIgnoreCase(family.getFirstName())) {
-            List<String> childFamily = new ArrayList<>();
-            Collections.addAll(childFamily, family.getFirstName(), family.getLastName());
-            childAlertList.add(childFamily);
+    for (Persons person : personsList) {
+
+      // add child for this address
+      if (CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()) <= adultAge
+          && person.getAddress().equalsIgnoreCase(address)) {
+        PersonInfo childInfo = new PersonInfo();
+        childInfo.setFirstName(person.getFirstName());
+        childInfo.setLastName(person.getLastName());
+        childInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+        childInfo.setAllergies(null);
+        childInfo.setMedication(null);
+
+        // add child's family member
+        for (Persons family : personsList) {
+          if (family.getAddress().equalsIgnoreCase(address)
+              && family.getLastName().equalsIgnoreCase(childInfo.getLastName())
+              && CalculateAge.calculateAge(family.getMedicalrecords().getBirthdate()) > adultAge) {
+            PersonInfo personInfo = new PersonInfo();
+            personInfo.setFirstName(family.getFirstName());
+            personInfo.setLastName(family.getLastName());
+            personInfo.setMedication(null);
+            personInfo.setAllergies(null);
+            childInfo.getFamily().add(personInfo);
           }
         }
+        childAlertList.add(childInfo);
       }
-      // si aucun enfant (age<=18) on renvoi une liste vide
     }
 
     return childAlertList;

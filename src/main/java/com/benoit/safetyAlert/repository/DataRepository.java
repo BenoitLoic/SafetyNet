@@ -17,15 +17,35 @@ import java.util.List;
 
 @Repository
 public class DataRepository {
+
   // cet obj va permettre de mapper du json en obj java
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   // pour log4j
   private static final Logger LOGGER = LogManager.getLogger(DataRepository.class);
+
   // c'est le fichier Json en memoire
   private static DatabaseJson databaseJson;
   private final String data_Json = "data.json";
+
   // pour éviter de commit dans les tests
   private boolean commit = true;
+
+  private List<Persons> persons = new ArrayList<>();
+  private List<Medicalrecords> medicalrecords = new ArrayList<>();
+  private List<Firestation> firestations = new ArrayList<>();
+
+  public List<Persons> getPersons() {
+    return persons;
+  }
+
+  public List<Medicalrecords> getMedicalrecords() {
+    return medicalrecords;
+  }
+
+  public List<Firestation> getFirestations() {
+    return firestations;
+  }
 
   public DataRepository() {
     this.init();
@@ -39,6 +59,9 @@ public class DataRepository {
     try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(data_Json)) {
 
       databaseJson = OBJECT_MAPPER.readerFor(DatabaseJson.class).readValue(inputStream);
+
+      linkDataBase();
+
       LOGGER.info("OK - file_open :" + data_Json);
     } catch (FileNotFoundException fnfe) {
       LOGGER.info("KO - file_not_found :" + data_Json);
@@ -76,68 +99,25 @@ public class DataRepository {
     this.commit = commit;
   }
 
-  public List<Persons> getPersonByCity(String city) {
+  public void linkDataBase() {
 
-    List<Persons> personsCollection = new ArrayList<>();
+    persons = databaseJson.getPersons();
+    medicalrecords = databaseJson.getMedicalrecords();
+    firestations = databaseJson.getFirestations();
 
-    for (Persons person : databaseJson.getPersons()) {
-      if (person.getCity().equalsIgnoreCase(city)) {
-        personsCollection.add(person);
+    for (Persons person : persons) {
+      for (Medicalrecords medicalrecord : medicalrecords) {
+        if (person.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+            && person.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
+          person.setMedicalrecords(medicalrecord);
+        }
+      }
+      for (Firestation firestation : firestations) {
+        if (person.getAddress().equals(firestation.getAddress())) {
+          person.setFirestation(firestation);
+          firestation.getPersons().add(person);
+        }
       }
     }
-    return personsCollection;
-  }
-
-  public List<Firestation> getFirestationByStationNumber(String stationNumber) {
-
-    List<Firestation> firestationAddress = new ArrayList<>();
-    for (Firestation station : databaseJson.getFirestations()) {
-      if (station.getStation().equals(stationNumber)) {
-        firestationAddress.add(station);
-      }
-    }
-    return firestationAddress;
-  }
-
-  public List<Firestation> getFirestationByAddress(String address) {
-    List<Firestation> stationNumber = new ArrayList<>();
-    for (Firestation station : databaseJson.getFirestations()) {
-      if (station.getAddress().equalsIgnoreCase(address)) {
-        stationNumber.add(station);
-      }
-    }
-    return stationNumber;
-  }
-
-  public List<Persons> getPersonByAddress(String address) {
-    List<Persons> personsCollection = new ArrayList<>();
-    for (Persons person : databaseJson.getPersons()) {
-      if (person.getAddress().equalsIgnoreCase(address)) {
-        personsCollection.add(person);
-      }
-    }
-    return personsCollection;
-  }
-
-  public List<Persons> getPersonByID(String firstName, String lastName) {
-    List<Persons> personsCollection = new ArrayList<>();
-    for (Persons person : databaseJson.getPersons()) {
-      if (person.getFirstName().equalsIgnoreCase(firstName)
-          && person.getLastName().equalsIgnoreCase(lastName)) {
-        personsCollection.add(person);
-      }
-    }
-    return personsCollection;
-  }
-
-  public List<Medicalrecords> getMedicalRecordByID(String firstName, String lastName) {
-    List<Medicalrecords> medicalRecordsCollection = new ArrayList<>();
-    for (Medicalrecords medicalrecords : databaseJson.getMedicalrecords()) {
-      if (medicalrecords.getFirstName().equalsIgnoreCase(firstName)
-          && medicalrecords.getLastName().equalsIgnoreCase(lastName)) {
-        medicalRecordsCollection.add(medicalrecords);
-      }
-    }
-    return medicalRecordsCollection;
   }
 }

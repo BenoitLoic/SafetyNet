@@ -1,10 +1,15 @@
 package com.benoit.safetyAlert.utility;
 
-/** Simple class to iterate a count child and adult with static counter. */
+/** Simple class to iterate a count child and adult with counter. */
 public class Counter {
 
-  private static int child;
-  private static int adult;
+  private int child;
+  private int adult;
+
+  public Counter() {
+    this.child=0;
+    this.adult=0;
+  }
 
   /** Increment child. */
   public void incrementChild() {
@@ -50,6 +55,10 @@ public class Counter {
   }
 
   public String getAll() {
-    return "child: " + child + " - " + "adult: " + adult;
+    int tempChild = child;
+    int tempAdult = adult;
+    String printCount = tempChild + " " + tempAdult;
+    this.reset();
+    return printCount;
   }
 }

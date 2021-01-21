@@ -3,12 +3,13 @@ package com.benoit.safetyAlert.model;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Medicalrecords {
 
   @NotBlank private String firstName;
   @NotBlank private String lastName;
-  @NotBlank private String birthdate;
+  private String birthdate;
   private List<String> medications = new ArrayList<>();
   private List<String> allergies = new ArrayList<>();
 
@@ -50,5 +51,18 @@ public class Medicalrecords {
 
   public void setAllergies(List<String> allergies) {
     this.allergies = allergies;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Medicalrecords)) return false;
+    Medicalrecords that = (Medicalrecords) o;
+    return Objects.equals(getFirstName(), that.getFirstName()) && Objects.equals(getLastName(), that.getLastName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getFirstName(), getLastName());
   }
 }

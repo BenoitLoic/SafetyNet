@@ -42,7 +42,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
     jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //        WHEN
 
     //        THEN
@@ -80,7 +80,6 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
     jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
     //        WHEN
     Mockito.doThrow(DataAlreadyExistException.class)
         .when(medicalRecordsController)
@@ -101,7 +100,6 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
     //    WHEN
 
     //    THEN
@@ -119,8 +117,8 @@ class MedicalRecordsControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
-    jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(" "));
+    jsonMedicalRecord.set("lastName", TextNode.valueOf(""));
+
     //    WHEN
 
     //    THEN
@@ -139,7 +137,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
     Mockito.doThrow(DataNotFindException.class)
         .when(medicalRecordsController)
@@ -160,7 +158,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
 
     //    THEN
@@ -179,7 +177,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(" "));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
 
     //    THEN
@@ -198,7 +196,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
     Mockito.doThrow(DataNotFindException.class)
         .when(medicalRecordsController)

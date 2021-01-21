@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.controller;
 
+import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.services.PersonServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class PersonControllerImpl implements PersonController {
   @Override
   @GetMapping("/communityEmail")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<String> communityEmail(@RequestParam String city) {
+  public Collection<Persons> communityEmail(@RequestParam String city) {
 
     return personService.getCommunityEmail(city);
   }
@@ -25,7 +26,7 @@ public class PersonControllerImpl implements PersonController {
   @Override
   @GetMapping("/fire")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<Object> fire(@RequestParam String address) {
+  public Collection<PersonInfo> fire(@RequestParam String address) {
 
     return personService.getFireAddress(address);
   }
@@ -33,7 +34,7 @@ public class PersonControllerImpl implements PersonController {
   @Override
   @GetMapping("/childAlert")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<Object> childAlert(@RequestParam String address) {
+  public Collection<PersonInfo> childAlert(@RequestParam String address) {
 
     return personService.getChildAlert(address);
   }
