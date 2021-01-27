@@ -21,7 +21,8 @@ public class FirestationDaoImpl implements FirestationDao {
 
   @Override
   public boolean updateFirestation(Firestation firestation) {
-    return false;
+    deleteFirestation(firestation);
+    return createFirestation(firestation);
   }
 
   @Override

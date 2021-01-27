@@ -1,19 +1,61 @@
 package com.benoit.safetyAlert.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PersonInfo {
 
+  @NotBlank
   private String firstName;
-  private String lastName;
+  @NotBlank private String lastName;
   private String address;
+
+  @JsonInclude(JsonInclude.Include.NON_DEFAULT)
   private int age;
+
   private String phone;
   private String email;
-  private String station;
   private List<String> medication = new ArrayList<>();
   private List<String> allergies = new ArrayList<>();
+  private String station;
+
+  @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+  private List<PersonInfo> family = new ArrayList<>();
+
+  @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+  private int numberOfChild;
+
+  @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+  private int numberOfAdult;
+
+  public List<PersonInfo> getFamily() {
+    return family;
+  }
+
+  public void setFamily(List<PersonInfo> family) {
+    this.family = family;
+  }
+
+  public int getNumberOfChild() {
+    return numberOfChild;
+  }
+
+  public void setNumberOfChild(int numberOfChild) {
+    this.numberOfChild = numberOfChild;
+  }
+
+  public int getNumberOfAdult() {
+    return numberOfAdult;
+  }
+
+  public void setNumberOfAdult(int numberOfAdult) {
+    this.numberOfAdult = numberOfAdult;
+  }
 
   public String getFirstName() {
     return firstName;
@@ -85,5 +127,24 @@ public class PersonInfo {
 
   public void setAllergies(List<String> allergies) {
     this.allergies = allergies;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof PersonInfo)) {
+      return false;
+    }
+    PersonInfo that = (PersonInfo) o;
+    return Objects.equals(getFirstName(),
+            that.getFirstName()) && Objects.equals(getLastName(),
+            that.getLastName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getFirstName(), getLastName());
   }
 }

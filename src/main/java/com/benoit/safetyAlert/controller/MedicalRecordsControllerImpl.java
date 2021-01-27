@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.controller;
 
+import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.services.MedicalRecordsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collection;
 
 @RestController
 public class MedicalRecordsControllerImpl implements MedicalRecordsController {
@@ -17,7 +17,7 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
   @Override
   @GetMapping("/personInfo")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<Object> personInfo(String firstName, String lastName) {
+  public PersonInfo personInfo(String firstName, String lastName) {
     return medicalRecordsService.getPersonInfo(firstName, lastName);
   }
 

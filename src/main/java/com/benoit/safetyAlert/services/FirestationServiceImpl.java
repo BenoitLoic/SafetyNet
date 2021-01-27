@@ -7,6 +7,7 @@ import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
+import com.benoit.safetyAlert.utility.CalculateAge;
 import com.benoit.safetyAlert.utility.Counter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,82 +20,75 @@ public class FirestationServiceImpl implements FirestationService {
 
   /** The Data repository. */
   @Autowired private DataRepository dataRepository;
-
-  @Autowired private MedicalRecordsService medicalRecordsService;
   @Autowired private FirestationDao firestationDao;
 
 
   @Override
-  public Collection<String> getPhoneNumber(String station) {
-    List<String> fireStationAddress = getFirestationAddress(station);
-    Collection<String> phoneNumber =
-        new HashSet<>(); // creation d'un hashset pour éviter les doublons
-    for (String address : fireStationAddress) {
-      List<Persons> personByAddress = dataRepository.getPersonByAddress(address);
-      for (Persons person : personByAddress) {
-        phoneNumber.add(person.getPhone());
+  public Collection<Persons> getPhoneNumber(String station) {
+    Collection<Persons> listOfPhoneNumber = new HashSet<>();
+    for (Firestation firestation : dataRepository.getFirestations()) {
+      if (firestation.getStation().equals(station)) {
+        for (Persons person : firestation.getPersons()) {
+          Persons personPhone = new Persons();
+          personPhone.setPhone(person.getPhone());
+          listOfPhoneNumber.add(personPhone);
+        }
       }
     }
-    return phoneNumber;
+
+    return listOfPhoneNumber;
   }
 
   @Override
-  public Collection<Object> getPersonCoveredByFireStation(String stationNumber) {
-
+  public Collection<PersonInfo> getPersonCoveredByFireStation(String stationNumber) {
+    Collection<PersonInfo> listOfPersonCovered = new ArrayList<>();
     Counter counter = new Counter();
-    Collection<Object> personCovered = new ArrayList<>();
-    for (String address : getFirestationAddress(stationNumber)) {
-      List<Persons> personByAddress = dataRepository.getPersonByAddress(address);
-      for (Persons person : personByAddress) {
-        List<String> user = new ArrayList<>();
-        PersonInfo tmp =
-            medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
-        user.add(tmp.getFirstName());
-        user.add(tmp.getLastName());
-        user.add(tmp.getAddress());
-        user.add(tmp.getPhone());
-        personCovered.add(user);
 
-        counter.process(tmp.getAge());
+    List<Firestation> firestations = dataRepository.getFirestations();
+    for (Firestation firestation : firestations) {
+      if (firestation.getStation().equals(stationNumber)) {
+        List<Persons> persons = firestation.getPersons();
+        for (Persons person : persons) {
+          PersonInfo personInfo = new PersonInfo();
+          personInfo.setFirstName(person.getFirstName());
+          personInfo.setLastName(person.getLastName());
+          personInfo.setAddress(person.getAddress());
+          personInfo.setPhone(person.getPhone());
+          personInfo.setAllergies(null);
+          personInfo.setMedication(null);
+          listOfPersonCovered.add(personInfo);
+          counter.process(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+        }
       }
     }
-
-    personCovered.add(counter.getAll());
-    counter.reset();
-
-    return personCovered;
+    PersonInfo count = new PersonInfo();
+    count.setNumberOfChild(counter.getChild());
+    count.setNumberOfAdult(counter.getAdult());
+    count.setAllergies(null);
+    count.setMedication(null);
+    listOfPersonCovered.add(count);
+    return listOfPersonCovered;
   }
 
   @Override
-  public Collection<Object> getFloodStations(List<String> station) {
+  public Collection<PersonInfo> getFloodStations(List<String> stations) {
+    Collection<PersonInfo> floodStations = new HashSet<>();
 
-    Collection<Object> floodStations = new ArrayList<>();
-
-    for (String address : getFirestationAddress(station)) {
-
-      Collection<Object> floodStationsAddress = new ArrayList<>();
-
-      for (Persons person : dataRepository.getPersonByAddress(address)) {
-
-        Collection<String> personInfos = new ArrayList<>();
-        PersonInfo tmpPersonInfo =
-            medicalRecordsService.getFullPersonInfo(person.getFirstName(), person.getLastName());
-
-        Collections.addAll(
-            personInfos,
-            tmpPersonInfo.getFirstName(),
-            tmpPersonInfo.getLastName(),
-            "Medication: " + tmpPersonInfo.getMedication(),
-            "Allergies: " + tmpPersonInfo.getAllergies(),
-            String.valueOf(tmpPersonInfo.getAge()),
-            tmpPersonInfo.getPhone());
-
-        floodStationsAddress.add(personInfos);
+    for (Firestation firestation : dataRepository.getFirestations()) {
+      for (String station : stations) {
+        if (firestation.getStation().equals(station)) {
+          for (Persons person : firestation.getPersons()) {
+            PersonInfo personInfo = new PersonInfo();
+            personInfo.setFirstName(person.getFirstName());
+            personInfo.setLastName(person.getLastName());
+            personInfo.setMedication(person.getMedicalrecords().getMedications());
+            personInfo.setAllergies(person.getMedicalrecords().getAllergies());
+            personInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+            floodStations.add(personInfo);
+          }
+        }
       }
-
-      Collections.addAll(floodStations, address, floodStationsAddress);
     }
-
     return floodStations;
   }
 
@@ -107,11 +101,11 @@ public class FirestationServiceImpl implements FirestationService {
       return true;
     } else {
       throw new DataAlreadyExistException(
-          "this firestation "
-              + firestation.getStation()
-              + " / address : "
-              + firestation.getAddress()
-              + " already exist");
+              "this firestation "
+                      + firestation.getStation()
+                      + " / address : "
+                      + firestation.getAddress()
+                      + " already exist");
     }
   }
 
@@ -124,11 +118,18 @@ public class FirestationServiceImpl implements FirestationService {
       return true;
     } else {
       throw new DataNotFindException(
-          "this firestation "
-              + firestation.getStation()
-              + "/ address : "
-              + firestation.getAddress()
-              + " doesn't exist.");
+              "this firestation "
+                      + firestation.getStation()
+                      + "/ address : "
+                      + firestation.getAddress()
+                      + " doesn't exist.");
     }
+  }
+
+  @Override
+  public boolean updateFirestation(Firestation firestation) {
+    deleteFirestation(firestation);
+
+    return createFirestation(firestation);
   }
 }

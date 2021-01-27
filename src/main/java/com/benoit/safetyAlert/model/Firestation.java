@@ -32,6 +32,10 @@ public class Firestation {
     return persons;
   }
 
+  public void setPersons(List<Persons> persons) {
+    this.persons = persons;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

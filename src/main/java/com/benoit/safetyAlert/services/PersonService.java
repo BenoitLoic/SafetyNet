@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.services;
 
+import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Persons;
 
 import java.util.Collection;
@@ -13,7 +14,7 @@ public interface PersonService {
    * @param city the city
    * @return the community email
    */
-  Collection<String> getCommunityEmail(String city);
+  Collection<Persons> getCommunityEmail(String city);
 
   /**
    * Gets fire address.
@@ -21,7 +22,7 @@ public interface PersonService {
    * @param address the address
    * @return the fire address
    */
-  Collection<Object> getFireAddress(String address);
+  Collection<PersonInfo> getFireAddress(String address);
 
   /**
    * Gets child alert.
@@ -29,7 +30,7 @@ public interface PersonService {
    * @param address the address
    * @return the child alert
    */
-  Collection<Object> getChildAlert(String address);
+  Collection<PersonInfo> getChildAlert(String address);
 
   boolean createPerson(Persons person);
 

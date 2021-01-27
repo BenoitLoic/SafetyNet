@@ -27,6 +27,7 @@ public class MedicalRecordDaoImpl implements MedicalRecordDao {
 
   @Override
   public boolean updateMedicalRecords(Medicalrecords medicalrecords) {
-    return false;
+    deleteMedicalRecords(medicalrecords);
+    return createMedicalRecords(medicalrecords);
   }
 }

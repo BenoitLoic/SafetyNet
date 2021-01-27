@@ -3,8 +3,12 @@ package com.benoit.safetyAlert.utility;
 /** Simple class to iterate a count child and adult with static counter. */
 public class Counter {
 
-  private static int child;
-  private static int adult;
+  private  int child;
+  private int adult;
+
+  public Counter() {
+    this.reset();
+  }
 
   /** Increment child. */
   public void incrementChild() {

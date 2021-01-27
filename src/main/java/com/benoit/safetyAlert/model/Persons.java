@@ -1,8 +1,11 @@
 package com.benoit.safetyAlert.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Persons {
     @NotBlank
     private String firstName;
@@ -15,6 +18,21 @@ public class Persons {
     private String email;
     private Firestation firestation;
     private Medicalrecords medicalrecords;
+
+    public Persons() {
+    }
+
+    public Persons(String firstName, String lastName, String address, String zip, String city, String phone, String email, Firestation firestation, Medicalrecords medicalrecords) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.zip = zip;
+        this.city = city;
+        this.phone = phone;
+        this.email = email;
+        this.firestation = firestation;
+        this.medicalrecords = medicalrecords;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -72,60 +90,21 @@ public class Persons {
         this.email = email;
     }
 
-  public Firestation getFirestation() {
-    return firestation;
-  }
-
-  public void setFirestation(Firestation firestation) {
-    this.firestation = firestation;
-  }
-
-  public Medicalrecords getMedicalrecords() {
-    return medicalrecords;
-  }
-
-  public void setMedicalrecords(Medicalrecords medicalrecords) {
-    this.medicalrecords = medicalrecords;
-  }
-
-  @Override
-    public String toString() {
-        return "Persons{"
-                + "firstName='"
-                + firstName
-                + '\''
-                + ", lastName='"
-                + lastName
-                + '\''
-                + ", address='"
-                + address
-                + '\''
-                + ", zip='"
-                + zip
-                + '\''
-                + ", city='"
-                + city
-                + '\''
-                + ", phone='"
-                + phone
-                + '\''
-                + ", email='"
-                + email
-                + '\''
-                + '}';
+    public Firestation getFirestation() {
+        return firestation;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Persons)) return false;
-        Persons persons = (Persons) o;
-        return Objects.equals(getFirstName(), persons.getFirstName())
-                && Objects.equals(getLastName(), persons.getLastName());
+    public void setFirestation(Firestation firestation) {
+        this.firestation = firestation;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getFirstName(), getLastName());
+    public Medicalrecords getMedicalrecords() {
+        return medicalrecords;
     }
+
+    public void setMedicalrecords(Medicalrecords medicalrecords) {
+        this.medicalrecords = medicalrecords;
+    }
+
+
 }

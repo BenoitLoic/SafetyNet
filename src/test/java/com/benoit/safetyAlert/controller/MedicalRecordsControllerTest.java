@@ -119,8 +119,7 @@ class MedicalRecordsControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
-    jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(" "));
+    jsonMedicalRecord.set("lastName", TextNode.valueOf(" "));
     //    WHEN
 
     //    THEN
