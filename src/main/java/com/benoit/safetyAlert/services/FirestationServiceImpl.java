@@ -23,61 +23,6 @@ public class FirestationServiceImpl implements FirestationService {
   @Autowired private MedicalRecordsService medicalRecordsService;
   @Autowired private FirestationDao firestationDao;
 
-  /**
-   * This method take the station number to extract its addresses
-   *
-   * @param station the station number
-   * @return list of address
-   */
-  @Override
-  public List<String> getFirestationAddress(String station) {
-
-    List<Firestation> firestations = dataRepository.getFirestationByStationNumber(station);
-    List<String> listOfFirestationAddress = new ArrayList<>();
-    for (Firestation firestation : firestations) {
-      listOfFirestationAddress.add(firestation.getAddress());
-    }
-
-    return listOfFirestationAddress;
-  }
-
-  /**
-   * This method take the addresses to find all station that cover it
-   *
-   * @param address the address
-   * @return list of station that cover this address
-   */
-  @Override
-  public Collection<String> getFirestationNumber(String address) {
-
-    List<Firestation> firestationList = dataRepository.getFirestationByAddress(address);
-    List<String> listOfFirestationNumber = new ArrayList<>();
-    for (Firestation firestation : firestationList) {
-      listOfFirestationNumber.add(firestation.getStation());
-    }
-    return listOfFirestationNumber;
-  }
-
-  /**
-   * This method take a list of station number to extract all the addresses
-   *
-   * @param stationNumber list of station number
-   * @return list of address
-   */
-  @Override
-  public Collection<String> getFirestationAddress(List<String> stationNumber) {
-
-    Set<String> stationNumberNoDuplicate = new HashSet<>(stationNumber);
-    Collection<String> listOfFirestationAddress = new HashSet<>();
-
-    for (String station : stationNumberNoDuplicate) {
-      List<Firestation> firestations = dataRepository.getFirestationByStationNumber(station);
-      for (Firestation firestation : firestations) {
-        listOfFirestationAddress.add(firestation.getAddress());
-      }
-    }
-    return listOfFirestationAddress;
-  }
 
   @Override
   public Collection<String> getPhoneNumber(String station) {

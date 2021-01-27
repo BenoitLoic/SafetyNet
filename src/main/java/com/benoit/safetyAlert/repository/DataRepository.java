@@ -27,6 +27,10 @@ public class DataRepository {
   // pour éviter de commit dans les tests
   private boolean commit = true;
 
+  private List<Persons> persons = new ArrayList<>();
+  private List<Medicalrecords> medicalrecords = new ArrayList<>();
+  private List<Firestation> firestations = new ArrayList<>();
+
   public DataRepository() {
     this.init();
   }
@@ -39,6 +43,7 @@ public class DataRepository {
     try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(data_Json)) {
 
       databaseJson = OBJECT_MAPPER.readerFor(DatabaseJson.class).readValue(inputStream);
+      linkDataBase();
       LOGGER.info("OK - file_open :" + data_Json);
     } catch (FileNotFoundException fnfe) {
       LOGGER.info("KO - file_not_found :" + data_Json);
@@ -76,68 +81,42 @@ public class DataRepository {
     this.commit = commit;
   }
 
-  public List<Persons> getPersonByCity(String city) {
-
-    List<Persons> personsCollection = new ArrayList<>();
-
-    for (Persons person : databaseJson.getPersons()) {
-      if (person.getCity().equalsIgnoreCase(city)) {
-        personsCollection.add(person);
-      }
-    }
-    return personsCollection;
+  public List<Persons> getPersons() {
+    return persons;
   }
 
-  public List<Firestation> getFirestationByStationNumber(String stationNumber) {
-
-    List<Firestation> firestationAddress = new ArrayList<>();
-    for (Firestation station : databaseJson.getFirestations()) {
-      if (station.getStation().equals(stationNumber)) {
-        firestationAddress.add(station);
-      }
-    }
-    return firestationAddress;
+  public List<Medicalrecords> getMedicalrecords() {
+    return medicalrecords;
   }
 
-  public List<Firestation> getFirestationByAddress(String address) {
-    List<Firestation> stationNumber = new ArrayList<>();
-    for (Firestation station : databaseJson.getFirestations()) {
-      if (station.getAddress().equalsIgnoreCase(address)) {
-        stationNumber.add(station);
-      }
-    }
-    return stationNumber;
+  public List<Firestation> getFirestations() {
+    return firestations;
   }
 
-  public List<Persons> getPersonByAddress(String address) {
-    List<Persons> personsCollection = new ArrayList<>();
-    for (Persons person : databaseJson.getPersons()) {
-      if (person.getAddress().equalsIgnoreCase(address)) {
-        personsCollection.add(person);
+  public void linkDataBase(){
+
+    persons = databaseJson.getPersons();
+    medicalrecords = databaseJson.getMedicalrecords();
+    firestations = databaseJson.getFirestations();
+
+    for (Persons person : persons){
+      for (Medicalrecords medicalrecord : medicalrecords){
+        if (person.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())&&
+            person.getLastName().equalsIgnoreCase(medicalrecord.getLastName())){
+          person.setMedicalrecords(medicalrecord);
+        }
+      }
+      for (Firestation firestation : firestations){
+        if (person.getAddress().equalsIgnoreCase(firestation.getAddress())){
+          person.setFirestation(firestation);
+          firestation.getPersons().add(person);
+        }
       }
     }
-    return personsCollection;
+
+
   }
 
-  public List<Persons> getPersonByID(String firstName, String lastName) {
-    List<Persons> personsCollection = new ArrayList<>();
-    for (Persons person : databaseJson.getPersons()) {
-      if (person.getFirstName().equalsIgnoreCase(firstName)
-          && person.getLastName().equalsIgnoreCase(lastName)) {
-        personsCollection.add(person);
-      }
-    }
-    return personsCollection;
-  }
 
-  public List<Medicalrecords> getMedicalRecordByID(String firstName, String lastName) {
-    List<Medicalrecords> medicalRecordsCollection = new ArrayList<>();
-    for (Medicalrecords medicalrecords : databaseJson.getMedicalrecords()) {
-      if (medicalrecords.getFirstName().equalsIgnoreCase(firstName)
-          && medicalrecords.getLastName().equalsIgnoreCase(lastName)) {
-        medicalRecordsCollection.add(medicalrecords);
-      }
-    }
-    return medicalRecordsCollection;
-  }
+
 }

@@ -1,12 +1,16 @@
 package com.benoit.safetyAlert.model;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Firestation {
 
   @NotBlank private String station;
   @NotBlank private String address;
+  private List<Persons> persons = new ArrayList<>();
+
 
   public String getStation() {
     return station;
@@ -22,6 +26,10 @@ public class Firestation {
 
   public void setAddress(String address) {
     this.address = address;
+  }
+
+  public List<Persons> getPersons() {
+    return persons;
   }
 
   @Override
