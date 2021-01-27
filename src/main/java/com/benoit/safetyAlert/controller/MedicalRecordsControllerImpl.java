@@ -3,6 +3,7 @@ package com.benoit.safetyAlert.controller;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.services.MedicalRecordsService;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,26 +13,31 @@ import javax.validation.Valid;
 @RestController
 public class MedicalRecordsControllerImpl implements MedicalRecordsController {
 
-  @Autowired private MedicalRecordsService medicalRecordsService;
+    private final MedicalRecordsService medicalRecordsService;
 
-  @Override
-  @GetMapping("/personInfo")
-  @ResponseStatus(HttpStatus.OK)
-  public PersonInfo personInfo(String firstName, String lastName) {
-    return medicalRecordsService.getPersonInfo(firstName, lastName);
-  }
+    @Autowired
+    public MedicalRecordsControllerImpl(MedicalRecordsService medicalRecordsService) {
+        this.medicalRecordsService = medicalRecordsService;
+    }
 
-  @Override
-  @PostMapping("/medicalRecord")
-  @ResponseStatus(HttpStatus.CREATED)
-  public void createMedicalRecord(@RequestBody @Valid Medicalrecords medicalrecord) {
+    @Override
+    @GetMapping("/personInfo")
+    @ResponseStatus(HttpStatus.OK)
+    public PersonInfo personInfo(String firstName, String lastName) {
+        return medicalRecordsService.getPersonInfo(firstName, lastName);
+    }
 
-    medicalRecordsService.createMedicalRecord(medicalrecord);
-  }
+    @Override
+    @PostMapping("/medicalRecord")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createMedicalRecord(@RequestBody @Valid Medicalrecords medicalrecord) {
 
-  @Override
-  @DeleteMapping("/medicalRecord")
-  public void deleteMedicalRecord(@RequestBody @Valid Medicalrecords medicalRecord) {
+        medicalRecordsService.createMedicalRecord(medicalrecord);
+    }
+
+    @Override
+    @DeleteMapping("/medicalRecord")
+    public void deleteMedicalRecord(@RequestBody @Valid Medicalrecords medicalRecord) {
 
     medicalRecordsService.deleteMedicalRecord(medicalRecord);
   }

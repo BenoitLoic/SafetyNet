@@ -23,8 +23,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ExtendWith(SpringExtension.class)
 class FirestationControllerTest {
 
-  @Autowired MockMvc mockMvc;
-  @MockBean FirestationControllerImpl firestationController;
+  @Autowired
+  MockMvc mockMvc;
+  @MockBean
+  FirestationControllerImpl firestationController;
 
   String stationTest = "8";
   String addressTest = "742 Evergreen Terrace";

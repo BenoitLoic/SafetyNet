@@ -15,7 +15,12 @@ import java.util.List;
 @RestController
 public class FirestationControllerImpl implements FirestationController {
 
-  @Autowired private FirestationService firestationService;
+  private final FirestationService firestationService;
+
+  @Autowired
+  public FirestationControllerImpl(FirestationService firestationService) {
+    this.firestationService = firestationService;
+  }
 
   @Override
   @GetMapping("/phoneAlert")

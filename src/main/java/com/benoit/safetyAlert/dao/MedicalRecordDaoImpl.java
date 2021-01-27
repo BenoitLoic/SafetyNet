@@ -8,7 +8,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class MedicalRecordDaoImpl implements MedicalRecordDao {
 
-  @Autowired DataRepository dataRepository;
+  private final
+  DataRepository dataRepository;
+
+  @Autowired
+  public MedicalRecordDaoImpl(DataRepository dataRepository) {
+    this.dataRepository = dataRepository;
+  }
 
   @Override
   public boolean createMedicalRecords(Medicalrecords medicalrecords) {

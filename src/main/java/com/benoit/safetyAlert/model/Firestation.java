@@ -7,8 +7,10 @@ import java.util.Objects;
 
 public class Firestation {
 
-  @NotBlank private String station;
-  @NotBlank private String address;
+  @NotBlank
+  private String station;
+  @NotBlank
+  private String address;
   private List<Persons> persons = new ArrayList<>();
 
 

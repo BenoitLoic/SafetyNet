@@ -8,20 +8,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class PersonDaoImpl implements PersonDao {
 
-  @Autowired DataRepository dataRepository;
+    private final DataRepository dataRepository;
 
-  @Override
-  public boolean createPerson(Persons person) {
+    @Autowired
+    public PersonDaoImpl(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
+    }
 
-    // ajout de la nouvelle personne en mémoire
-    dataRepository.getDatabaseJson().getPersons().add(person);
-    // commit pour appliquer les changement sur le json
-    dataRepository.commit();
-    return true;
-  }
+    @Override
+    public boolean createPerson(Persons person) {
 
-  @Override
-  public boolean deletePerson(Persons person) {
+        // ajout de la nouvelle personne en mémoire
+        dataRepository.getDatabaseJson().getPersons().add(person);
+        // commit pour appliquer les changement sur le json
+        dataRepository.commit();
+        return true;
+    }
+
+    @Override
+    public boolean deletePerson(Persons person) {
     dataRepository.getDatabaseJson().getPersons().remove(person);
     dataRepository.commit();
     return true;

@@ -8,27 +8,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class FirestationDaoImpl implements FirestationDao {
 
-  @Autowired private DataRepository dataRepository;
+    private final DataRepository dataRepository;
 
-  @Override
-  public boolean createFirestation(Firestation firestation) {
+    @Autowired
+    public FirestationDaoImpl(DataRepository dataRepository) {
+        this.dataRepository = dataRepository;
+    }
 
-    dataRepository.getDatabaseJson().getFirestations().add(firestation);
+    @Override
+    public boolean createFirestation(Firestation firestation) {
 
-    dataRepository.commit();
-    return true;
-  }
+        dataRepository.getDatabaseJson().getFirestations().add(firestation);
 
-  @Override
-  public boolean updateFirestation(Firestation firestation) {
-    deleteFirestation(firestation);
-    return createFirestation(firestation);
-  }
+        dataRepository.commit();
+        return true;
+    }
 
-  @Override
-  public boolean deleteFirestation(Firestation firestation) {
-    dataRepository.getDatabaseJson().getFirestations().remove(firestation);
-    dataRepository.commit();
-    return true;
-  }
+    @Override
+    public boolean updateFirestation(Firestation firestation) {
+        deleteFirestation(firestation);
+        return createFirestation(firestation);
+    }
+
+    @Override
+    public boolean deleteFirestation(Firestation firestation) {
+        dataRepository.getDatabaseJson().getFirestations().remove(firestation);
+        dataRepository.commit();
+        return true;
+    }
 }

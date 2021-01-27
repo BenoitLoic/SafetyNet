@@ -30,8 +30,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 @ExtendWith(SpringExtension.class)
 public class PersonControllerTest {
 
-  @Autowired MockMvc mockMvc;
-  @MockBean PersonControllerImpl personController;
+  @Autowired
+  MockMvc mockMvc;
+  @MockBean
+  PersonControllerImpl personController;
   @MockBean
   PersonServiceImpl personService;
   String firstNameTest = "Homer Jay";

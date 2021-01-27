@@ -13,22 +13,27 @@ import java.util.Collection;
 @RestController
 public class PersonControllerImpl implements PersonController {
 
-  @Autowired private PersonServiceImpl personService;
+    private final PersonServiceImpl personService;
 
-  @Override
-  @GetMapping("/communityEmail")
-  @ResponseStatus(HttpStatus.OK)
-  public Collection<Persons> communityEmail(@RequestParam String city) {
+    @Autowired
+    public PersonControllerImpl(PersonServiceImpl personService) {
+        this.personService = personService;
+    }
 
-    return personService.getCommunityEmail(city);
-  }
+    @Override
+    @GetMapping("/communityEmail")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Persons> communityEmail(@RequestParam String city) {
 
-  @Override
-  @GetMapping("/fire")
-  @ResponseStatus(HttpStatus.OK)
-  public Collection<PersonInfo> fire(@RequestParam String address) {
+        return personService.getCommunityEmail(city);
+    }
 
-    return personService.getFireAddress(address);
+    @Override
+    @GetMapping("/fire")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<PersonInfo> fire(@RequestParam String address) {
+
+        return personService.getFireAddress(address);
   }
 
   @Override

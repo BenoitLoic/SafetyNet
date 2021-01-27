@@ -26,8 +26,10 @@ import java.util.List;
 @SpringBootTest
 class MedicalRecordsControllerTest {
 
-  @Autowired MockMvc mockMvc;
-  @MockBean MedicalRecordsControllerImpl medicalRecordsController;
+  @Autowired
+  MockMvc mockMvc;
+  @MockBean
+  MedicalRecordsControllerImpl medicalRecordsController;
 
   String firstNameTest = "Homer Jay";
   String lastNameTest = "Simpson";

@@ -12,12 +12,11 @@ public class PersonInfo {
 
   @NotBlank
   private String firstName;
-  @NotBlank private String lastName;
+  @NotBlank
+  private String lastName;
   private String address;
-
   @JsonInclude(JsonInclude.Include.NON_DEFAULT)
   private int age;
-
   private String phone;
   private String email;
   private List<String> medication = new ArrayList<>();
@@ -139,8 +138,8 @@ public class PersonInfo {
     }
     PersonInfo that = (PersonInfo) o;
     return Objects.equals(getFirstName(),
-            that.getFirstName()) && Objects.equals(getLastName(),
-            that.getLastName());
+        that.getFirstName()) && Objects.equals(getLastName(),
+        that.getLastName());
   }
 
   @Override

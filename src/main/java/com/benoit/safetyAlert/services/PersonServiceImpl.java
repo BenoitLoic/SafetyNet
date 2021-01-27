@@ -15,109 +15,115 @@ import java.util.*;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-  @Autowired DataRepository dataRepository;
-  @Autowired PersonDao personDao;
+    private final DataRepository dataRepository;
+    private final PersonDao personDao;
 
-  @Override
-  public Collection<Persons> getCommunityEmail(String city) {
-
-    Collection<Persons> collectionEmail = new HashSet<>();
-    for (Persons person : dataRepository.getPersons()) {
-      if (person.getCity().equalsIgnoreCase(city)) {
-
-        Persons personInfo = new Persons();
-        personInfo.setEmail(person.getEmail());
-
-        collectionEmail.add(personInfo);
-      }
+    @Autowired
+    public PersonServiceImpl(DataRepository dataRepository, PersonDao personDao) {
+        this.dataRepository = dataRepository;
+        this.personDao = personDao;
     }
-    return collectionEmail;
-  }
 
-  @Override
-  public Collection<PersonInfo> getFireAddress(String address) {
-    List<PersonInfo> returnList = new ArrayList<>();
-    for (Persons person : dataRepository.getPersons()) {
-      if (person.getAddress().equals(address)) {
-        PersonInfo personInfo = new PersonInfo();
+    @Override
+    public Collection<Persons> getCommunityEmail(String city) {
 
-        personInfo.setFirstName(person.getFirstName());
-        personInfo.setLastName(person.getLastName());
-        personInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
-        personInfo.setMedication(person.getMedicalrecords().getMedications());
-        personInfo.setAllergies(person.getMedicalrecords().getAllergies());
-        personInfo.setStation(person.getFirestation().getStation());
-        returnList.add(personInfo);
-      }
-    }
-    return returnList;
-  }
+        Collection<Persons> collectionEmail = new HashSet<>();
+        for (Persons person : dataRepository.getPersons()) {
+            if (person.getCity().equalsIgnoreCase(city)) {
 
-  @Override
-  public Collection<PersonInfo> getChildAlert(String address) {
-    final int adultAge = 18;
-    Collection<PersonInfo> childAlertList = new ArrayList<>();
-    List<Persons> personsList = dataRepository.getPersons();
+                Persons personInfo = new Persons();
+                personInfo.setEmail(person.getEmail());
 
-    for (Persons person : personsList) {
-
-      // add child for this address
-      if (CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()) <= adultAge
-              && person.getAddress().equalsIgnoreCase(address)) {
-        PersonInfo childInfo = new PersonInfo();
-        childInfo.setFirstName(person.getFirstName());
-        childInfo.setLastName(person.getLastName());
-        childInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
-        childInfo.setAllergies(null);
-        childInfo.setMedication(null);
-
-        // add child's family member
-        for (Persons family : personsList) {
-          if (family.getAddress().equalsIgnoreCase(address)
-                  && family.getLastName().equalsIgnoreCase(childInfo.getLastName())
-                  && CalculateAge.calculateAge(family.getMedicalrecords().getBirthdate()) > adultAge) {
-            PersonInfo personInfo = new PersonInfo();
-            personInfo.setFirstName(family.getFirstName());
-            personInfo.setLastName(family.getLastName());
-            personInfo.setMedication(null);
-            personInfo.setAllergies(null);
-            childInfo.getFamily().add(personInfo);
-          }
+                collectionEmail.add(personInfo);
+            }
         }
-        childAlertList.add(childInfo);
-      }
+        return collectionEmail;
     }
 
-    return childAlertList;
-  }
+    @Override
+    public Collection<PersonInfo> getFireAddress(String address) {
+        List<PersonInfo> returnList = new ArrayList<>();
+        for (Persons person : dataRepository.getPersons()) {
+            if (person.getAddress().equals(address)) {
+                PersonInfo personInfo = new PersonInfo();
 
-  @Override
-  public boolean createPerson(Persons person) {
-    // on verifie que la personne n'existe pas dans la dao
-    if (!dataRepository.getPersons().contains(person)) {
-      personDao.createPerson(person);
-      return true;
-    } else {
-      throw new DataAlreadyExistException(
-              "this person " + person.getFirstName() + " " + person.getLastName() + " already exist.");
+                personInfo.setFirstName(person.getFirstName());
+                personInfo.setLastName(person.getLastName());
+                personInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+                personInfo.setMedication(person.getMedicalrecords().getMedications());
+                personInfo.setAllergies(person.getMedicalrecords().getAllergies());
+                personInfo.setStation(person.getFirestation().getStation());
+                returnList.add(personInfo);
+            }
+        }
+        return returnList;
     }
-  }
 
-  @Override
-  public boolean deletePerson(Persons person) {
-    if (dataRepository.getPersons().contains(person)) {
-      personDao.deletePerson(person);
-      return true;
-    } else {
-      throw new DataNotFindException(
-              "this person : " + person.getFirstName() + " " + person.getLastName() + " do not exist.");
+    @Override
+    public Collection<PersonInfo> getChildAlert(String address) {
+        final int adultAge = 18;
+        Collection<PersonInfo> childAlertList = new ArrayList<>();
+        List<Persons> personsList = dataRepository.getPersons();
+
+        for (Persons person : personsList) {
+
+            // add child for this address
+            if (CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()) <= adultAge
+                    && person.getAddress().equalsIgnoreCase(address)) {
+                PersonInfo childInfo = new PersonInfo();
+                childInfo.setFirstName(person.getFirstName());
+                childInfo.setLastName(person.getLastName());
+                childInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+                childInfo.setAllergies(null);
+                childInfo.setMedication(null);
+
+                // add child's family member
+                for (Persons family : personsList) {
+                    if (family.getAddress().equalsIgnoreCase(address)
+                            && family.getLastName().equalsIgnoreCase(childInfo.getLastName())
+                            && CalculateAge.calculateAge(family.getMedicalrecords().getBirthdate()) > adultAge) {
+                        PersonInfo personInfo = new PersonInfo();
+                        personInfo.setFirstName(family.getFirstName());
+                        personInfo.setLastName(family.getLastName());
+                        personInfo.setMedication(null);
+                        personInfo.setAllergies(null);
+                        childInfo.getFamily().add(personInfo);
+                    }
+                }
+                childAlertList.add(childInfo);
+            }
+        }
+
+        return childAlertList;
     }
-  }
 
-  @Override
-  public boolean updatePerson(Persons person) {
+    @Override
+    public boolean createPerson(Persons person) {
+        // on verifie que la personne n'existe pas dans la dao
+        if (!dataRepository.getPersons().contains(person)) {
+            personDao.createPerson(person);
+            return true;
+        } else {
+            throw new DataAlreadyExistException(
+                    "this person " + person.getFirstName() + " " + person.getLastName() + " already exist.");
+        }
+    }
 
-    deletePerson(person);
-    return createPerson(person);
-  }
+    @Override
+    public boolean deletePerson(Persons person) {
+        if (dataRepository.getPersons().contains(person)) {
+            personDao.deletePerson(person);
+            return true;
+        } else {
+            throw new DataNotFindException(
+                    "this person : " + person.getFirstName() + " " + person.getLastName() + " do not exist.");
+        }
+    }
+
+    @Override
+    public boolean updatePerson(Persons person) {
+
+        deletePerson(person);
+        return createPerson(person);
+    }
 }
