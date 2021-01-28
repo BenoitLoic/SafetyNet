@@ -21,13 +21,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
 
-  private final String cityTest = "city";
   @Mock
   DataRepository dataRepositoryMock;
   @Mock
   PersonDao personDaoMock;
   @InjectMocks
   PersonServiceImpl personService;
+  private final String cityTest = "city";
 
   @Test
   void getCommunityEmailValid_ShouldReturnAListWithTwoPersons() {
@@ -119,5 +119,4 @@ class PersonServiceTest {
     //    THEN
     assertThat(processTest).isEmpty();
   }
-
 }

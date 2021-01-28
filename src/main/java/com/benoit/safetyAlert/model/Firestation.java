@@ -13,6 +13,14 @@ public class Firestation {
   private String address;
   private List<Persons> persons = new ArrayList<>();
 
+  public Firestation() {
+  }
+
+  public Firestation(String station, String address, List<Persons> persons) {
+    this.station = station;
+    this.address = address;
+    this.persons = persons;
+  }
 
   public String getStation() {
     return station;
