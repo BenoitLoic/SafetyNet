@@ -43,13 +43,14 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Collection<PersonInfo> getFireAddress(String address) {
         List<PersonInfo> returnList = new ArrayList<>();
+        CalculateAge calc = new CalculateAge();
         for (Persons person : dataRepository.getPersons()) {
             if (person.getAddress().equals(address)) {
                 PersonInfo personInfo = new PersonInfo();
 
                 personInfo.setFirstName(person.getFirstName());
                 personInfo.setLastName(person.getLastName());
-                personInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+                personInfo.setAge(calc.calculateAge(person.getMedicalrecords().getBirthdate()));
                 personInfo.setMedication(person.getMedicalrecords().getMedications());
                 personInfo.setAllergies(person.getMedicalrecords().getAllergies());
                 personInfo.setStation(person.getFirestation().getStation());
@@ -64,24 +65,24 @@ public class PersonServiceImpl implements PersonService {
         final int adultAge = 18;
         Collection<PersonInfo> childAlertList = new ArrayList<>();
         List<Persons> personsList = dataRepository.getPersons();
-
+        CalculateAge calc = new CalculateAge();
         for (Persons person : personsList) {
 
             // add child for this address
-            if (CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()) <= adultAge
-                    && person.getAddress().equalsIgnoreCase(address)) {
+            if (calc.calculateAge(person.getMedicalrecords().getBirthdate()) <= adultAge
+                && person.getAddress().equalsIgnoreCase(address)) {
                 PersonInfo childInfo = new PersonInfo();
                 childInfo.setFirstName(person.getFirstName());
                 childInfo.setLastName(person.getLastName());
-                childInfo.setAge(CalculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+                childInfo.setAge(calc.calculateAge(person.getMedicalrecords().getBirthdate()));
                 childInfo.setAllergies(null);
                 childInfo.setMedication(null);
 
                 // add child's family member
                 for (Persons family : personsList) {
                     if (family.getAddress().equalsIgnoreCase(address)
-                            && family.getLastName().equalsIgnoreCase(childInfo.getLastName())
-                            && CalculateAge.calculateAge(family.getMedicalrecords().getBirthdate()) > adultAge) {
+                        && family.getLastName().equalsIgnoreCase(childInfo.getLastName())
+                        && calc.calculateAge(family.getMedicalrecords().getBirthdate()) > adultAge) {
                         PersonInfo personInfo = new PersonInfo();
                         personInfo.setFirstName(family.getFirstName());
                         personInfo.setLastName(family.getLastName());

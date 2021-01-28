@@ -15,6 +15,15 @@ public class Medicalrecords {
   private List<String> medications = new ArrayList<>();
   private List<String> allergies = new ArrayList<>();
 
+  public Medicalrecords() {
+  }
+
+  public Medicalrecords(String firstName, String lastName, String birthdate) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.birthdate = birthdate;
+  }
+
   public String getFirstName() {
     return firstName;
   }

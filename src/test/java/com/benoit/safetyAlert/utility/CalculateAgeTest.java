@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.utility;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,33 +16,35 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class CalculateAgeTest {
 
+  CalculateAge calc = new CalculateAge();
+
   @Test
   void calculateAge() {
     String birthdate = "03/23/1987";
     assertEquals(
         Period.between(LocalDate.of(1987, 3, 23), LocalDate.now()).getYears(),
-        CalculateAge.calculateAge(birthdate));
+        calc.calculateAge(birthdate));
   }
 
   @Test
   void calculateAgeWithInvalidBirthdateString() {
 
     String invalidBirthdate = "invalidString";
-    assertThrows(DateTimeParseException.class, () -> CalculateAge.calculateAge(invalidBirthdate));
+    assertThrows(DateTimeParseException.class, () -> calc.calculateAge(invalidBirthdate));
   }
 
   @Test
   void calculateAgeWithEmptyBirthdate() {
 
     String emptyBirthdate = "";
-    assertThrows(DateTimeParseException.class, () -> CalculateAge.calculateAge(emptyBirthdate));
+    assertThrows(DateTimeParseException.class, () -> calc.calculateAge(emptyBirthdate));
   }
 
   @Test
   void calculateAgeWithNullBirthdate() {
 
     String nullBirthdate = null;
-    assertThrows(NullPointerException.class, () -> CalculateAge.calculateAge(nullBirthdate));
+    assertThrows(NullPointerException.class, () -> calc.calculateAge(nullBirthdate));
   }
 
   @Test
@@ -49,7 +52,7 @@ class CalculateAgeTest {
 
     String sixMonthFromNow =
         LocalDate.now().minusMonths(6).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-    assertEquals(1, CalculateAge.calculateAge(sixMonthFromNow));
+    assertEquals(1, calc.calculateAge(sixMonthFromNow));
   }
 
   @Test
@@ -57,6 +60,6 @@ class CalculateAgeTest {
 
     String oneYearAfter =
         LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-    assertThrows(DateTimeException.class, () -> CalculateAge.calculateAge(oneYearAfter));
+    assertThrows(DateTimeException.class, () -> calc.calculateAge(oneYearAfter));
   }
 }

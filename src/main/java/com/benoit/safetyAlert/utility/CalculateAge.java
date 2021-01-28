@@ -17,7 +17,7 @@ public class CalculateAge {
      * @param birthdate the birthdate
      * @return the age
      */
-    public static int calculateAge(String birthdate) {
+    public int calculateAge(String birthdate) {
 
         //        format birthdate in LocalDate
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
