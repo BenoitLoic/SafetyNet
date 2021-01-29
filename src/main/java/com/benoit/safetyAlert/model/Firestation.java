@@ -59,4 +59,13 @@ public class Firestation {
   public int hashCode() {
     return Objects.hash(getStation(), getAddress());
   }
+
+  @Override
+  public String toString() {
+    return "Firestation{" +
+        "station='" + station + '\'' +
+        ", address='" + address + '\'' +
+        ", persons=" + persons +
+        '}';
+  }
 }

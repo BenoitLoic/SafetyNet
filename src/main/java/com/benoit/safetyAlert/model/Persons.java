@@ -118,4 +118,19 @@ public class Persons {
   public int hashCode() {
     return Objects.hash(firstName, lastName, phone, email);
   }
+
+  @Override
+  public String toString() {
+    return "Persons{" +
+        "firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", address='" + address + '\'' +
+        ", zip='" + zip + '\'' +
+        ", city='" + city + '\'' +
+        ", phone='" + phone + '\'' +
+        ", email='" + email + '\'' +
+        ", firestation=" + firestation +
+        ", medicalrecords=" + medicalrecords +
+        '}';
+  }
 }

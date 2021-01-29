@@ -4,6 +4,7 @@ import com.benoit.safetyAlert.dao.FirestationDao;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
+import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
@@ -100,38 +101,52 @@ public class FirestationServiceImpl implements FirestationService {
 
   @Override
   public boolean createFirestation(Firestation firestation) {
+    try {
 
-    if (!dataRepository.getFirestations().contains(firestation)
+      if (!dataRepository.getFirestations().contains(firestation)
+          && firestation.getStation() != null
+          && firestation.getAddress() != null) {
 
-        && !Objects.equals(firestation.getStation(), new Firestation())) {
-
-      firestationDao.createFirestation(firestation);
-      return true;
-    } else {
-      throw new DataAlreadyExistException(
-          "this firestation "
-              + firestation.getStation()
-              + " / address : "
-              + firestation.getAddress()
-              + " already exist");
+        firestationDao.createFirestation(firestation);
+        return true;
+      } else if (firestation.getStation() == null || firestation.getAddress() == null) {
+        throw new NullPointerException();
+      } else {
+        throw new DataAlreadyExistException(
+            "this firestation "
+                + firestation.getStation()
+                + " / address : "
+                + firestation.getAddress()
+                + " already exist");
+      }
+    } catch (NullPointerException nullPointerException) {
+      throw new InvalidArgumentException(
+          "Invalid Argument, firestation can't be null.", nullPointerException);
     }
   }
 
   @Override
   public boolean deleteFirestation(Firestation firestation) {
+    try {
+      if (dataRepository.getFirestations().contains(firestation)
+          && firestation.getStation() != null
+          && firestation.getAddress() != null) {
 
-    if (dataRepository.getFirestations().contains(firestation)
-        && !Objects.equals(firestation.getStation(), new Firestation())) {
-
-      firestationDao.deleteFirestation(firestation);
-      return true;
-    } else {
-      throw new DataNotFindException(
-          "this firestation "
-              + firestation.getStation()
-              + "/ address : "
-              + firestation.getAddress()
-              + " doesn't exist.");
+        firestationDao.deleteFirestation(firestation);
+        return true;
+      } else if (firestation.getStation() == null || firestation.getAddress() == null) {
+        throw new NullPointerException();
+      } else {
+        throw new DataNotFindException(
+            "this firestation "
+                + firestation.getStation()
+                + "/ address : "
+                + firestation.getAddress()
+                + " doesn't exist.");
+      }
+    } catch (NullPointerException nullPointerException) {
+      throw new InvalidArgumentException(
+          "Invalid Argument, firestation can't be null.", nullPointerException);
     }
   }
 

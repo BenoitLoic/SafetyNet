@@ -3,6 +3,8 @@ package com.benoit.safetyAlert.services;
 import com.benoit.safetyAlert.dao.FirestationDao;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
+import com.benoit.safetyAlert.exceptions.DataNotFindException;
+import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.model.Persons;
@@ -258,8 +260,7 @@ class FirestationServiceTest {
         asList(new Firestation(stationTest, addressTest, personsList));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest =
-        firestationService.getFloodStations(asList(stationTest));
+    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
     assertThat(processTest.size()).isEqualTo(1);
     assertThat(processTest.iterator().next().getFirstName()).isEqualTo(firstNameTest);
@@ -299,8 +300,7 @@ class FirestationServiceTest {
             new Firestation(stationTest, addressTest, personsList2));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest =
-        firestationService.getFloodStations(asList(stationTest));
+    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
     assertThat(processTest.size()).isEqualTo(2);
   }
@@ -346,8 +346,7 @@ class FirestationServiceTest {
             new Firestation(stationTest, addressTest, personsList2));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest =
-        firestationService.getFloodStations(asList(stationTest));
+    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
     assertThat(processTest.size()).isEqualTo(4);
   }
@@ -377,8 +376,7 @@ class FirestationServiceTest {
             new Firestation(stationTest, addressTest, personsList1));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest =
-        firestationService.getFloodStations(asList(stationTest));
+    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
     assertThat(processTest.size()).isEqualTo(2);
   }
@@ -414,8 +412,7 @@ class FirestationServiceTest {
 
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(new ArrayList<>());
-    Collection<PersonInfo> processTest =
-        firestationService.getFloodStations(asList(stationTest));
+    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
     assertThat(processTest).isEmpty();
   }
@@ -436,14 +433,14 @@ class FirestationServiceTest {
 
   //   avec un arg = null
   @Test
-  void createFirestationWithNullArg_ShouldThrow() {
+  void createFirestationWithNullArg_ShouldThrowInvalidArgumentException() {
     //    GIVEN
 
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(Arrays.asList(new Firestation()));
     //    THEN
 
-    assertThrows(NullPointerException.class, () -> firestationService.createFirestation(null));
+    assertThrows(InvalidArgumentException.class, () -> firestationService.createFirestation(null));
   }
 
   // avec arg = new
@@ -452,9 +449,11 @@ class FirestationServiceTest {
     //    GIVEN
 
     //    WHEN
-
+    when(dataRepository.getFirestations()).thenReturn(Arrays.asList(new Firestation()));
     //    THEN
-
+    assertThrows(
+        InvalidArgumentException.class,
+        () -> firestationService.createFirestation(new Firestation()));
   }
 
   // avec firestation qui existe déja
@@ -467,7 +466,8 @@ class FirestationServiceTest {
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(asList(firestation));
     //    THEN
-    assertThrows(DataAlreadyExistException.class, () -> firestationService.createFirestation(firestation));
+    assertThrows(
+        DataAlreadyExistException.class, () -> firestationService.createFirestation(firestation));
   }
 
   // Valid
@@ -490,9 +490,9 @@ class FirestationServiceTest {
     //    GIVEN
 
     //    WHEN
-
+    when(dataRepository.getFirestations()).thenReturn(asList(new Firestation()));
     //    THEN
-
+    assertThrows(InvalidArgumentException.class, () -> firestationService.deleteFirestation(null));
   }
 
   // arg = new
@@ -503,19 +503,21 @@ class FirestationServiceTest {
 
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(asList(firestation));
-    when(firestationDao.deleteFirestation(any(Firestation.class))).thenReturn(true);
+
     //    THEN
-    assertThat(firestationService.deleteFirestation(firestation)).isTrue();
+    assertThrows(
+        InvalidArgumentException.class, () -> firestationService.deleteFirestation(firestation));
   }
 
   // avec firestation qui n'existe pas
   @Test
   void deleteFirestationInvalid_ShouldThrowDataNotFindExeption() {
     //    GIVEN
-
+    Firestation firestation = new Firestation(addressTest, stationTest, new ArrayList<>());
     //    WHEN
-
+    when(dataRepository.getFirestations()).thenReturn(asList(new Firestation()));
     //    THEN
-
+    assertThrows(
+        DataNotFindException.class, () -> firestationService.deleteFirestation(firestation));
   }
 }
