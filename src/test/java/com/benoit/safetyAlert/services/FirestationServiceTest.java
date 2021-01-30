@@ -6,6 +6,7 @@ import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Firestation;
+
 import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
@@ -112,6 +113,7 @@ class FirestationServiceTest {
     Firestation firestationTest1 = new Firestation(stationTest, addressTest, personsList);
     Firestation firestationTest2 = new Firestation("2", addressTest, personsList);
     Firestation firestationTest3 = new Firestation("3", addressTest, personsList);
+
     List<Firestation> firestationList =
         asList(firestationTest1, firestationTest2, firestationTest3);
     //    WHEN
@@ -486,7 +488,7 @@ class FirestationServiceTest {
 
   // arg = null
   @Test
-  void deleteFirestationWithNullArg_ShouldThrow() {
+  void deleteFirestationWithNullArg_ShouldThrowInvalidArgumentException() {
     //    GIVEN
 
     //    WHEN
@@ -497,7 +499,7 @@ class FirestationServiceTest {
 
   // arg = new
   @Test
-  void deleteFirestationWithNullValue_ShouldThrowDataNotFindException() {
+  void deleteFirestationWithNullValue_ShouldThrowInvalidArgumentException() {
     //    GIVEN
     Firestation firestation = new Firestation();
 
