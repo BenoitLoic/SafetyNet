@@ -16,8 +16,8 @@ public class Persons {
   private String city;
   private String phone;
   private String email;
-  private Firestation firestation;
-  private Medicalrecords medicalrecords;
+  private Firestation firestation = new Firestation();
+  private Medicalrecords medicalrecords = new Medicalrecords();
 
   public Persons() {
   }

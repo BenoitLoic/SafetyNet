@@ -60,12 +60,12 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
 
         if (person.getLastName().equalsIgnoreCase(medicalrecord.getLastName())
             && person.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-            && person.getMedicalrecords() == null) {
+            && person.getMedicalrecords().getLastName() == null) {
           return medicalrecordDao.createMedicalRecords(medicalrecord);
 
         } else if (person.getLastName().equalsIgnoreCase(medicalrecord.getLastName())
             && person.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-            && person.getMedicalrecords() != null) {
+            && person.getMedicalrecords().getLastName() != null) {
 
           throw new DataAlreadyExistException(
               "Medical record for "

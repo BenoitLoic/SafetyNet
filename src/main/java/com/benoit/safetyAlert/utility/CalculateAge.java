@@ -1,5 +1,7 @@
 package com.benoit.safetyAlert.utility;
 
+import org.springframework.stereotype.Component;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -9,6 +11,7 @@ import java.time.format.DateTimeParseException;
 /**
  * Contains method to Calculate age.
  */
+@Component
 public class CalculateAge {
 
     /**

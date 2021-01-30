@@ -1,16 +1,20 @@
 package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.dao.PersonDao;
+import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Firestation;
+import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
+import com.benoit.safetyAlert.utility.CalculateAge;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -29,11 +33,15 @@ class PersonServiceTest {
 
   private final String firstNameTest = "testName";
   private final String lastNameTest = "test Last Name";
-  @Mock
-  DataRepository dataRepositoryMock;
+  private final String birthdateTest = "01/01/2001";
+  private final String addressTest = "1 rue du test";
   private final String cityTest = "city";
   @Mock
+  DataRepository dataRepositoryMock;
+  @Mock
   PersonDao personDaoMock;
+  @Mock
+  CalculateAge calculateAgeMock;
   @InjectMocks
   PersonServiceImpl personService;
 
@@ -128,10 +136,169 @@ class PersonServiceTest {
     assertThat(processTest).isEmpty();
   }
 
-  //TODO : ajouter les test pour getFireAddress
+  // valid
+  @Test
+  void getFireAddressValid_ShouldReturnAListOfTwo() {
+    //    GIVEN
+    List<Persons> personsList = new ArrayList<>();
+    for (int i = 0; i < 2; i++) {
+      Persons person = new Persons();
+      person.setFirstName(firstNameTest + i);
+      person.setLastName(lastNameTest + i);
+      person.setAddress(addressTest);
+
+      personsList.add(person);
+    }
+    Persons person = new Persons();
+    person.setFirstName("ab");
+    person.setLastName("cdef");
+    person.setAddress("addressTest");
+    personsList.add(person);
+    //    WHEN
+    when(dataRepositoryMock.getPersons()).thenReturn(personsList);
+    when(calculateAgeMock.calculateAge(any())).thenReturn(20);
+    Collection<PersonInfo> processTest = personService.getFireAddress(addressTest);
+    //    THEN
+    assertThat(processTest.size()).isEqualTo(2);
+    assertThat(processTest.iterator().next().getFirstName()).contains(firstNameTest);
+  }
+
+  // cas ou le repo renvoi une liste vide
+  @Test
+  void getFireAddressWhenRepositoryReturnAnEmptyList_ShouldReturnAnEmptyList() {
+    //    GIVEN
+    List<Persons> personsList = new ArrayList<>();
+
+    //    WHEN
+    when(dataRepositoryMock.getPersons()).thenReturn(personsList);
+
+    Collection<PersonInfo> processTest = personService.getFireAddress(addressTest);
+    //    THEN
+    assertThat(processTest).isEmpty();
+  }
+
+  // cas ou address est nul ou vide
+  @Test
+  void getFireAddressWhenArgumentIsNullOrEmpty_ShouldReturnAnEmptyList() {
+    //    GIVEN
+    List<Persons> personsList = new ArrayList<>();
+    for (int i = 0; i < 2; i++) {
+      Persons person = new Persons();
+      person.setFirstName(firstNameTest + i);
+      person.setLastName(lastNameTest + i);
+      person.setAddress(addressTest);
+
+      personsList.add(person);
+    }
+    Persons person = new Persons();
+    person.setFirstName("ab");
+    person.setLastName("cdef");
+    person.setAddress("addressTest");
+    personsList.add(person);
+    //    WHEN
+    when(dataRepositoryMock.getPersons()).thenReturn(personsList);
+
+    Collection<PersonInfo> processTest1 = personService.getFireAddress(null);
+    Collection<PersonInfo> processTest2 = personService.getFireAddress("");
+    //    THEN
+    assertThat(processTest1).isEmpty();
+    assertThat(processTest2).isEmpty();
+  }
 
 
-  //TODO : ajouter les tests pour getChildAlert
+  // valid : ajoute un enfant mais pas un adulte
+  @Test
+  void getChildAlertValid_ShouldReturnOneChildAndZeroAdult() {
+    //    GIVEN
+    Persons child = new Persons();
+    child.setFirstName(firstNameTest);
+    child.setLastName(lastNameTest);
+    child.setAddress(addressTest);
+    child.setMedicalrecords(new Medicalrecords(null, null, "child"));
+    Persons adult = new Persons();
+    adult.setFirstName("adultFirstName");
+    adult.setLastName("adultLastName");
+    adult.setAddress(addressTest);
+    adult.setMedicalrecords(new Medicalrecords(null, null, "adult"));
+    //    WHEN
+    when(dataRepositoryMock.getPersons()).thenReturn(asList(child, adult));
+    when(calculateAgeMock.calculateAge("child")).thenReturn(5);
+    when(calculateAgeMock.calculateAge("adult")).thenReturn(30);
+
+    //    THEN
+    assertThat(personService.getChildAlert(addressTest).size()).isEqualTo(1);
+    assertThat(personService.getChildAlert(addressTest).iterator().next().getFirstName())
+        .isEqualTo(firstNameTest);
+  }
+
+  // valid ajoute un enfant et un membre de sa famille
+  @Test
+  void getChildAlertValid_ShouldReturnOneChildAndOneFamilyMember() {
+    //    GIVEN
+    Persons child = new Persons();
+    child.setFirstName(firstNameTest);
+    child.setLastName(lastNameTest);
+    child.setAddress(addressTest);
+    child.setMedicalrecords(new Medicalrecords(null, null, "child"));
+    Persons adult = new Persons();
+    adult.setFirstName("adultFirstName");
+    adult.setLastName(lastNameTest);
+    adult.setAddress(addressTest);
+    adult.setMedicalrecords(new Medicalrecords(null, null, "adult"));
+    //    WHEN
+    when(dataRepositoryMock.getPersons()).thenReturn(asList(child, adult));
+    when(calculateAgeMock.calculateAge("child")).thenReturn(5);
+    when(calculateAgeMock.calculateAge("adult")).thenReturn(30);
+    Collection<PersonInfo> processTest = personService.getChildAlert(addressTest);
+    //    THEN
+    assertThat(personService.getChildAlert(addressTest).size()).isEqualTo(1);
+    assertThat(personService.getChildAlert(addressTest).iterator().next().getFirstName())
+        .isEqualTo(firstNameTest);
+    assertThat(personService.getChildAlert(addressTest).iterator().next().getFamily().size())
+        .isEqualTo(1);
+
+    for (PersonInfo personInfo : processTest) {
+      assertThat(personInfo.getFirstName()).isEqualTo(firstNameTest);
+      for (PersonInfo personInf : personInfo.getFamily()) {
+        assertThat(personInf.getFirstName()).isEqualTo("adultFirstName");
+      }
+    }
+  }
+
+  //  renvoi une liste vide si pas d'enfant
+  @Test
+  void getChildAlertValidWithNoChild_ShouldReturnAnEmptyList() {
+    //    GIVEN
+    Persons child = new Persons();
+    child.setFirstName(firstNameTest);
+    child.setLastName(lastNameTest);
+    child.setAddress(addressTest);
+    child.setMedicalrecords(new Medicalrecords(null, null, "adult"));
+    Persons adult = new Persons();
+    adult.setFirstName("adultFirstName");
+    adult.setLastName(lastNameTest);
+    adult.setAddress(addressTest);
+    adult.setMedicalrecords(new Medicalrecords(null, null, "adult"));
+    //    WHEN
+    when(dataRepositoryMock.getPersons()).thenReturn(asList(child, adult));
+
+    when(calculateAgeMock.calculateAge("adult")).thenReturn(30);
+
+    //    THEN
+    assertThat(personService.getChildAlert(addressTest)).isEmpty();
+  }
+
+  //  renvoi une liste vide si le repo renvoi une liste vide
+  @Test
+  void getChildAlertWhenRepositoryReturnAnEmptyList_ShouldReturnAnEmptyList() {
+    //    GIVEN
+
+    //    WHEN
+    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
+
+    //    THEN
+    assertThat(personService.getChildAlert(addressTest)).isEmpty();
+  }
 
   // Valid
   @Test
@@ -142,6 +309,7 @@ class PersonServiceTest {
     person.setLastName(lastNameTest);
     //    WHEN
     when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
+    when(personDaoMock.createPerson(any())).thenReturn(true);
     //    THEN
     assertThat(personService.createPerson(person)).isTrue();
   }
@@ -190,6 +358,7 @@ class PersonServiceTest {
     person.setLastName(lastNameTest);
     //    WHEN
     when(dataRepositoryMock.getPersons()).thenReturn(asList(person));
+    when(personDaoMock.deletePerson(any())).thenReturn(true);
     //    THEN
     assertThat(personService.deletePerson(person)).isTrue();
   }
@@ -215,7 +384,6 @@ class PersonServiceTest {
 
     //    THEN
     assertThrows(InvalidArgumentException.class, () -> personService.deletePerson(new Persons()));
-
   }
 
   // avec firestation qui n'existe pas
