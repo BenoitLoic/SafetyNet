@@ -70,23 +70,23 @@ public class PersonServiceImpl implements PersonService {
     List<Persons> personsList = dataRepository.getPersons();
 
     for (Persons person : personsList) {
-      int personAge = calculateAge.calculateAge(person.getMedicalrecords().getBirthdate());
+
       // add child for this address
-      if (personAge <= adultAge
-          && person.getAddress().equalsIgnoreCase(address)) {
+      if (person.getAddress().equalsIgnoreCase(address)
+          && calculateAge.calculateAge(person.getMedicalrecords().getBirthdate()) <= adultAge) {
         PersonInfo childInfo = new PersonInfo();
         childInfo.setFirstName(person.getFirstName());
         childInfo.setLastName(person.getLastName());
-        childInfo.setAge(personAge);
+        childInfo.setAge(calculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
         childInfo.setAllergies(null);
         childInfo.setMedication(null);
 
         // add child's family member
         for (Persons family : personsList) {
-          int familyAge = calculateAge.calculateAge(family.getMedicalrecords().getBirthdate());
+
           if (family.getAddress().equalsIgnoreCase(address)
               && family.getLastName().equalsIgnoreCase(childInfo.getLastName())
-              && familyAge > adultAge) {
+              && calculateAge.calculateAge(family.getMedicalrecords().getBirthdate()) > adultAge) {
             PersonInfo personInfo = new PersonInfo();
             personInfo.setFirstName(family.getFirstName());
             personInfo.setLastName(family.getLastName());
@@ -113,7 +113,9 @@ public class PersonServiceImpl implements PersonService {
           && person.getLastName() != null) {
         personDao.createPerson(person);
         return true;
-      } else if (dataRepository.getPersons().contains(person)) {
+      } else if (dataRepository.getPersons().contains(person)
+          && person.getFirstName() != null
+          && person.getLastName() != null) {
         throw new DataAlreadyExistException(
             "this person "
                 + person.getFirstName()

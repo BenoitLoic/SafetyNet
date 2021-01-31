@@ -126,7 +126,7 @@ public class PersonControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectNode jsonPerson = objectMapper.createObjectNode();
     jsonPerson.set("firstName", TextNode.valueOf("firstNameTest"));
-    jsonPerson.set("lastName", TextNode.valueOf(" "));
+    jsonPerson.set("lastName", TextNode.valueOf(""));
     //    WHEN
 
     //    THEN
@@ -216,17 +216,5 @@ public class PersonControllerTest {
                 .content(jsonPerson.toString()))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
-//
-//  @Test
-//  public void communityEmailValid() throws Exception {
-//
-//    //    GIVEN
-//    Persons testPerson = new Persons();
-//testPerson.setEmail(emailTest);
-//    List <Persons> testList = Arrays.asList(testPerson);
-//    //    WHEN
-//Mockito.doReturn(testList).when(personService.getCommunityEmail(anyString()));
-//    //    THEN
-//mockMvc.perform(MockMvcRequestBuilders.get("/communityEmail").contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect();
-//  }
+
 }

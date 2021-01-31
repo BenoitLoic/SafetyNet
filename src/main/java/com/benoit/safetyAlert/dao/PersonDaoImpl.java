@@ -19,7 +19,7 @@ public class PersonDaoImpl implements PersonDao {
     public boolean createPerson(Persons person) {
 
         // ajout de la nouvelle personne en mémoire
-        dataRepository.getDatabaseJson().getPersons().add(person);
+        dataRepository.getPersons().add(person);
         // commit pour appliquer les changement sur le json
         dataRepository.commit();
         return true;
@@ -27,7 +27,7 @@ public class PersonDaoImpl implements PersonDao {
 
     @Override
     public boolean deletePerson(Persons person) {
-    dataRepository.getDatabaseJson().getPersons().remove(person);
+    dataRepository.getPersons().remove(person);
     dataRepository.commit();
     return true;
   }

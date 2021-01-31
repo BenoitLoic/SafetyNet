@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.utility;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.time.DateTimeException;

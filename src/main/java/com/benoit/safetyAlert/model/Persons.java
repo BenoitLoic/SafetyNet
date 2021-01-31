@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotBlank;
@@ -9,14 +10,16 @@ import java.util.Objects;
 public class Persons {
   @NotBlank
   private String firstName;
-  @NotBlank
+ @NotBlank
   private String lastName;
   private String address;
   private String zip;
   private String city;
   private String phone;
   private String email;
+@JsonIgnore
   private Firestation firestation = new Firestation();
+@JsonIgnore
   private Medicalrecords medicalrecords = new Medicalrecords();
 
   public Persons() {

@@ -11,19 +11,17 @@ import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
 import com.benoit.safetyAlert.utility.CalculateAge;
-import com.google.inject.internal.util.Iterables;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 

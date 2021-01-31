@@ -1,5 +1,7 @@
 package com.benoit.safetyAlert.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ public class Firestation {
   private String station;
   @NotBlank
   private String address;
+  @JsonIgnore
   private List<Persons> persons = new ArrayList<>();
 
   public Firestation() {
