@@ -1,11 +1,13 @@
 package com.benoit.safetyAlert.services;
 
+import com.benoit.safetyAlert.dto.FirestationDTO;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface FirestationService {
 
@@ -32,7 +34,7 @@ public interface FirestationService {
    * @param station the station
    * @return the flood stations
    */
-  Collection<PersonInfo> getFloodStations(List<String> station);
+  Collection<FirestationDTO> getFloodStations(List<String> station);
 
   boolean createFirestation(Firestation firestation);
 

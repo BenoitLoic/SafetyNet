@@ -10,16 +10,16 @@ import java.util.Objects;
 public class Persons {
   @NotBlank
   private String firstName;
- @NotBlank
+  @NotBlank
   private String lastName;
   private String address;
   private String zip;
   private String city;
   private String phone;
   private String email;
-@JsonIgnore
+  @JsonIgnore
   private Firestation firestation = new Firestation();
-@JsonIgnore
+  @JsonIgnore
   private Medicalrecords medicalrecords = new Medicalrecords();
 
   public Persons() {
@@ -114,7 +114,7 @@ public class Persons {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Persons persons = (Persons) o;
-    return Objects.equals(firstName, persons.firstName) && Objects.equals(lastName, persons.lastName) && Objects.equals(phone, persons.phone) && Objects.equals(email, persons.email);
+    return Objects.equals(firstName, persons.firstName) && Objects.equals(lastName, persons.lastName);
   }
 
   @Override

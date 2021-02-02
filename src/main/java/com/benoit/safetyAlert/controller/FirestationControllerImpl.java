@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.controller;
 
+import com.benoit.safetyAlert.dto.FirestationDTO;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
@@ -41,7 +42,7 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @GetMapping("/flood/stations")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<PersonInfo> floodStations(@RequestParam List<String> stations) {
+  public Collection<FirestationDTO> floodStations(@RequestParam List<String> stations) {
 
     return firestationService.getFloodStations(stations);
   }

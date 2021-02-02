@@ -37,10 +37,10 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
         personInfo.setLastName(person.getLastName());
         personInfo.setAddress(person.getAddress());
         personInfo.setEmail(person.getEmail());
-        if (person.getMedicalrecords() != null) {
-          personInfo.setMedication(person.getMedicalrecords().getMedications());
-          personInfo.setAllergies(person.getMedicalrecords().getAllergies());
-        }
+
+        personInfo.setMedication(person.getMedicalrecords().getMedications());
+        personInfo.setAllergies(person.getMedicalrecords().getAllergies());
+
         break;
       }
     }

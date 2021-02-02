@@ -21,7 +21,9 @@ public class PersonInfo {
   private String email;
   private List<String> medication = new ArrayList<>();
   private List<String> allergies = new ArrayList<>();
-  private String station;
+
+  @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+  private List<String> station= new ArrayList<>();
 
   @JsonInclude(JsonInclude.Include.NON_DEFAULT)
   private List<PersonInfo> family = new ArrayList<>();
@@ -72,11 +74,11 @@ public class PersonInfo {
     this.lastName = lastName;
   }
 
-  public String getStation() {
+  public List<String> getStation() {
     return station;
   }
 
-  public void setStation(String station) {
+  public void setStation(List<String> station) {
     this.station = station;
   }
 
@@ -146,4 +148,7 @@ public class PersonInfo {
   public int hashCode() {
     return Objects.hash(getFirstName(), getLastName());
   }
+
+
+
 }

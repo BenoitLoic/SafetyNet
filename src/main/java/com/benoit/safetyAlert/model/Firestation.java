@@ -1,16 +1,19 @@
 package com.benoit.safetyAlert.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Firestation {
+
 
   @NotBlank
   private String station;
+
   @NotBlank
   private String address;
   @JsonIgnore
@@ -63,12 +66,5 @@ public class Firestation {
     return Objects.hash(getStation(), getAddress());
   }
 
-  @Override
-  public String toString() {
-    return "Firestation{" +
-        "station='" + station + '\'' +
-        ", address='" + address + '\'' +
-        ", persons=" + persons +
-        '}';
-  }
+
 }

@@ -1,6 +1,7 @@
 package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.dao.FirestationDao;
+import com.benoit.safetyAlert.dto.FirestationDTO;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
@@ -28,7 +29,6 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
@@ -256,14 +256,16 @@ class FirestationServiceTest {
                 null,
                 null,
                 new Medicalrecords(null, null, birthdateChildTest)));
+    Firestation firestation = new Firestation(stationTest, addressTest, personsList);
     List<Firestation> firestationList =
-        asList(new Firestation(stationTest, addressTest, personsList));
+        asList(firestation);
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
+    Collection<FirestationDTO> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
+//    processTest.get(firestation).forEach(personInfo -> System.out.println(personInfo.getFirstName()));
     assertThat(processTest.size()).isEqualTo(1);
-    assertThat(processTest.iterator().next().getFirstName()).isEqualTo(firstNameTest);
+//    processTest.get()
   }
 
   // Valid avec 2 stations  de 1 personne
@@ -285,8 +287,8 @@ class FirestationServiceTest {
     List<Persons> personsList2 =
         asList(
             new Persons(
-                firstNameTest + 1,
-                lastNameTest + 1,
+                "second",
+                "Second",
                 null,
                 null,
                 null,
@@ -300,9 +302,14 @@ class FirestationServiceTest {
             new Firestation(stationTest, addressTest, personsList2));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
+    Collection<FirestationDTO> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
-    assertThat(processTest.size()).isEqualTo(2);
+    for (FirestationDTO firestationDTO : processTest){
+      for (PersonInfo personInfo : firestationDTO.getPersonInfos()){
+        System.out.println(personInfo.getFirstName());
+      }
+    }
+    assertThat(processTest.iterator().next().getPersonInfos().size()).isEqualTo(2);
   }
 
   // Valid avec 2 stations de 2 personnes
@@ -346,9 +353,9 @@ class FirestationServiceTest {
             new Firestation(stationTest, addressTest, personsList2));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
+    Collection<FirestationDTO> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
-    assertThat(processTest.size()).isEqualTo(4);
+    assertThat(processTest.iterator().next().getPersonInfos().size()).isEqualTo(4);
   }
 
   // Valid avec 2 stations de 2 personnes identiques
@@ -376,9 +383,9 @@ class FirestationServiceTest {
             new Firestation(stationTest, addressTest, personsList1));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
+    Collection<FirestationDTO> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
-    assertThat(processTest.size()).isEqualTo(2);
+    assertThat(processTest.iterator().next().getPersonInfos().size()).isEqualTo(2);
   }
 
   // avec une liste de station vide
@@ -401,7 +408,7 @@ class FirestationServiceTest {
         asList(new Firestation(stationTest, addressTest, personsList));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
-    Collection<PersonInfo> processTest = firestationService.getFloodStations(new ArrayList<>());
+    Collection<FirestationDTO> processTest = firestationService.getFloodStations(new ArrayList<>());
     //    THEN
     assertThat(processTest).isEmpty();
   }
@@ -412,7 +419,7 @@ class FirestationServiceTest {
 
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(new ArrayList<>());
-    Collection<PersonInfo> processTest = firestationService.getFloodStations(asList(stationTest));
+    Collection<FirestationDTO> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
     assertThat(processTest).isEmpty();
   }

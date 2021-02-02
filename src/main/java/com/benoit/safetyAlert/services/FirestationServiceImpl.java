@@ -1,6 +1,7 @@
 package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.dao.FirestationDao;
+import com.benoit.safetyAlert.dto.FirestationDTO;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
@@ -78,25 +79,40 @@ public class FirestationServiceImpl implements FirestationService {
   }
 
   @Override
-  public Collection<PersonInfo> getFloodStations(List<String> stations) {
-    Collection<PersonInfo> floodStations = new HashSet<>();
+  public Collection<FirestationDTO> getFloodStations(List<String> stations) {
+
+
+    Collection<FirestationDTO> firestationDTOList = new HashSet<>();
     CalculateAge calc = new CalculateAge();
+
     for (Firestation firestation : dataRepository.getFirestations()) {
       for (String station : stations) {
         if (firestation.getStation().equals(station)) {
+          FirestationDTO firestationDTO = new FirestationDTO();
+          Collection<PersonInfo> floodStations = new HashSet<>();
           for (Persons person : firestation.getPersons()) {
             PersonInfo personInfo = new PersonInfo();
             personInfo.setFirstName(person.getFirstName());
             personInfo.setLastName(person.getLastName());
+            personInfo.setPhone(person.getPhone());
             personInfo.setMedication(person.getMedicalrecords().getMedications());
             personInfo.setAllergies(person.getMedicalrecords().getAllergies());
             personInfo.setAge(calc.calculateAge(person.getMedicalrecords().getBirthdate()));
             floodStations.add(personInfo);
           }
+
+          firestationDTO.setAddress(firestation.getAddress());
+          firestationDTO.setPersonInfos(new ArrayList<>(floodStations));
+          firestationDTOList.add(firestationDTO);
+
         }
       }
     }
-    return floodStations;
+
+    List<FirestationDTO>firestationDTOListSorted = new ArrayList<>(firestationDTOList);
+    firestationDTOListSorted.sort(FirestationDTO.comparator);
+
+    return firestationDTOListSorted;
   }
 
   @Override

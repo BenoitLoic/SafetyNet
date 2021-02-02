@@ -1,12 +1,18 @@
 package com.benoit.safetyAlert.controller;
 
+import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
+import com.benoit.safetyAlert.services.MedicalRecordsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import jdk.jfr.ContentType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,10 +22,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
@@ -29,6 +41,10 @@ class MedicalRecordsControllerTest {
   @Autowired
   MockMvc mockMvc;
   @MockBean
+  MedicalRecordsControllerImpl medicalRecordsControllerMock;
+  @Mock
+  MedicalRecordsServiceImpl medicalRecordsServiceMock;
+  @InjectMocks
   MedicalRecordsControllerImpl medicalRecordsController;
 
   String firstNameTest = "Homer Jay";
@@ -36,6 +52,31 @@ class MedicalRecordsControllerTest {
   String birthdateTest = "01/01/1987";
   List<String> medicationsTest = new ArrayList<>();
   List<String> allergiesTest = new ArrayList<>();
+
+  @Test
+  void personInfoValid() throws Exception {
+//    GIVEN
+
+
+//    WHEN
+//when(medicalRecordsServiceMock.getPersonInfo(firstNameTest,lastNameTest)).thenReturn(new PersonInfo());
+
+//    THEN
+    mockMvc.perform(get("/personInfo"))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
+  void personInfoInvalid(){
+//    GIVEN
+
+
+//    WHEN
+    when(medicalRecordsServiceMock.getPersonInfo(any(),any())).thenThrow(DataNotFindException.class);
+
+//    THEN
+    Assertions.assertThrows(DataNotFindException.class,()->medicalRecordsController.personInfo(firstNameTest,lastNameTest));
+  }
 
   @Test
   public void createMedicalRecordValid() throws Exception {
@@ -50,7 +91,7 @@ class MedicalRecordsControllerTest {
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/medicalRecord")
+            post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecords.toString()))
         .andExpect(MockMvcResultMatchers.status().isCreated());
@@ -69,7 +110,7 @@ class MedicalRecordsControllerTest {
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/medicalRecord")
+            post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecords.toString()))
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -85,12 +126,12 @@ class MedicalRecordsControllerTest {
     jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
     //        WHEN
     Mockito.doThrow(DataAlreadyExistException.class)
-        .when(medicalRecordsController)
+        .when(medicalRecordsControllerMock)
         .createMedicalRecord(Mockito.any());
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/medicalRecord")
+            post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecords.toString()))
         .andExpect(MockMvcResultMatchers.status().isConflict());
@@ -109,7 +150,7 @@ class MedicalRecordsControllerTest {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/medicalRecord")
+            delete("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
         .andExpect(MockMvcResultMatchers.status().isOk());
@@ -127,7 +168,7 @@ class MedicalRecordsControllerTest {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/medicalRecord")
+            delete("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -143,12 +184,12 @@ class MedicalRecordsControllerTest {
     jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
     //    WHEN
     Mockito.doThrow(DataNotFindException.class)
-        .when(medicalRecordsController)
+        .when(medicalRecordsControllerMock)
         .deleteMedicalRecord(Mockito.any());
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/medicalRecord")
+            delete("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -167,7 +208,7 @@ class MedicalRecordsControllerTest {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/medicalRecord")
+            put("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
         .andExpect(MockMvcResultMatchers.status().isCreated());
@@ -186,7 +227,7 @@ class MedicalRecordsControllerTest {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/medicalRecord")
+            put("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -202,12 +243,12 @@ class MedicalRecordsControllerTest {
     jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
     //    WHEN
     Mockito.doThrow(DataNotFindException.class)
-        .when(medicalRecordsController)
+        .when(medicalRecordsControllerMock)
         .updateMedicalRecord(Mockito.any());
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/medicalRecord")
+            put("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
         .andExpect(MockMvcResultMatchers.status().isNotFound());

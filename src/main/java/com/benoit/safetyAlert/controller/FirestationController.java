@@ -1,11 +1,13 @@
 package com.benoit.safetyAlert.controller;
 
+import com.benoit.safetyAlert.dto.FirestationDTO;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface FirestationController {
 
@@ -13,7 +15,7 @@ public interface FirestationController {
 
   Collection<PersonInfo> fireStationCoverage(String stationNumber);
 
-  Collection<PersonInfo> floodStations(List<String> stations);
+  Collection<FirestationDTO> floodStations(List<String> stations);
 
   void createFirestation(Firestation firestation);
 

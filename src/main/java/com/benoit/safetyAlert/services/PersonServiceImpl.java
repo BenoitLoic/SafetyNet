@@ -53,10 +53,11 @@ public class PersonServiceImpl implements PersonService {
 
         personInfo.setFirstName(person.getFirstName());
         personInfo.setLastName(person.getLastName());
+        personInfo.setPhone(person.getPhone());
         personInfo.setAge(calculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
         personInfo.setMedication(person.getMedicalrecords().getMedications());
         personInfo.setAllergies(person.getMedicalrecords().getAllergies());
-        personInfo.setStation(person.getFirestation().getStation());
+        personInfo.getStation().add(person.getFirestation().getStation());
         returnList.add(personInfo);
       }
     }

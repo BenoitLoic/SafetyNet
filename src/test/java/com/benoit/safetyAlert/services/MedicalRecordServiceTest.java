@@ -103,30 +103,30 @@ class MedicalRecordServiceTest {
         DataNotFindException.class, () -> medicalRecordsService.getPersonInfo(null, lastNameTest));
   }
 
-  // quand medical record est null
-  @Test
-  void getPersonInfoWhenMedicalRecordsIsNull_GetMedicationShouldBeEmpty() {
-
-    //      GIVEN
-    List<Persons> personsList = new ArrayList<>();
-    List<String> emptyList = new ArrayList<>();
-    personsList.add(
-        new Persons(
-            firstNameTest,
-            lastNameTest,
-            addressTest,
-            zipTest,
-            cityTest,
-            phoneTest,
-            emailTest,
-            firestationTest,
-            null));
-    //      WHEN
-    when(dataRepositoryMock.getPersons()).thenReturn(personsList);
-    PersonInfo process = medicalRecordsService.getPersonInfo(firstNameTest, lastNameTest);
-    //      THEN
-    assertEquals(new ArrayList<>(), process.getMedication());
-  }
+//  // quand medical record est null
+//  @Test
+//  void getPersonInfoWhenMedicalRecordsIsNull_GetMedicationShouldBeEmpty() {
+//
+//    //      GIVEN
+//    List<Persons> personsList = new ArrayList<>();
+//    List<String> emptyList = new ArrayList<>();
+//    personsList.add(
+//        new Persons(
+//            firstNameTest,
+//            lastNameTest,
+//            addressTest,
+//            zipTest,
+//            cityTest,
+//            phoneTest,
+//            emailTest,
+//            firestationTest,
+//            null));
+//    //      WHEN
+//    when(dataRepositoryMock.getPersons()).thenReturn(personsList);
+//    PersonInfo process = medicalRecordsService.getPersonInfo(firstNameTest, lastNameTest);
+//    //      THEN
+//    assertEquals(new ArrayList<>(), process.getMedication());
+//  }
 
   // Valid
   @Test
