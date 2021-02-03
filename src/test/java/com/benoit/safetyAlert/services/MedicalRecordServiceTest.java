@@ -103,31 +103,6 @@ class MedicalRecordServiceTest {
         DataNotFindException.class, () -> medicalRecordsService.getPersonInfo(null, lastNameTest));
   }
 
-//  // quand medical record est null
-//  @Test
-//  void getPersonInfoWhenMedicalRecordsIsNull_GetMedicationShouldBeEmpty() {
-//
-//    //      GIVEN
-//    List<Persons> personsList = new ArrayList<>();
-//    List<String> emptyList = new ArrayList<>();
-//    personsList.add(
-//        new Persons(
-//            firstNameTest,
-//            lastNameTest,
-//            addressTest,
-//            zipTest,
-//            cityTest,
-//            phoneTest,
-//            emailTest,
-//            firestationTest,
-//            null));
-//    //      WHEN
-//    when(dataRepositoryMock.getPersons()).thenReturn(personsList);
-//    PersonInfo process = medicalRecordsService.getPersonInfo(firstNameTest, lastNameTest);
-//    //      THEN
-//    assertEquals(new ArrayList<>(), process.getMedication());
-//  }
-
   // Valid
   @Test
   void createMedicalRecordValid() {
@@ -143,32 +118,17 @@ class MedicalRecordServiceTest {
     assertThat(medicalRecordsService.createMedicalRecord(medicalrecord)).isTrue();
   }
 
-  // arg = null
-  @Test
-  void createMedicalRecordWithNullArg_ShouldThrowDataNotFindException() {
-    //    GIVEN
-    Persons person = new Persons();
-    person.setFirstName(firstNameTest);
-    person.setLastName(lastNameTest);
-    //    WHEN
-    when(dataRepositoryMock.getPersons()).thenReturn(asList(person));
-    //    THEN
-    assertThrows(
-        IllegalArgumentException.class, () -> medicalRecordsService.createMedicalRecord(null));
-  }
-
   // arg = new
   @Test
-  void createMedicalRecordWithNullValue_ShouldThrowInvalidArgumentException() {
+  void createMedicalRecordWithNullValue_ShouldThrowDataNotFindException() {
     //    GIVEN
-    Persons person = new Persons();
-    person.setFirstName(firstNameTest);
-    person.setLastName(lastNameTest);
+
+
     //    WHEN
-    when(dataRepositoryMock.getPersons()).thenReturn(asList(person));
+
     //    THEN
     assertThrows(
-        IllegalArgumentException.class,
+        DataNotFindException.class,
         () -> medicalRecordsService.createMedicalRecord(new Medicalrecords()));
   }
 
@@ -217,29 +177,17 @@ class MedicalRecordServiceTest {
     assertThat(medicalRecordsService.deleteMedicalRecord(medicalrecords)).isTrue();
   }
 
-  // arg = null
-  @Test
-  void deleteMedicalRecordWithNullArg_ShouldThrowInvalidArgumentException() {
-    //    GIVEN
-
-    //    WHEN
-    when(dataRepositoryMock.getMedicalrecords()).thenReturn(asList(new Medicalrecords()));
-    //    THEN
-    assertThrows(
-        InvalidArgumentException.class, () -> medicalRecordsService.deleteMedicalRecord(null));
-  }
-
   // arg = new
   @Test
   void deleteMedicalRecordWithNullValue_ShouldThrowDataNotFindException() {
     //    GIVEN
-    Medicalrecords medicalrecords = new Medicalrecords();
+
     //    WHEN
-    when(dataRepositoryMock.getMedicalrecords()).thenReturn(asList(medicalrecords));
+
     //    THEN
     assertThrows(
-        InvalidArgumentException.class,
-        () -> medicalRecordsService.deleteMedicalRecord(medicalrecords));
+        DataNotFindException.class,
+        () -> medicalRecordsService.deleteMedicalRecord(new Medicalrecords()));
   }
 
   // avec medical record qui n'existe pas

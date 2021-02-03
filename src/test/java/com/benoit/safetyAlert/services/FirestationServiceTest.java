@@ -299,17 +299,16 @@ class FirestationServiceTest {
     List<Firestation> firestationList =
         asList(
             new Firestation(stationTest, addressTest, personsList1),
-            new Firestation(stationTest, addressTest, personsList2));
+            new Firestation(stationTest, addressTest + 1, personsList2));
     //    WHEN
     when(dataRepository.getFirestations()).thenReturn(firestationList);
     Collection<FirestationDTO> processTest = firestationService.getFloodStations(asList(stationTest));
     //    THEN
-    for (FirestationDTO firestationDTO : processTest){
-      for (PersonInfo personInfo : firestationDTO.getPersonInfos()){
-        System.out.println(personInfo.getFirstName());
-      }
+
+    assertThat(processTest.size()).isEqualTo(2); //on verifie que 2 firestation sont ajoutés
+    for (FirestationDTO fire : processTest) {
+      assertThat(fire.getPersonInfos().size()).isEqualTo(1); //on vérifie que chaque firestation ajouté a bien 1 utilisateur
     }
-    assertThat(processTest.iterator().next().getPersonInfos().size()).isEqualTo(2);
   }
 
   // Valid avec 2 stations de 2 personnes

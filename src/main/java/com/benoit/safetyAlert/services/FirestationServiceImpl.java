@@ -11,6 +11,8 @@ import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
 import com.benoit.safetyAlert.utility.CalculateAge;
 import com.benoit.safetyAlert.utility.Counter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class FirestationServiceImpl implements FirestationService {
 
   private final DataRepository dataRepository;
   private final FirestationDao firestationDao;
+  private static final Logger LOGGER = LogManager.getLogger(FirestationServiceImpl.class);
 
   @Autowired
   public FirestationServiceImpl(DataRepository dataRepository, FirestationDao firestationDao) {
@@ -65,7 +68,10 @@ public class FirestationServiceImpl implements FirestationService {
           personInfo.setAllergies(null);
           personInfo.setMedication(null);
           listOfPersonCovered.add(personInfo);
-          counter.process(calc.calculateAge(person.getMedicalrecords().getBirthdate()));
+
+          if (person.getMedicalrecords().getBirthdate() != null) {
+            counter.process(calc.calculateAge(person.getMedicalrecords().getBirthdate()));
+          }
         }
       }
     }
@@ -109,7 +115,7 @@ public class FirestationServiceImpl implements FirestationService {
       }
     }
 
-    List<FirestationDTO>firestationDTOListSorted = new ArrayList<>(firestationDTOList);
+    List<FirestationDTO> firestationDTOListSorted = new ArrayList<>(firestationDTOList);
     firestationDTOListSorted.sort(FirestationDTO.comparator);
 
     return firestationDTOListSorted;
@@ -136,6 +142,7 @@ public class FirestationServiceImpl implements FirestationService {
                 + " already exist");
       }
     } catch (NullPointerException nullPointerException) {
+      LOGGER.info("Invalid Argument, firestation can't be null.");
       throw new InvalidArgumentException(
           "Invalid Argument, firestation can't be null.", nullPointerException);
     }
@@ -153,6 +160,11 @@ public class FirestationServiceImpl implements FirestationService {
       } else if (firestation.getStation() == null || firestation.getAddress() == null) {
         throw new NullPointerException();
       } else {
+        LOGGER.info("this firestation "
+            + firestation.getStation()
+            + "/ address : "
+            + firestation.getAddress()
+            + " doesn't exist.");
         throw new DataNotFindException(
             "this firestation "
                 + firestation.getStation()
@@ -161,6 +173,7 @@ public class FirestationServiceImpl implements FirestationService {
                 + " doesn't exist.");
       }
     } catch (NullPointerException nullPointerException) {
+      LOGGER.info("Invalid Argument, firestation can't be null.");
       throw new InvalidArgumentException(
           "Invalid Argument, firestation can't be null.", nullPointerException);
     }
@@ -168,8 +181,17 @@ public class FirestationServiceImpl implements FirestationService {
 
   @Override
   public boolean updateFirestation(Firestation firestation) {
-    deleteFirestation(firestation);
+    if (firestation == null || firestation.getAddress() == null || firestation.getStation() == null) {
+      throw new InvalidArgumentException("error - firestation or its value are null");
+    }
+    List<Firestation> firestationList = dataRepository.getFirestations();
+    for (Firestation fire : firestationList) {
+      if (fire.getAddress().equalsIgnoreCase(firestation.getAddress())) {
+        return firestationDao.updateFirestation(firestation);
+      }
+    }
+    LOGGER.info("error updating firestation [" + firestation.getStation() + "] - address : " + firestation.getAddress() + " doesn't exist.");
+    throw new DataNotFindException("error updating firestation [" + firestation.getStation() + "] - address : " + firestation.getAddress() + " doesn't exist.");
 
-    return createFirestation(firestation);
   }
 }

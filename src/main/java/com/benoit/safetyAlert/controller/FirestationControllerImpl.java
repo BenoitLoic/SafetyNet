@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
@@ -61,5 +62,12 @@ public class FirestationControllerImpl implements FirestationController {
   public void deleteFirestation(@RequestBody @Valid Firestation firestation) {
 
     firestationService.deleteFirestation(firestation);
+  }
+
+  @Override
+  @PutMapping("/firestation")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void updateFirestation(@RequestBody @Valid Firestation firestation) {
+    firestationService.updateFirestation(firestation);
   }
 }

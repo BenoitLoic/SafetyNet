@@ -20,4 +20,6 @@ public interface FirestationController {
   void createFirestation(Firestation firestation);
 
   void deleteFirestation(Firestation firestation);
+
+  void updateFirestation(Firestation firestation);
 }

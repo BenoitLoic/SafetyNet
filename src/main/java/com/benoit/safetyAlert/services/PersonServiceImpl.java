@@ -8,6 +8,8 @@ import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
 import com.benoit.safetyAlert.utility.CalculateAge;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class PersonServiceImpl implements PersonService {
   private final DataRepository dataRepository;
   private final PersonDao personDao;
   private final CalculateAge calculateAge;
+  private static final Logger LOGGER = LogManager.getLogger(PersonServiceImpl.class);
 
   @Autowired
   public PersonServiceImpl(DataRepository dataRepository, PersonDao personDao, CalculateAge calculateAge) {
@@ -164,7 +167,24 @@ public class PersonServiceImpl implements PersonService {
   @Override
   public boolean updatePerson(Persons person) {
 
-    deletePerson(person);
-    return createPerson(person);
+    if (dataRepository.getPersons().contains(person)) {
+
+      return personDao.updatePerson(person);
+    } else {
+      LOGGER.info(
+          "error updating person : "
+              + person.getFirstName()
+              + " "
+              + person.getLastName()
+              + " doesn't exist.");
+      throw new DataNotFindException(
+          person.getFirstName()
+              + " "
+              + person.getLastName()
+              + " doesn't exist in repository");
+    }
   }
+
+
 }
+

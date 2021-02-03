@@ -5,6 +5,8 @@ import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MedicalRecordDaoImpl implements MedicalRecordDao {
 
@@ -18,7 +20,7 @@ public class MedicalRecordDaoImpl implements MedicalRecordDao {
 
   @Override
   public boolean createMedicalRecords(Medicalrecords medicalrecords) {
-    dataRepository.getDatabaseJson().getMedicalrecords().add(medicalrecords);
+    dataRepository.getMedicalrecords().add(medicalrecords);
     dataRepository.commit();
 
     return true;
@@ -26,14 +28,39 @@ public class MedicalRecordDaoImpl implements MedicalRecordDao {
 
   @Override
   public boolean deleteMedicalRecords(Medicalrecords medicalrecord) {
-    dataRepository.getDatabaseJson().getMedicalrecords().remove(medicalrecord);
-    dataRepository.commit();
-    return true;
+    for (Medicalrecords medicalrecords : dataRepository.getMedicalrecords()) {
+      if (medicalrecords.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+          && medicalrecords.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
+        dataRepository.getMedicalrecords().remove(medicalrecords);
+        dataRepository.commit();
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @Override
-  public boolean updateMedicalRecords(Medicalrecords medicalrecords) {
-    deleteMedicalRecords(medicalrecords);
-    return createMedicalRecords(medicalrecords);
+  public boolean updateMedicalRecords(Medicalrecords medicalrecordToUpdate) {
+
+    for (Medicalrecords medicalrecord : dataRepository.getMedicalrecords()) {
+      if (medicalrecord.getFirstName().equalsIgnoreCase(medicalrecordToUpdate.getFirstName())
+          && medicalrecord.getLastName().equalsIgnoreCase(medicalrecordToUpdate.getLastName())) {
+        if (medicalrecordToUpdate.getBirthdate() != null) {
+          medicalrecord.setBirthdate(medicalrecordToUpdate.getBirthdate());
+        }
+        if (!medicalrecord.getMedications().containsAll(medicalrecordToUpdate.getMedications())) {
+          medicalrecord.setMedications(medicalrecordToUpdate.getMedications());
+        }
+        if (!medicalrecord.getAllergies().containsAll(medicalrecordToUpdate.getAllergies())) {
+          medicalrecord.setAllergies(medicalrecordToUpdate.getAllergies());
+        }
+        dataRepository.getMedicalrecords().remove(medicalrecordToUpdate);
+        dataRepository.getMedicalrecords().add(medicalrecord);
+        dataRepository.commit();
+        return true;
+      }
+    }
+    return false;
   }
 }

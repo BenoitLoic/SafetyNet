@@ -5,28 +5,30 @@ import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PersonDaoImpl implements PersonDao {
 
-    private final DataRepository dataRepository;
+  private final DataRepository dataRepository;
 
-    @Autowired
-    public PersonDaoImpl(DataRepository dataRepository) {
-        this.dataRepository = dataRepository;
-    }
+  @Autowired
+  public PersonDaoImpl(DataRepository dataRepository) {
+    this.dataRepository = dataRepository;
+  }
 
-    @Override
-    public boolean createPerson(Persons person) {
+  @Override
+  public boolean createPerson(Persons person) {
 
-        // ajout de la nouvelle personne en mémoire
-        dataRepository.getPersons().add(person);
-        // commit pour appliquer les changement sur le json
-        dataRepository.commit();
-        return true;
-    }
+    // ajout de la nouvelle personne en mémoire
+    dataRepository.getPersons().add(person);
+    // commit pour appliquer les changement sur le json
+    dataRepository.commit();
+    return true;
+  }
 
-    @Override
-    public boolean deletePerson(Persons person) {
+  @Override
+  public boolean deletePerson(Persons person) {
     dataRepository.getPersons().remove(person);
     dataRepository.commit();
     return true;
@@ -34,6 +36,35 @@ public class PersonDaoImpl implements PersonDao {
 
   @Override
   public boolean updatePerson(Persons person) {
+
+
+    for (Persons personToUpdate : dataRepository.getPersons()) {
+
+      if (personToUpdate.getFirstName().equalsIgnoreCase(person.getFirstName()) && personToUpdate.getLastName().equalsIgnoreCase(person.getLastName())) {
+        //ajouter ou changer les donnée qui sont différentes entre les 2
+        if (person.getAddress() == null) {
+          person.setAddress(personToUpdate.getAddress());
+        }
+        if (person.getEmail() == null) {
+          person.setEmail(personToUpdate.getEmail());
+        }
+        if (person.getCity() == null) {
+          person.setCity(personToUpdate.getCity());
+        }
+        if (person.getZip() == null) {
+          person.setZip(personToUpdate.getZip());
+        }
+        if (person.getPhone() == null) {
+          person.setPhone(personToUpdate.getPhone());
+        }
+        dataRepository.getPersons().remove(personToUpdate);
+        dataRepository.getPersons().add(person);
+        dataRepository.commit();
+        return true;
+      }
+    }
+
+
     return false;
   }
 }
