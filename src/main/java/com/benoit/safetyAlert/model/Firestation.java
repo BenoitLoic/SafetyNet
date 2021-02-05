@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Firestation {
 
@@ -54,8 +55,12 @@ public class Firestation {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Firestation)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Firestation)) {
+      return false;
+    }
     Firestation that = (Firestation) o;
     return Objects.equals(getStation(), that.getStation())
         && Objects.equals(getAddress(), that.getAddress());

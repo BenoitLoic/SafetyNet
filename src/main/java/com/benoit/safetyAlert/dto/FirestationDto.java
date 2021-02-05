@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FirestationDTO {
+public class FirestationDto {
 
   private String station;
   private String address;
@@ -39,25 +39,29 @@ public class FirestationDTO {
   }
 
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    FirestationDTO that = (FirestationDTO) o;
-    return Objects.equals(station, that.station) && Objects.equals(address, that.address);
-  }
+  public static final Comparator<FirestationDto> comparator = new Comparator<FirestationDto>() {
+    @Override
+    public int compare(FirestationDto o1, FirestationDto o2) {
+      return o1.getAddress().compareTo(o2.getAddress());
+    }
+  };
 
   @Override
   public int hashCode() {
     return Objects.hash(station, address);
   }
 
-  public static Comparator<FirestationDTO> comparator = new Comparator<FirestationDTO>() {
-    @Override
-    public int compare(FirestationDTO o1, FirestationDTO o2) {
-      return o1.getAddress().compareTo(o2.getAddress());
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-  };
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    FirestationDto that = (FirestationDto) o;
+    return Objects.equals(station, that.station) && Objects.equals(address, that.address);
+  }
 
 
 }

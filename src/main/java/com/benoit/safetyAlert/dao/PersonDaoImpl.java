@@ -5,8 +5,6 @@ import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class PersonDaoImpl implements PersonDao {
 
@@ -40,7 +38,8 @@ public class PersonDaoImpl implements PersonDao {
 
     for (Persons personToUpdate : dataRepository.getPersons()) {
 
-      if (personToUpdate.getFirstName().equalsIgnoreCase(person.getFirstName()) && personToUpdate.getLastName().equalsIgnoreCase(person.getLastName())) {
+      if (personToUpdate.getFirstName().equalsIgnoreCase(person.getFirstName())
+          && personToUpdate.getLastName().equalsIgnoreCase(person.getLastName())) {
         //ajouter ou changer les donnée qui sont différentes entre les 2
         if (person.getAddress() == null) {
           person.setAddress(personToUpdate.getAddress());

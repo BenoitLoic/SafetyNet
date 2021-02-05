@@ -1,12 +1,9 @@
 package com.benoit.safetyAlert.dao;
 
-import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class FirestationDaoImpl implements FirestationDao {
@@ -38,7 +35,9 @@ public class FirestationDaoImpl implements FirestationDao {
   public boolean updateFirestation(Firestation firestation) {
 
     //suppression des firestations avec la mm address
-    dataRepository.getFirestations().removeIf(firestationToUpdate -> firestationToUpdate.getAddress().equalsIgnoreCase(firestation.getAddress()));
+    dataRepository.getFirestations()
+        .removeIf(firestationToUpdate ->
+            firestationToUpdate.getAddress().equalsIgnoreCase(firestation.getAddress()));
     //ajout de la station
     dataRepository.getFirestations().add(firestation);
     dataRepository.commit();

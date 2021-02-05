@@ -5,13 +5,10 @@ import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class MedicalRecordDaoImpl implements MedicalRecordDao {
 
-  private final
-  DataRepository dataRepository;
+  private final DataRepository dataRepository;
 
   @Autowired
   public MedicalRecordDaoImpl(DataRepository dataRepository) {

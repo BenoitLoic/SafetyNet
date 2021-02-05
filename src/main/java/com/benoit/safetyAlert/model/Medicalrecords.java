@@ -66,8 +66,12 @@ public class Medicalrecords {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Medicalrecords that = (Medicalrecords) o;
     return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
   }
@@ -79,12 +83,20 @@ public class Medicalrecords {
 
   @Override
   public String toString() {
-    return "Medicalrecords{" +
-        "firstName='" + firstName + '\'' +
-        ", lastName='" + lastName + '\'' +
-        ", birthdate='" + birthdate + '\'' +
-        ", medications=" + medications +
-        ", allergies=" + allergies +
-        '}';
+    return "Medicalrecords{"
+        + "firstName='"
+        + firstName
+        + '\''
+        + ", lastName='"
+        + lastName
+        + '\''
+        + ", birthdate='"
+        + birthdate
+        + '\''
+        + ", medications="
+        + medications
+        + ", allergies="
+        + allergies
+        + '}';
   }
 }

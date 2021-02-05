@@ -4,7 +4,6 @@ import com.benoit.safetyAlert.dao.PersonDao;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
-import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
 import com.benoit.safetyAlert.utility.CalculateAge;
@@ -13,7 +12,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -24,7 +26,10 @@ public class PersonServiceImpl implements PersonService {
   private static final Logger LOGGER = LogManager.getLogger(PersonServiceImpl.class);
 
   @Autowired
-  public PersonServiceImpl(DataRepository dataRepository, PersonDao personDao, CalculateAge calculateAge) {
+  public PersonServiceImpl(
+      DataRepository dataRepository,
+      PersonDao personDao,
+      CalculateAge calculateAge) {
     this.dataRepository = dataRepository;
     this.personDao = personDao;
     this.calculateAge = calculateAge;
@@ -37,10 +42,10 @@ public class PersonServiceImpl implements PersonService {
     for (Persons person : dataRepository.getPersons()) {
       if (person.getCity().equalsIgnoreCase(city)) {
 
-        Persons personInfo = new Persons();
-        personInfo.setEmail(person.getEmail());
+        Persons persons = new Persons();
+        persons.setEmail(person.getEmail());
 
-        collectionEmail.add(personInfo);
+        collectionEmail.add(persons);
       }
     }
     return collectionEmail;
@@ -57,10 +62,12 @@ public class PersonServiceImpl implements PersonService {
         personInfo.setFirstName(person.getFirstName());
         personInfo.setLastName(person.getLastName());
         personInfo.setPhone(person.getPhone());
-        personInfo.setAge(calculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
         personInfo.setMedication(person.getMedicalrecords().getMedications());
         personInfo.setAllergies(person.getMedicalrecords().getAllergies());
         personInfo.getStation().add(person.getFirestation().getStation());
+        if (person.getMedicalrecords().getBirthdate() != null) {
+          personInfo.setAge(calculateAge.calculateAge(person.getMedicalrecords().getBirthdate()));
+        }
         returnList.add(personInfo);
       }
     }
@@ -108,59 +115,45 @@ public class PersonServiceImpl implements PersonService {
 
   @Override
   public boolean createPerson(Persons person) {
-    try {
 
-      // on verifie que la personne n'existe pas dans la dao
-      if (!dataRepository.getPersons().contains(person)
-          && person != null
-          && person.getFirstName() != null
-          && person.getLastName() != null) {
-        personDao.createPerson(person);
-        return true;
-      } else if (dataRepository.getPersons().contains(person)
-          && person.getFirstName() != null
-          && person.getLastName() != null) {
-        throw new DataAlreadyExistException(
-            "this person "
-                + person.getFirstName()
-                + " "
-                + person.getLastName()
-                + " already exist.");
-      } else {
-        throw new NullPointerException();
-      }
-    } catch (NullPointerException nullPointerException) {
-      throw new InvalidArgumentException(
-          "Invalid Argument : Person | firstName | lastName can't be null.", nullPointerException);
+    // on verifie que la personne n'existe pas dans le repo
+    if (!dataRepository.getPersons().contains(person)) {
+      personDao.createPerson(person);
+      return true;
+    } else {
+      LOGGER.info("error :  "
+          + person.getFirstName()
+          + " "
+          + person.getLastName()
+          + " already exist.");
+      throw new DataAlreadyExistException(
+          "this person "
+              + person.getFirstName()
+              + " "
+              + person.getLastName()
+              + " already exist.");
     }
   }
 
   @Override
   public boolean deletePerson(Persons person) {
-    try {
-      if (dataRepository.getPersons().contains(person)
-          && person != null
-          && person.getFirstName() != null
-          && person.getLastName() != null) {
-        personDao.deletePerson(person);
-        return true;
 
-      } else if (!dataRepository.getPersons().contains(person)
-          && person != null
-          && person.getFirstName() != null
-          && person.getLastName() != null) {
-        throw new DataNotFindException(
-            "this person : "
-                + person.getFirstName()
-                + " "
-                + person.getLastName()
-                + " do not exist.");
-      } else {
-        throw new NullPointerException();
-      }
-    } catch (NullPointerException nullPointerException) {
-      throw new InvalidArgumentException(
-          "Invalid Argument : Person | firstName | lastName can't be null.", nullPointerException);
+    if (dataRepository.getPersons().contains(person)) {
+      personDao.deletePerson(person);
+      return true;
+
+    } else {
+      LOGGER.info("error : "
+          + person.getFirstName()
+          + " "
+          + person.getLastName()
+          + " do not exist.");
+      throw new DataNotFindException(
+          "this person : "
+              + person.getFirstName()
+              + " "
+              + person.getLastName()
+              + " do not exist.");
     }
   }
 

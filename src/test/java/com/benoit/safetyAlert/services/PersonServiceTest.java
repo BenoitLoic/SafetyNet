@@ -146,13 +146,14 @@ class PersonServiceTest {
       person.setFirstName(firstNameTest + i);
       person.setLastName(lastNameTest + i);
       person.setAddress(addressTest);
+      person.setMedicalrecords(new Medicalrecords(firstNameTest, lastNameTest, birthdateTest));
 
       personsList.add(person);
     }
     Persons person = new Persons();
     person.setFirstName("ab");
     person.setLastName("cdef");
-    person.setAddress("addressTest");
+    person.setAddress("anotherAddressTest");
     personsList.add(person);
     //    WHEN
     when(dataRepositoryMock.getPersons()).thenReturn(personsList);
@@ -179,7 +180,7 @@ class PersonServiceTest {
 
   // cas ou address est nul ou vide
   @Test
-  void getFireAddressWhenArgumentIsNullOrEmpty_ShouldReturnAnEmptyList() {
+  void getFireAddressWhenArgumentIsEmpty_ShouldReturnAnEmptyList() {
     //    GIVEN
     List<Persons> personsList = new ArrayList<>();
     for (int i = 0; i < 2; i++) {
@@ -198,11 +199,11 @@ class PersonServiceTest {
     //    WHEN
     when(dataRepositoryMock.getPersons()).thenReturn(personsList);
 
-    Collection<PersonInfo> processTest1 = personService.getFireAddress(null);
-    Collection<PersonInfo> processTest2 = personService.getFireAddress("");
+
+    Collection<PersonInfo> processTest = personService.getFireAddress("");
     //    THEN
-    assertThat(processTest1).isEmpty();
-    assertThat(processTest2).isEmpty();
+
+    assertThat(processTest).isEmpty();
   }
 
 
@@ -314,27 +315,27 @@ class PersonServiceTest {
     assertThat(personService.createPerson(person)).isTrue();
   }
 
-  //   avec un arg = null
-  @Test
-  void createPersonWithNullArg_ShouldThrowInvalidArgumentException() {
-    //    GIVEN
+//  //   avec un arg = null
+//  @Test
+//  void createPersonWithNullArg_ShouldThrowInvalidArgumentException() {
+//    //    GIVEN
+//
+//    //    WHEN
+//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
+//    //    THEN
+//    assertThrows(InvalidArgumentException.class, () -> personService.createPerson(null));
+//  }
 
-    //    WHEN
-    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-    //    THEN
-    assertThrows(InvalidArgumentException.class, () -> personService.createPerson(null));
-  }
-
-  // avec arg = new
-  @Test
-  void createPersonWithNullValue_ShouldThrowInvalidArgumentException() {
-    //    GIVEN
-    Persons person = new Persons();
-    //    WHEN
-    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-    //    THEN
-    assertThrows(InvalidArgumentException.class, () -> personService.createPerson(person));
-  }
+//  // avec arg = new
+//  @Test
+//  void createPersonWithNullValue_ShouldThrowInvalidArgumentException() {
+//    //    GIVEN
+//    Persons person = new Persons();
+//    //    WHEN
+//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
+//    //    THEN
+//    assertThrows(InvalidArgumentException.class, () -> personService.createPerson(person));
+//  }
 
   // avec firestation qui existe déja
   @Test
@@ -363,28 +364,28 @@ class PersonServiceTest {
     assertThat(personService.deletePerson(person)).isTrue();
   }
 
-  // arg = null
-  @Test
-  void deletePersonWithNullArg_ShouldThrowInvalidArgumentException() {
-    //    GIVEN
+//  // arg = null
+//  @Test
+//  void deletePersonWithNullArg_ShouldThrowInvalidArgumentException() {
+//    //    GIVEN
+//
+//    //    WHEN
+//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
+//    //    THEN
+//    assertThrows(InvalidArgumentException.class, () -> personService.deletePerson(null));
+//  }
 
-    //    WHEN
-    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-    //    THEN
-    assertThrows(InvalidArgumentException.class, () -> personService.deletePerson(null));
-  }
-
-  // arg = new
-  @Test
-  void deletePersonWithNullValue_ShouldThrowInvalidArgumentException() {
-    //    GIVEN
-
-    //    WHEN
-    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-
-    //    THEN
-    assertThrows(InvalidArgumentException.class, () -> personService.deletePerson(new Persons()));
-  }
+//  // arg = new
+//  @Test
+//  void deletePersonWithNullValue_ShouldThrowInvalidArgumentException() {
+//    //    GIVEN
+//
+//    //    WHEN
+//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
+//
+//    //    THEN
+//    assertThrows(InvalidArgumentException.class, () -> personService.deletePerson(new Persons()));
+//  }
 
   // avec firestation qui n'existe pas
   @Test

@@ -1,25 +1,26 @@
 package com.benoit.safetyAlert.controller;
 
-import com.benoit.safetyAlert.dto.FirestationDTO;
+import com.benoit.safetyAlert.dto.FirestationDto;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public interface FirestationController {
 
-  Collection<Persons> phoneAlert(String station);
+  Collection<Persons> phoneAlert(@NotBlank String station);
 
-  Collection<PersonInfo> fireStationCoverage(String stationNumber);
+  Collection<PersonInfo> fireStationCoverage(@NotBlank String stationNumber);
 
-  Collection<FirestationDTO> floodStations(List<String> stations);
+  Collection<FirestationDto> floodStations(List<String> stations);
 
-  void createFirestation(Firestation firestation);
+  void createFirestation(@Valid Firestation firestation);
 
-  void deleteFirestation(Firestation firestation);
+  void deleteFirestation(@Valid Firestation firestation);
 
-  void updateFirestation(Firestation firestation);
+  void updateFirestation(@Valid Firestation firestation);
 }

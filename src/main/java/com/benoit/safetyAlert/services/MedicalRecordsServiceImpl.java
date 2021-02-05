@@ -4,7 +4,6 @@ import com.benoit.safetyAlert.dao.MedicalRecordDao;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
-import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
@@ -12,8 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class MedicalRecordsServiceImpl implements MedicalRecordsService {
@@ -47,7 +44,8 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
         break;
       }
     }
-    if (personInfo.getFirstName() == null && personInfo.getLastName() == null) {
+    if (personInfo.getFirstName() == null || personInfo.getLastName() == null) {
+      LOGGER.info("Can't find data for : " + firstName + " " + lastName + " in repository.");
       throw new DataNotFindException(
           "Can't find data for : " + firstName + " " + lastName + " in repository.");
     }
@@ -82,7 +80,12 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
       }
     }
     //cas ou il y a déja un medical record
-    LOGGER.info("error - can't find " + medicalrecord.getFirstName() + " " + medicalrecord.getLastName() + " in DB.");
+    LOGGER.info(
+        "error - can't find "
+            + medicalrecord.getFirstName()
+            + " "
+            + medicalrecord.getLastName()
+            + " in DB.");
     throw new DataNotFindException(
         "Can't create medical record for "
             + medicalrecord.getFirstName()
@@ -106,7 +109,8 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
     LOGGER.info("error - can't find Medical Record.");
     throw new DataNotFindException(
         "medical record for "
-            + medicalRecord.getFirstName() + " "
+            + medicalRecord.getFirstName()
+            + " "
             + medicalRecord.getLastName()
             + " does not exist.");
 
@@ -115,19 +119,24 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
 
   @Override
   public boolean updateMedicalRecord(Medicalrecords medicalrecord) {
-    if (medicalrecord == null
-        || medicalrecord.getFirstName() == null
-        || medicalrecord.getLastName() == null) {
-      LOGGER.info("error - Medical Record or its value are null.");
-      throw new InvalidArgumentException("Medical Record or its value can't be null");
-    }
+
     for (Medicalrecords mRec : dataRepository.getMedicalrecords()) {
       if (mRec.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
           && mRec.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
         return medicalrecordDao.updateMedicalRecords(medicalrecord);
       }
     }
-    LOGGER.info("Medical Record for " + medicalrecord.getFirstName() + " " + medicalrecord.getLastName() + " doesn't exist.");
-    throw new DataNotFindException("Medical Record for " + medicalrecord.getFirstName() + " " + medicalrecord.getLastName() + " doesn't exist.");
+    LOGGER.info(
+        "Medical Record for "
+            + medicalrecord.getFirstName()
+            + " "
+            + medicalrecord.getLastName()
+            + " doesn't exist.");
+    throw new DataNotFindException(
+        "Medical Record for "
+            + medicalrecord.getFirstName()
+            + " "
+            + medicalrecord.getLastName()
+            + " doesn't exist.");
   }
 }

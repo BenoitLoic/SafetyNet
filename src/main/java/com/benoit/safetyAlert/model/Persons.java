@@ -25,7 +25,15 @@ public class Persons {
   public Persons() {
   }
 
-  public Persons(String firstName, String lastName, String address, String zip, String city, String phone, String email, Firestation firestation, Medicalrecords medicalrecords) {
+  public Persons(String firstName,
+                 String lastName,
+                 String address,
+                 String zip,
+                 String city,
+                 String phone,
+                 String email,
+                 Firestation firestation,
+                 Medicalrecords medicalrecords) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.address = address;
@@ -111,10 +119,15 @@ public class Persons {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Persons persons = (Persons) o;
-    return Objects.equals(firstName, persons.firstName) && Objects.equals(lastName, persons.lastName);
+    return Objects.equals(firstName, persons.firstName)
+        && Objects.equals(lastName, persons.lastName);
   }
 
   @Override
@@ -124,16 +137,24 @@ public class Persons {
 
   @Override
   public String toString() {
-    return "Persons{" +
-        "firstName='" + firstName + '\'' +
-        ", lastName='" + lastName + '\'' +
-        ", address='" + address + '\'' +
-        ", zip='" + zip + '\'' +
-        ", city='" + city + '\'' +
-        ", phone='" + phone + '\'' +
-        ", email='" + email + '\'' +
-        ", firestation=" + firestation +
-        ", medicalrecords=" + medicalrecords +
-        '}';
+    return "Persons{"
+        + "firstName='"
+        + firstName + '\''
+        + ", lastName='"
+        + lastName + '\''
+        + ", address='"
+        + address + '\''
+        + ", zip='"
+        + zip + '\''
+        + ", city='"
+        + city + '\''
+        + ", phone='"
+        + phone + '\''
+        + ", email='"
+        + email + '\''
+        + ", firestation="
+        + firestation
+        + ", medicalrecords="
+        + medicalrecords + '}';
   }
 }

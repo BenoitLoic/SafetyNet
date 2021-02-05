@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,19 +35,16 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-@AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-class MedicalRecordsControllerTest {
+@WebMvcTest(controllers = MedicalRecordsServiceImpl.class)
+class MedicalRecordsControllerIT {
 
   @Autowired
   MockMvc mockMvc;
   @MockBean
+  MedicalRecordsServiceImpl medicalRecordsService;
+  @MockBean
   MedicalRecordsControllerImpl medicalRecordsControllerMock;
-  @Mock
-  MedicalRecordsServiceImpl medicalRecordsServiceMock;
-  @InjectMocks
-  MedicalRecordsControllerImpl medicalRecordsController;
+
 
   String firstNameTest = "Homer Jay";
   String lastNameTest = "Simpson";
@@ -55,28 +54,30 @@ class MedicalRecordsControllerTest {
 
   @Test
   void personInfoValid() throws Exception {
-//    GIVEN
 
 
 //    WHEN
-//when(medicalRecordsServiceMock.getPersonInfo(firstNameTest,lastNameTest)).thenReturn(new PersonInfo());
+
 
 //    THEN
-    mockMvc.perform(get("/personInfo"))
+    mockMvc
+        .perform(
+            get("/personInfo?firstName=&lastName="))
+
         .andExpect(MockMvcResultMatchers.status().isOk());
   }
 
-  @Test
-  void personInfoInvalid(){
-//    GIVEN
-
-
-//    WHEN
-    when(medicalRecordsServiceMock.getPersonInfo(any(),any())).thenThrow(DataNotFindException.class);
-
-//    THEN
-    Assertions.assertThrows(DataNotFindException.class,()->medicalRecordsController.personInfo(firstNameTest,lastNameTest));
-  }
+//  @Test
+//  void personInfoInvalid(){
+////    GIVEN
+//
+//
+////    WHEN
+//    when(medicalRecordsServiceMock.getPersonInfo(any(),any())).thenThrow(DataNotFindException.class);
+//
+////    THEN
+//    Assertions.assertThrows(DataNotFindException.class,()->medicalRecordsController.personInfo(firstNameTest,lastNameTest));
+//  }
 
   @Test
   public void createMedicalRecordValid() throws Exception {
@@ -85,7 +86,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
     jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //        WHEN
 
     //        THEN
@@ -104,7 +105,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
     jsonMedicalRecords.set("firstName", TextNode.valueOf(" "));
     jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //        WHEN
 
     //        THEN
@@ -123,7 +124,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
     jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //        WHEN
     Mockito.doThrow(DataAlreadyExistException.class)
         .when(medicalRecordsControllerMock)
@@ -144,7 +145,7 @@ class MedicalRecordsControllerTest {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
 
     //    THEN

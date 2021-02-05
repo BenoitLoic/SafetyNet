@@ -23,7 +23,7 @@ public class PersonInfo {
   private List<String> allergies = new ArrayList<>();
 
   @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-  private List<String> station= new ArrayList<>();
+  private List<String> station = new ArrayList<>();
 
   @JsonInclude(JsonInclude.Include.NON_DEFAULT)
   private List<PersonInfo> family = new ArrayList<>();
@@ -148,7 +148,6 @@ public class PersonInfo {
   public int hashCode() {
     return Objects.hash(getFirstName(), getLastName());
   }
-
 
 
 }

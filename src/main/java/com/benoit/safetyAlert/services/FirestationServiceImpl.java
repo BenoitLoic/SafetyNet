@@ -1,11 +1,10 @@
 package com.benoit.safetyAlert.services;
 
 import com.benoit.safetyAlert.dao.FirestationDao;
-import com.benoit.safetyAlert.dto.FirestationDTO;
+import com.benoit.safetyAlert.dto.FirestationDto;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
-import com.benoit.safetyAlert.exceptions.InvalidArgumentException;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.repository.DataRepository;
@@ -16,7 +15,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * This class contains some method to extract fire station data from DataRepository.
@@ -85,16 +87,16 @@ public class FirestationServiceImpl implements FirestationService {
   }
 
   @Override
-  public Collection<FirestationDTO> getFloodStations(List<String> stations) {
+  public Collection<FirestationDto> getFloodStations(List<String> stations) {
 
 
-    Collection<FirestationDTO> firestationDTOList = new HashSet<>();
+    Collection<FirestationDto> firestationDtoList = new HashSet<>();
     CalculateAge calc = new CalculateAge();
 
     for (Firestation firestation : dataRepository.getFirestations()) {
       for (String station : stations) {
         if (firestation.getStation().equals(station)) {
-          FirestationDTO firestationDTO = new FirestationDTO();
+          FirestationDto firestationDTO = new FirestationDto();
           Collection<PersonInfo> floodStations = new HashSet<>();
           for (Persons person : firestation.getPersons()) {
             PersonInfo personInfo = new PersonInfo();
@@ -103,95 +105,87 @@ public class FirestationServiceImpl implements FirestationService {
             personInfo.setPhone(person.getPhone());
             personInfo.setMedication(person.getMedicalrecords().getMedications());
             personInfo.setAllergies(person.getMedicalrecords().getAllergies());
-            personInfo.setAge(calc.calculateAge(person.getMedicalrecords().getBirthdate()));
+            if (person.getMedicalrecords().getBirthdate() != null) {
+              personInfo.setAge(calc.calculateAge(person.getMedicalrecords().getBirthdate()));
+            }
             floodStations.add(personInfo);
           }
 
           firestationDTO.setAddress(firestation.getAddress());
           firestationDTO.setPersonInfos(new ArrayList<>(floodStations));
-          firestationDTOList.add(firestationDTO);
+          firestationDtoList.add(firestationDTO);
 
         }
       }
     }
 
-    List<FirestationDTO> firestationDTOListSorted = new ArrayList<>(firestationDTOList);
-    firestationDTOListSorted.sort(FirestationDTO.comparator);
+    List<FirestationDto> firestationDtoListSorted = new ArrayList<>(firestationDtoList);
+    firestationDtoListSorted.sort(FirestationDto.comparator);
 
-    return firestationDTOListSorted;
+    return firestationDtoListSorted;
   }
 
   @Override
   public boolean createFirestation(Firestation firestation) {
-    try {
 
-      if (!dataRepository.getFirestations().contains(firestation)
-          && firestation.getStation() != null
-          && firestation.getAddress() != null) {
 
-        firestationDao.createFirestation(firestation);
-        return true;
-      } else if (firestation.getStation() == null || firestation.getAddress() == null) {
-        throw new NullPointerException();
-      } else {
-        throw new DataAlreadyExistException(
-            "this firestation "
-                + firestation.getStation()
-                + " / address : "
-                + firestation.getAddress()
-                + " already exist");
-      }
-    } catch (NullPointerException nullPointerException) {
-      LOGGER.info("Invalid Argument, firestation can't be null.");
-      throw new InvalidArgumentException(
-          "Invalid Argument, firestation can't be null.", nullPointerException);
+    if (!dataRepository.getFirestations().contains(firestation)) {
+
+      firestationDao.createFirestation(firestation);
+      return true;
+
+    } else {
+      throw new DataAlreadyExistException(
+          "this firestation "
+              + firestation.getStation()
+              + " / address : "
+              + firestation.getAddress()
+              + " already exist");
     }
+
   }
 
   @Override
   public boolean deleteFirestation(Firestation firestation) {
-    try {
-      if (dataRepository.getFirestations().contains(firestation)
-          && firestation.getStation() != null
-          && firestation.getAddress() != null) {
 
-        firestationDao.deleteFirestation(firestation);
-        return true;
-      } else if (firestation.getStation() == null || firestation.getAddress() == null) {
-        throw new NullPointerException();
-      } else {
-        LOGGER.info("this firestation "
-            + firestation.getStation()
-            + "/ address : "
-            + firestation.getAddress()
-            + " doesn't exist.");
-        throw new DataNotFindException(
-            "this firestation "
-                + firestation.getStation()
-                + "/ address : "
-                + firestation.getAddress()
-                + " doesn't exist.");
-      }
-    } catch (NullPointerException nullPointerException) {
-      LOGGER.info("Invalid Argument, firestation can't be null.");
-      throw new InvalidArgumentException(
-          "Invalid Argument, firestation can't be null.", nullPointerException);
+    if (dataRepository.getFirestations().contains(firestation)) {
+      firestationDao.deleteFirestation(firestation);
+      return true;
+    } else {
+      LOGGER.info("this firestation "
+          + firestation.getStation()
+          + "/ address : "
+          + firestation.getAddress()
+          + " doesn't exist.");
+      throw new DataNotFindException(
+          "this firestation "
+              + firestation.getStation()
+              + "/ address : "
+              + firestation.getAddress()
+              + " doesn't exist.");
     }
+
   }
 
   @Override
   public boolean updateFirestation(Firestation firestation) {
-    if (firestation == null || firestation.getAddress() == null || firestation.getStation() == null) {
-      throw new InvalidArgumentException("error - firestation or its value are null");
-    }
-    List<Firestation> firestationList = dataRepository.getFirestations();
-    for (Firestation fire : firestationList) {
+
+
+    for (Firestation fire : dataRepository.getFirestations()) {
       if (fire.getAddress().equalsIgnoreCase(firestation.getAddress())) {
         return firestationDao.updateFirestation(firestation);
       }
     }
-    LOGGER.info("error updating firestation [" + firestation.getStation() + "] - address : " + firestation.getAddress() + " doesn't exist.");
-    throw new DataNotFindException("error updating firestation [" + firestation.getStation() + "] - address : " + firestation.getAddress() + " doesn't exist.");
+    LOGGER.info("error updating firestation ["
+        + firestation.getStation()
+        + "] - address : "
+        + firestation.getAddress()
+        + " doesn't exist.");
+    throw new DataNotFindException("error updating firestation ["
+        + firestation.getStation()
+        + "] - address : "
+        + firestation.getAddress()
+        + " doesn't exist.");
 
   }
 }

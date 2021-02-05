@@ -9,35 +9,39 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
+@Validated
 @RestController
 public class MedicalRecordsControllerImpl implements MedicalRecordsController {
 
-    private final MedicalRecordsService medicalRecordsService;
+  private final MedicalRecordsService medicalRecordsService;
 
-    @Autowired
-    public MedicalRecordsControllerImpl(MedicalRecordsService medicalRecordsService) {
-        this.medicalRecordsService = medicalRecordsService;
-    }
+  @Autowired
+  public MedicalRecordsControllerImpl(MedicalRecordsService medicalRecordsService) {
+    this.medicalRecordsService = medicalRecordsService;
+  }
 
-    @Override
-    @GetMapping("/personInfo")
-    @ResponseStatus(HttpStatus.OK)
-    public PersonInfo personInfo(String firstName, String lastName) {
-        return medicalRecordsService.getPersonInfo(firstName, lastName);
-    }
+  @Override
+  @GetMapping("/personInfo")
+  @ResponseStatus(HttpStatus.OK)
+  public PersonInfo personInfo(@NotBlank @RequestParam String firstName,
+                               @NotBlank @RequestParam String lastName) {
 
-    @Override
-    @PostMapping("/medicalRecord")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createMedicalRecord(@RequestBody @Valid Medicalrecords medicalrecord) {
+    return medicalRecordsService.getPersonInfo(firstName, lastName);
+  }
 
-        medicalRecordsService.createMedicalRecord(medicalrecord);
-    }
+  @Override
+  @PostMapping("/medicalRecord")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void createMedicalRecord(@Valid @RequestBody Medicalrecords medicalrecord) {
 
-    @Override
-    @DeleteMapping("/medicalRecord")
-    public void deleteMedicalRecord(@Validated @RequestBody Medicalrecords medicalRecord) {
+    medicalRecordsService.createMedicalRecord(medicalrecord);
+  }
+
+  @Override
+  @DeleteMapping("/medicalRecord")
+  public void deleteMedicalRecord(@Valid @RequestBody Medicalrecords medicalRecord) {
 
     medicalRecordsService.deleteMedicalRecord(medicalRecord);
   }
@@ -45,7 +49,7 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
   @Override
   @PutMapping("/medicalRecord")
   @ResponseStatus(HttpStatus.CREATED)
-  public void updateMedicalRecord(@RequestBody @Valid Medicalrecords medicalrecord) {
+  public void updateMedicalRecord(@Valid @RequestBody Medicalrecords medicalrecord) {
     medicalRecordsService.updateMedicalRecord(medicalrecord);
   }
 }

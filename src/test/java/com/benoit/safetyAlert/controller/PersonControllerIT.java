@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 @AutoConfigureMockMvc
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class PersonControllerTest {
+public class PersonControllerIT {
 
   @Autowired
   MockMvc mockMvc;

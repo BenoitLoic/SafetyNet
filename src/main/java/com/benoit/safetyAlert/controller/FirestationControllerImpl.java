@@ -1,19 +1,21 @@
 package com.benoit.safetyAlert.controller;
 
-import com.benoit.safetyAlert.dto.FirestationDTO;
+import com.benoit.safetyAlert.dto.FirestationDto;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.model.Firestation;
 import com.benoit.safetyAlert.model.Persons;
 import com.benoit.safetyAlert.services.FirestationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.List;
 
+@Validated
 @RestController
 public class FirestationControllerImpl implements FirestationController {
 
@@ -27,7 +29,7 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @GetMapping("/phoneAlert")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<Persons> phoneAlert(@RequestParam String station) {
+  public Collection<Persons> phoneAlert(@NotBlank @RequestParam String station) {
 
     return firestationService.getPhoneNumber(station);
   }
@@ -35,7 +37,7 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @GetMapping("/firestation")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<PersonInfo> fireStationCoverage(@RequestParam String stationNumber) {
+  public Collection<PersonInfo> fireStationCoverage(@NotBlank @RequestParam String stationNumber) {
 
     return firestationService.getPersonCoveredByFireStation(stationNumber);
   }
@@ -43,7 +45,7 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @GetMapping("/flood/stations")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<FirestationDTO> floodStations(@RequestParam List<String> stations) {
+  public Collection<FirestationDto> floodStations(@RequestParam List<String> stations) {
 
     return firestationService.getFloodStations(stations);
   }
