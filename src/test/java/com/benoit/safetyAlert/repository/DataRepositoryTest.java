@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.repository;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,7 +16,7 @@ class DataRepositoryTest {
   @Mock
   InputStream inputStream;
 
-
+  @Disabled
   @Test
   void init() {
 

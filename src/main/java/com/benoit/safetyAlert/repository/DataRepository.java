@@ -20,7 +20,7 @@ public class DataRepository {
   // pour log4j
   private static final Logger LOGGER = LogManager.getLogger(DataRepository.class);
   // c'est le fichier Json en memoire
-  private static DatabaseJson databaseJson;
+  private DatabaseJson databaseJson;
   // cet obj va permettre de mapper du json en obj java
   private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private final String dataJson = "data.json";
@@ -35,10 +35,6 @@ public class DataRepository {
 
   public DataRepository() {
     init();
-  }
-
-  public DatabaseJson getDatabaseJson() {
-    return DataRepository.databaseJson;
   }
 
   public void init() {

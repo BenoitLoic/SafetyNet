@@ -99,9 +99,7 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
   public boolean deleteMedicalRecord(Medicalrecords medicalRecord) {
 
 
-    if (dataRepository.getMedicalrecords().contains(medicalRecord)
-
-        && !medicalRecord.equals(new Medicalrecords())) {
+    if (dataRepository.getMedicalrecords().contains(medicalRecord)) {
       medicalrecordDao.deleteMedicalRecords(medicalRecord);
       return true;
     }

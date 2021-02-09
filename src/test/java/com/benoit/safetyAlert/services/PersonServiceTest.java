@@ -31,11 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
 
-  private final String firstNameTest = "testName";
-  private final String lastNameTest = "test Last Name";
-  private final String birthdateTest = "01/01/2001";
-  private final String addressTest = "1 rue du test";
-  private final String cityTest = "city";
+
   @Mock
   DataRepository dataRepositoryMock;
   @Mock
@@ -44,6 +40,12 @@ class PersonServiceTest {
   CalculateAge calculateAgeMock;
   @InjectMocks
   PersonServiceImpl personService;
+
+  private final String firstNameTest = "testName";
+  private final String lastNameTest = "test Last Name";
+  private final String birthdateTest = "01/01/2001";
+  private final String addressTest = "1 rue du test";
+  private final String cityTest = "city";
 
   @Test
   void getCommunityEmailValid_ShouldReturnAListWithTwoPersons() {
@@ -315,27 +317,6 @@ class PersonServiceTest {
     assertThat(personService.createPerson(person)).isTrue();
   }
 
-//  //   avec un arg = null
-//  @Test
-//  void createPersonWithNullArg_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//
-//    //    WHEN
-//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-//    //    THEN
-//    assertThrows(InvalidArgumentException.class, () -> personService.createPerson(null));
-//  }
-
-//  // avec arg = new
-//  @Test
-//  void createPersonWithNullValue_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//    Persons person = new Persons();
-//    //    WHEN
-//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-//    //    THEN
-//    assertThrows(InvalidArgumentException.class, () -> personService.createPerson(person));
-//  }
 
   // avec firestation qui existe déja
   @Test
@@ -364,28 +345,6 @@ class PersonServiceTest {
     assertThat(personService.deletePerson(person)).isTrue();
   }
 
-//  // arg = null
-//  @Test
-//  void deletePersonWithNullArg_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//
-//    //    WHEN
-//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-//    //    THEN
-//    assertThrows(InvalidArgumentException.class, () -> personService.deletePerson(null));
-//  }
-
-//  // arg = new
-//  @Test
-//  void deletePersonWithNullValue_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//
-//    //    WHEN
-//    when(dataRepositoryMock.getPersons()).thenReturn(new ArrayList<>());
-//
-//    //    THEN
-//    assertThrows(InvalidArgumentException.class, () -> personService.deletePerson(new Persons()));
-//  }
 
   // avec firestation qui n'existe pas
   @Test

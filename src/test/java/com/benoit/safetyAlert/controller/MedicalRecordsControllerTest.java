@@ -3,47 +3,39 @@ package com.benoit.safetyAlert.controller;
 import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
+import com.benoit.safetyAlert.model.Medicalrecords;
 import com.benoit.safetyAlert.services.MedicalRecordsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import jdk.jfr.ContentType;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.util.NestedServletException;
 
-import javax.validation.constraints.Null;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = MedicalRecordsServiceImpl.class)
-class MedicalRecordsControllerIT {
+@WebMvcTest(controllers = MedicalRecordsControllerImpl.class)
+class MedicalRecordsControllerTest {
 
   @Autowired
   MockMvc mockMvc;
+
   @MockBean
-  MedicalRecordsServiceImpl medicalRecordsService;
-  @MockBean
-  MedicalRecordsControllerImpl medicalRecordsControllerMock;
+  MedicalRecordsServiceImpl medicalRecordsServiceMock;
 
 
   String firstNameTest = "Homer Jay";
@@ -52,32 +44,46 @@ class MedicalRecordsControllerIT {
   List<String> medicationsTest = new ArrayList<>();
   List<String> allergiesTest = new ArrayList<>();
 
-  @Test
-  void personInfoValid() throws Exception {
 
+  @Test
+  void personInfoValidation_Valid() throws Exception {
+//on verifie que le @Valid fonctionne bien
+//    GIVEN
 
 //    WHEN
-
-
+    when(medicalRecordsServiceMock.getPersonInfo(any(), any())).thenReturn(new PersonInfo());
 //    THEN
-    mockMvc
-        .perform(
-            get("/personInfo?firstName=&lastName="))
-
-        .andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(get("/personInfo")
+        .param("firstName", firstNameTest)
+        .param("lastName", lastNameTest))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
   }
 
-//  @Test
-//  void personInfoInvalid(){
-////    GIVEN
-//
-//
-////    WHEN
-//    when(medicalRecordsServiceMock.getPersonInfo(any(),any())).thenThrow(DataNotFindException.class);
-//
-////    THEN
-//    Assertions.assertThrows(DataNotFindException.class,()->medicalRecordsController.personInfo(firstNameTest,lastNameTest));
-//  }
+  @Test
+  void personInfoValidation_Invalid() {
+
+    assertThrows(NestedServletException.class,
+        () -> mockMvc.perform(get("/personInfo")
+            .param("firstName", "")
+            .param("lastName", lastNameTest)));
+
+  }
+
+  @Test
+  void personInfo() throws Exception {
+//    GIVEN
+
+//    WHEN
+    doThrow(DataNotFindException.class)
+        .when(medicalRecordsServiceMock).getPersonInfo(any(), any());
+//    THEN
+    mockMvc.perform(get("/personInfo")
+        .param("firstName", firstNameTest)
+        .param("lastName", lastNameTest))
+        .andExpect(status().isNotFound());
+
+  }
 
   @Test
   public void createMedicalRecordValid() throws Exception {
@@ -86,7 +92,7 @@ class MedicalRecordsControllerIT {
     ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
     jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
-
+    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
     //        WHEN
 
     //        THEN
@@ -95,7 +101,7 @@ class MedicalRecordsControllerIT {
             post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecords.toString()))
-        .andExpect(MockMvcResultMatchers.status().isCreated());
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -114,8 +120,28 @@ class MedicalRecordsControllerIT {
             post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecords.toString()))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        .andExpect(status().isBadRequest());
   }
+
+  @Test
+  public void createMedicalRecordInvalidBirthdate() throws Exception {
+    //        GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
+    jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
+    jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
+
+    //        WHEN
+
+    //        THEN
+    mockMvc
+        .perform(
+            post("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonMedicalRecords.toString()))
+        .andExpect(status().isBadRequest());
+  }
+
 
   @Test
   public void createMedicalRecordWhenDataAlreadyExist() throws Exception {
@@ -124,18 +150,39 @@ class MedicalRecordsControllerIT {
     ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
     jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
-
+    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
     //        WHEN
-    Mockito.doThrow(DataAlreadyExistException.class)
-        .when(medicalRecordsControllerMock)
-        .createMedicalRecord(Mockito.any());
+    doThrow(DataAlreadyExistException.class)
+        .when(medicalRecordsServiceMock)
+        .createMedicalRecord(any());
     //        THEN
     mockMvc
         .perform(
             post("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecords.toString()))
-        .andExpect(MockMvcResultMatchers.status().isConflict());
+        .andExpect(status().isConflict());
+  }
+
+  @Test
+  public void createMedicalRecordWhenDataNotFound() throws Exception {
+    //        GIVEN
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonMedicalRecords = objectMapper.createObjectNode();
+    jsonMedicalRecords.set("firstName", TextNode.valueOf(firstNameTest));
+    jsonMedicalRecords.set("lastName", TextNode.valueOf(lastNameTest));
+    jsonMedicalRecords.set("birthdate", TextNode.valueOf(birthdateTest));
+    //        WHEN
+    doThrow(DataNotFindException.class)
+        .when(medicalRecordsServiceMock)
+        .createMedicalRecord(any());
+    //        THEN
+    mockMvc
+        .perform(
+            post("/medicalRecord")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonMedicalRecords.toString()))
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -146,6 +193,7 @@ class MedicalRecordsControllerIT {
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
 
+
     //    WHEN
 
     //    THEN
@@ -154,7 +202,7 @@ class MedicalRecordsControllerIT {
             delete("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
-        .andExpect(MockMvcResultMatchers.status().isOk());
+        .andExpect(status().isOk());
   }
 
   @Test
@@ -172,7 +220,7 @@ class MedicalRecordsControllerIT {
             delete("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        .andExpect(status().isBadRequest());
   }
 
   @Test
@@ -182,18 +230,18 @@ class MedicalRecordsControllerIT {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
-    Mockito.doThrow(DataNotFindException.class)
-        .when(medicalRecordsControllerMock)
-        .deleteMedicalRecord(Mockito.any());
+    doThrow(DataNotFindException.class)
+        .when(medicalRecordsServiceMock)
+        .deleteMedicalRecord(any());
     //    THEN
     mockMvc
         .perform(
             delete("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
-        .andExpect(MockMvcResultMatchers.status().isNotFound());
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -203,7 +251,7 @@ class MedicalRecordsControllerIT {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
 
     //    THEN
@@ -212,7 +260,7 @@ class MedicalRecordsControllerIT {
             put("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
-        .andExpect(MockMvcResultMatchers.status().isCreated());
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -222,7 +270,7 @@ class MedicalRecordsControllerIT {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(" "));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
 
     //    THEN
@@ -231,7 +279,7 @@ class MedicalRecordsControllerIT {
             put("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        .andExpect(status().isBadRequest());
   }
 
   @Test
@@ -241,17 +289,17 @@ class MedicalRecordsControllerIT {
     ObjectNode jsonMedicalRecord = objectMapper.createObjectNode();
     jsonMedicalRecord.set("firstName", TextNode.valueOf(firstNameTest));
     jsonMedicalRecord.set("lastName", TextNode.valueOf(lastNameTest));
-    jsonMedicalRecord.set("birthdate", TextNode.valueOf(birthdateTest));
+
     //    WHEN
-    Mockito.doThrow(DataNotFindException.class)
-        .when(medicalRecordsControllerMock)
-        .updateMedicalRecord(Mockito.any());
+    doThrow(DataNotFindException.class)
+        .when(medicalRecordsServiceMock)
+        .updateMedicalRecord(any());
     //    THEN
     mockMvc
         .perform(
             put("/medicalRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonMedicalRecord.toString()))
-        .andExpect(MockMvcResultMatchers.status().isNotFound());
+        .andExpect(status().isNotFound());
   }
 }

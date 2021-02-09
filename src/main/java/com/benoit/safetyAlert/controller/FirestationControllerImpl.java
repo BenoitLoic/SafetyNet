@@ -29,7 +29,7 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @GetMapping("/phoneAlert")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<Persons> phoneAlert(@NotBlank @RequestParam String station) {
+  public Collection<Persons> phoneAlert(@RequestParam String station) {
 
     return firestationService.getPhoneNumber(station);
   }
@@ -37,7 +37,7 @@ public class FirestationControllerImpl implements FirestationController {
   @Override
   @GetMapping("/firestation")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<PersonInfo> fireStationCoverage(@NotBlank @RequestParam String stationNumber) {
+  public Collection<PersonInfo> fireStationCoverage(@RequestParam String stationNumber) {
 
     return firestationService.getPersonCoveredByFireStation(stationNumber);
   }

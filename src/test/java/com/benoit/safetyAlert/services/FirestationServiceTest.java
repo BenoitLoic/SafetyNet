@@ -33,10 +33,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FirestationServiceTest {
-  private final String firstNameTest = "testName";
-  private final String lastNameTest = "testLastName";
-  private final String stationTest = "5";
-  private final String addressTest = "1 rue du Test";
+
   @Mock
   DataRepository dataRepository;
   @Mock
@@ -47,6 +44,10 @@ class FirestationServiceTest {
   FirestationServiceImpl firestationService;
   private String birthdateChildTest;
   private String birthdateAdultTest;
+  private final String firstNameTest = "testName";
+  private final String lastNameTest = "testLastName";
+  private final String stationTest = "5";
+  private final String addressTest = "1 rue du Test";
 
   @BeforeEach
   void setUp() {
@@ -436,31 +437,6 @@ class FirestationServiceTest {
     assertThat(firestationService.createFirestation(firestation)).isTrue();
   }
 
-//  //   avec un arg = null
-//  @Test
-//  void createFirestationWithNullArg_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//
-//    //    WHEN
-//    when(dataRepository.getFirestations()).thenReturn(Arrays.asList(new Firestation()));
-//    //    THEN
-//
-//    assertThrows(InvalidArgumentException.class, () -> firestationService.createFirestation(null));
-//  }
-
-//  // avec arg = new
-//  @Test
-//  void createFirestationWithNullValue_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//
-//    //    WHEN
-//    when(dataRepository.getFirestations()).thenReturn(Arrays.asList(new Firestation()));
-//    //    THEN
-//    assertThrows(
-//        InvalidArgumentException.class,
-//        () -> firestationService.createFirestation(new Firestation()));
-//  }
-
   // avec firestation qui existe déja
   @Test
   void createFirestationInvalid_ShouldThrowDataAlreadyExistException() {
@@ -488,31 +464,6 @@ class FirestationServiceTest {
     //    THEN
     assertThat(firestationService.deleteFirestation(firestation)).isTrue();
   }
-
-//  // arg = null
-//  @Test
-//  void deleteFirestationWithNullArg_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//
-//    //    WHEN
-//    when(dataRepository.getFirestations()).thenReturn(asList(new Firestation()));
-//    //    THEN
-//    assertThrows(InvalidArgumentException.class, () -> firestationService.deleteFirestation(null));
-//  }
-
-//  // arg = new
-//  @Test
-//  void deleteFirestationWithNullValue_ShouldThrowInvalidArgumentException() {
-//    //    GIVEN
-//    Firestation firestation = new Firestation();
-//
-//    //    WHEN
-//    when(dataRepository.getFirestations()).thenReturn(asList(firestation));
-//
-//    //    THEN
-//    assertThrows(
-//        InvalidArgumentException.class, () -> firestationService.deleteFirestation(firestation));
-//  }
 
   // avec firestation qui n'existe pas
   @Test

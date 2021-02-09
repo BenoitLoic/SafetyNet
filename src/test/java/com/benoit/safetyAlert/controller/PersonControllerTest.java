@@ -1,5 +1,6 @@
 package com.benoit.safetyAlert.controller;
 
+import com.benoit.safetyAlert.dto.PersonInfo;
 import com.benoit.safetyAlert.exceptions.DataAlreadyExistException;
 import com.benoit.safetyAlert.exceptions.DataNotFindException;
 import com.benoit.safetyAlert.model.Persons;
@@ -8,34 +9,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.util.NestedServletException;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-public class PersonControllerIT {
+@WebMvcTest(controllers = PersonControllerImpl.class)
+public class PersonControllerTest {
 
   @Autowired
   MockMvc mockMvc;
   @MockBean
-  PersonControllerImpl personController;
-  @MockBean
-  PersonServiceImpl personService;
+  PersonServiceImpl personServiceMock;
+
   String firstNameTest = "Homer Jay";
   String lastNameTest = "Simpson";
   String addressTest = "742 Evergreen Terrace";
@@ -43,6 +43,81 @@ public class PersonControllerIT {
   String zipTest = "56800";
   String phoneTest = "00112233";
   String emailTest = "donut.test@email.com";
+
+  @Test
+  void communityEmailValid() throws Exception {
+//    GIVEN
+    Collection<Persons> emailList = new ArrayList<>();
+//    WHEN
+    when(personServiceMock.getCommunityEmail(any())).thenReturn(emailList);
+//    THEN
+    mockMvc.perform(get("/communityEmail").param("city", cityTest))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void communityEmailInvalid() {
+//    GIVEN
+
+//    WHEN
+
+//    THEN
+    assertThrows(NestedServletException.class,
+        () -> mockMvc.perform(get("/communityEmail")
+            .param("city", "")));
+  }
+
+  @Test
+  void fireValid() throws Exception {
+//    GIVEN
+    Collection<PersonInfo> testList = new ArrayList<>();
+
+//    WHEN
+    when(personServiceMock.getFireAddress(any())).thenReturn(testList);
+//    THEN
+    mockMvc.perform(get("/fire").param("address", addressTest))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void fireInvalid() {
+//    GIVEN
+
+//    WHEN
+
+//    THEN
+    assertThrows(NestedServletException.class,
+        () -> mockMvc.perform(get("/fire")
+            .param("address", "")));
+  }
+
+  @Test
+  void childAlertValid() throws Exception {
+//    GIVEN
+    Collection<PersonInfo> testlist = new ArrayList<>();
+
+//    WHEN
+    when(personServiceMock.getChildAlert(any())).thenReturn(testlist);
+//    THEN
+    mockMvc.perform(get("/childAlert").param("address", addressTest))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  void childAlertInvalid() {
+//    GIVEN
+
+//    WHEN
+
+//    THEN
+    assertThrows(NestedServletException.class,
+        () -> mockMvc.perform(get("/childAlert")
+            .param("address", "")));
+  }
+
 
   @Test
   public void createPersonValid() throws Exception {
@@ -56,10 +131,10 @@ public class PersonControllerIT {
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/person")
+            post("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isCreated());
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -74,10 +149,10 @@ public class PersonControllerIT {
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/person")
+            post("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        .andExpect(status().isBadRequest());
   }
 
   @Test
@@ -91,15 +166,15 @@ public class PersonControllerIT {
     // on provoque l'exception DataAlreadyExistExc pour uniquement vérifier le code status de la
     // requette
     Mockito.doThrow(DataAlreadyExistException.class)
-        .when(personController)
+        .when(personServiceMock)
         .createPerson(Mockito.any());
     //        THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.post("/person")
+            post("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isConflict());
+        .andExpect(status().isConflict());
   }
 
   @Test
@@ -114,10 +189,10 @@ public class PersonControllerIT {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/person")
+            delete("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isOk());
+        .andExpect(status().isOk());
   }
 
   @Test
@@ -132,10 +207,10 @@ public class PersonControllerIT {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/person")
+            delete("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        .andExpect(status().isBadRequest());
   }
 
   @Test
@@ -147,14 +222,14 @@ public class PersonControllerIT {
     jsonPerson.set("firstName", TextNode.valueOf(firstNameTest));
     jsonPerson.set("lastName", TextNode.valueOf(lastNameTest));
     //    WHEN
-    Mockito.doThrow(DataNotFindException.class).when(personController).deletePerson(Mockito.any());
+    Mockito.doThrow(DataNotFindException.class).when(personServiceMock).deletePerson(Mockito.any());
     //  THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.delete("/person")
+            delete("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isNotFound());
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -171,10 +246,10 @@ public class PersonControllerIT {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/person")
+            put("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isCreated());
+        .andExpect(status().isCreated());
   }
 
   @Test
@@ -191,10 +266,10 @@ public class PersonControllerIT {
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/person")
+            put("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        .andExpect(status().isBadRequest());
   }
 
   @Test
@@ -207,14 +282,15 @@ public class PersonControllerIT {
     jsonPerson.set("lastName", TextNode.valueOf(lastNameTest));
     jsonPerson.set("address", TextNode.valueOf(addressTest));
     //    WHEN
-    Mockito.doThrow(DataNotFindException.class).when(personController).updatePerson(Mockito.any());
+    Mockito.doThrow(DataNotFindException.class)
+        .when(personServiceMock).updatePerson(Mockito.any());
     //    THEN
     mockMvc
         .perform(
-            MockMvcRequestBuilders.put("/person")
+            put("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonPerson.toString()))
-        .andExpect(MockMvcResultMatchers.status().isNotFound());
+        .andExpect(status().isNotFound());
   }
 
 }
