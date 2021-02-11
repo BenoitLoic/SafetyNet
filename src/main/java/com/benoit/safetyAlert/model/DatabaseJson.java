@@ -3,6 +3,9 @@ package com.benoit.safetyAlert.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Model for the repository.
+ */
 public class DatabaseJson {
 
   private List<Persons> persons = new ArrayList<>();

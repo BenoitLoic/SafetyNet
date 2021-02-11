@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MedicalRecordsServiceImpl implements MedicalRecordsService {
 
@@ -55,43 +57,39 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
   @Override
   public boolean createMedicalRecord(Medicalrecords medicalrecord) {
 
+    List<Medicalrecords> medicalrecordsList = dataRepository.getMedicalrecords();
+    List<Persons> personsList = dataRepository.getPersons();
+    if (!medicalrecordsList.contains(medicalrecord)) {
+      for (Persons person : personsList) {
+        // on verifie que le medicalrecord n'existe pas dans le repo et que la personne existe
 
-    for (Persons person : dataRepository.getPersons()) {
-      // on verifie que le medicalrecord n'existe pas dans le repo et que la personne existe
-
-      if (person.getLastName().equalsIgnoreCase(medicalrecord.getLastName())
-          && person.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())) {
-
-        if (person.getMedicalrecords().getLastName() == null) {
+        if (person.getLastName().equalsIgnoreCase(medicalrecord.getLastName())
+            && person.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())) {
           return medicalrecordDao.createMedicalRecords(medicalrecord);
         }
-
-        //cas ou il y a déja un medical record
-        if (person.getMedicalrecords().getLastName() != null) {
-          LOGGER.info("error - Medical Record already exist");
-          throw new DataAlreadyExistException(
-              "Medical record for "
-                  + medicalrecord.getFirstName()
-                  + " "
-                  + medicalrecord.getLastName()
-                  + " already exist.");
-        }
-
       }
+      //cas ou il y a déja un medical record
+      LOGGER.info(
+          "error - can't find "
+              + medicalrecord.getFirstName()
+              + " "
+              + medicalrecord.getLastName()
+              + " in DB.");
+      throw new DataNotFindException(
+          "Can't create medical record for "
+              + medicalrecord.getFirstName()
+              + " "
+              + medicalrecord.getLastName()
+              + ", this person doesn't exist in Person DB.");
     }
     //cas ou il y a déja un medical record
-    LOGGER.info(
-        "error - can't find "
+    LOGGER.info("error - Medical Record already exist");
+    throw new DataAlreadyExistException(
+        "Medical record for "
             + medicalrecord.getFirstName()
             + " "
             + medicalrecord.getLastName()
-            + " in DB.");
-    throw new DataNotFindException(
-        "Can't create medical record for "
-            + medicalrecord.getFirstName()
-            + " "
-            + medicalrecord.getLastName()
-            + ", this person doesn't exist in Person DB.");
+            + " already exist.");
   }
 
 

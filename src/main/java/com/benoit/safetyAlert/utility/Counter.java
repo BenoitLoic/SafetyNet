@@ -1,7 +1,7 @@
 package com.benoit.safetyAlert.utility;
 
 /**
- * Simple class to iterate a count child and adult and get them.
+ * Simple class to count child and adult and get them.
  */
 public class Counter {
 
@@ -45,13 +45,18 @@ public class Counter {
   }
 
   /**
-   * Reset.
+   * Reset the counter.
    */
   public void reset() {
     child = 0;
     adult = 0;
   }
 
+  /**
+   * This method add one adult if age is superior or equal to 18, if not it will add one child.
+   *
+   * @param age the age to count
+   */
   public void process(int age) {
     final int adultAge = 18;
     if (age >= adultAge) {

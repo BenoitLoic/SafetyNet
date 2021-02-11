@@ -5,6 +5,11 @@ import com.benoit.safetyAlert.repository.DataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+/**
+ * Implementation for PersonDao.
+ * Contains method to create /update /delete person in DB
+ */
 @Service
 public class PersonDaoImpl implements PersonDao {
 
@@ -32,6 +37,14 @@ public class PersonDaoImpl implements PersonDao {
     return true;
   }
 
+
+  /**
+   * This method will update the given person if present in DB.
+   * if person exist in DB it will compare all value from the existing person
+   * and change them if they are different.
+   *
+   * @param person the data to update in the existing Persons from DB
+   */
   @Override
   public boolean updatePerson(Persons person) {
 

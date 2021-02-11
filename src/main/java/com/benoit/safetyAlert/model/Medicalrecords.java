@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Model for Medicalrecords.
+ */
 public class Medicalrecords {
 
   @NotBlank
@@ -64,6 +67,9 @@ public class Medicalrecords {
     this.allergies = allergies;
   }
 
+  /**
+   * Override on equals to take only firstName and lastName.
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -76,6 +82,9 @@ public class Medicalrecords {
     return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
   }
 
+  /**
+   * Override on hash to take only firstName and lastName.
+   */
   @Override
   public int hashCode() {
     return Objects.hash(firstName, lastName);

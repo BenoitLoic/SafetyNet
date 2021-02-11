@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
+/**
+ * Model for Persons.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Persons {
   @NotBlank
@@ -117,6 +120,9 @@ public class Persons {
     this.medicalrecords = medicalrecords;
   }
 
+  /**
+   * Override on equals to take only firstName and lastName.
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -130,6 +136,9 @@ public class Persons {
         && Objects.equals(lastName, persons.lastName);
   }
 
+  /**
+   * Override on hash to take only firstName, lastName, phone and email.
+   */
   @Override
   public int hashCode() {
     return Objects.hash(firstName, lastName, phone, email);

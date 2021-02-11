@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Model for Firestation.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Firestation {
 

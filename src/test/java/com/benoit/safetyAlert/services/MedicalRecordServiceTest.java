@@ -139,10 +139,13 @@ class MedicalRecordServiceTest {
     Persons person = new Persons();
     person.setFirstName(firstNameTest);
     person.setLastName(lastNameTest);
+    List<Medicalrecords> medicalrecordsList = new ArrayList<>();
     Medicalrecords medicalrecord = new Medicalrecords(firstNameTest, lastNameTest, birthdateTest);
-    person.setMedicalrecords(medicalrecord);
+    medicalrecordsList.add(medicalrecord);
+
     //    WHEN
     when(dataRepositoryMock.getPersons()).thenReturn(asList(person));
+    when(dataRepositoryMock.getMedicalrecords()).thenReturn(medicalrecordsList);
 
     //    THEN
     assertThrows(
@@ -202,4 +205,44 @@ class MedicalRecordServiceTest {
         DataNotFindException.class,
         () -> medicalRecordsService.deleteMedicalRecord(medicalrecords));
   }
+
+  // Valid
+  @Test
+  void updateMedicalRecordValid() {
+    //    GIVEN
+    Medicalrecords medicalrecords = new Medicalrecords(firstNameTest, lastNameTest, birthdateTest);
+    //    WHEN
+    when(dataRepositoryMock.getMedicalrecords()).thenReturn(asList(medicalrecords));
+    when(medicalRecordDaoMock.updateMedicalRecords(any())).thenReturn(true);
+    //    THEN
+    assertThat(medicalRecordsService.updateMedicalRecord(medicalrecords)).isTrue();
+  }
+
+  // arg = new
+  @Test
+  void updateMedicalRecordWithNullValue_ShouldThrowDataNotFindException() {
+    //    GIVEN
+
+    //    WHEN
+
+    //    THEN
+    assertThrows(
+        DataNotFindException.class,
+        () -> medicalRecordsService.updateMedicalRecord(new Medicalrecords()));
+  }
+
+  // avec medical record qui n'existe pas
+  @Test
+  void updateMedicalRecordInvalid_ShouldThrowDataNotFindExeption() {
+    //    GIVEN
+    Medicalrecords medicalrecords = new Medicalrecords(firstNameTest, lastNameTest, birthdateTest);
+    //    WHEN
+    when(dataRepositoryMock.getMedicalrecords())
+        .thenReturn(asList(new Medicalrecords(firstNameTest + 1, lastNameTest + 1, birthdateTest)));
+    //    THEN
+    assertThrows(
+        DataNotFindException.class,
+        () -> medicalRecordsService.updateMedicalRecord(medicalrecords));
+  }
+
 }

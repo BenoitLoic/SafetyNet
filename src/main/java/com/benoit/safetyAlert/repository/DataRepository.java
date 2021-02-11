@@ -15,6 +15,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Data repository.
+ */
 @Repository
 public class DataRepository {
   // pour log4j
@@ -22,7 +25,7 @@ public class DataRepository {
   // c'est le fichier Json en memoire
   private DatabaseJson databaseJson;
   // cet obj va permettre de mapper du json en obj java
-  private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private final ObjectMapper objectMapper = new ObjectMapper();
   private final String dataJson = "data.json";
   // pour éviter de commit dans les tests
   private boolean commit = true;
@@ -33,14 +36,22 @@ public class DataRepository {
   private List<Firestation> firestations = new ArrayList<>();
 
 
+  /**
+   * Instantiates a new Data repository.
+   */
   public DataRepository() {
     init();
   }
 
+  /**
+   * This method initialize the repository.
+   * this method Load the Json (DB) and call method linkDataBase to link the table in DB.
+   * Can throw DataRepositoryException  if it can't access DB
+   */
   public void init() {
     try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(dataJson)) {
 
-      databaseJson = OBJECT_MAPPER.readValue(inputStream, DatabaseJson.class);
+      databaseJson = objectMapper.readValue(inputStream, DatabaseJson.class);
       linkDataBase();
       LOGGER.info("OK - file_open :" + dataJson);
     } catch (FileNotFoundException fnfe) {
@@ -52,6 +63,10 @@ public class DataRepository {
     }
   }
 
+  /**
+   * Method to write Data in DB (Json).
+   * Can throw DataRepositoryException  if it can't access DB
+   */
   public void commit() {
     if (commit) {
 
@@ -60,7 +75,7 @@ public class DataRepository {
       try (OutputStream outputStream = new FileOutputStream(url.getFile())) {
 
         //  ecrire sur le fichier json avec formatage
-        OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValue(outputStream, databaseJson);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, databaseJson);
         LOGGER.info("OK - fichier_json_mis_a_jour :" + dataJson);
       } catch (FileNotFoundException fnfe) {
 
@@ -75,22 +90,43 @@ public class DataRepository {
     }
   }
 
+
   public void setCommit(boolean commit) {
     this.commit = commit;
   }
 
+  /**
+   * Gets the list of persons saved in DB.
+   *
+   * @return the persons in DB
+   */
   public List<Persons> getPersons() {
     return persons;
   }
 
+  /**
+   * Gets the list of medicalrecords saved in DB.
+   *
+   * @return the medicalrecords in DB
+   */
   public List<Medicalrecords> getMedicalrecords() {
     return medicalrecords;
   }
 
+  /**
+   * Gets the list of firestations saved i DB.
+   *
+   * @return the firestations in DB
+   */
   public List<Firestation> getFirestations() {
     return firestations;
   }
 
+  /**
+   * This method will link all table from DB for convenience.
+   * person -> firestations
+   * medicalrecords + firestation -> person
+   */
   public void linkDataBase() {
 
     persons = databaseJson.getPersons();

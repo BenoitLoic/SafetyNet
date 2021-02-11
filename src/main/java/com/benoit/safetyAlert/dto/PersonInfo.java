@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Data Transfer Object for person + medicalRecords.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PersonInfo {
 

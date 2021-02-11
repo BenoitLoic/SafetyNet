@@ -96,7 +96,7 @@ public class FirestationServiceImpl implements FirestationService {
     for (Firestation firestation : dataRepository.getFirestations()) {
       for (String station : stations) {
         if (firestation.getStation().equals(station)) {
-          FirestationDto firestationDTO = new FirestationDto();
+          FirestationDto firestationDto = new FirestationDto();
           Collection<PersonInfo> floodStations = new HashSet<>();
           for (Persons person : firestation.getPersons()) {
             PersonInfo personInfo = new PersonInfo();
@@ -111,9 +111,9 @@ public class FirestationServiceImpl implements FirestationService {
             floodStations.add(personInfo);
           }
 
-          firestationDTO.setAddress(firestation.getAddress());
-          firestationDTO.setPersonInfos(new ArrayList<>(floodStations));
-          firestationDtoList.add(firestationDTO);
+          firestationDto.setAddress(firestation.getAddress());
+          firestationDto.setPersonInfos(new ArrayList<>(floodStations));
+          firestationDtoList.add(firestationDto);
 
         }
       }

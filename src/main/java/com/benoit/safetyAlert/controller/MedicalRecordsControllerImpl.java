@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * The Implementation for MedicalRecordsController.
+ */
 @Validated
 @RestController
 public class MedicalRecordsControllerImpl implements MedicalRecordsController {
@@ -24,6 +27,16 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
     this.medicalRecordsService = medicalRecordsService;
   }
 
+  /**
+   * Method for GET /personInfo.
+   * this method takes the ID (firstName and lastName) of a user
+   * and return its information.
+   * information are : name, address, age, email, medications and allergies.
+   *
+   * @param firstName the first name @NotBlank @RequestParam
+   * @param lastName  the last name @NotBlank @RequestParam
+   * @return the information for this user
+   */
   @Override
   @GetMapping("/personInfo")
   @ResponseStatus(HttpStatus.OK)
@@ -33,18 +46,30 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
     return medicalRecordsService.getPersonInfo(firstName, lastName);
   }
 
+  /**
+   * Method for POST /medicalRecord.
+   * this method will add the given Medical Record to DB if the person already exist
+   *
+   * @param medicalrecord the medicalrecord to add. firstName, lastName and birthdate are mandatory.
+   */
   @Override
   @PostMapping("/medicalRecord")
   @ResponseStatus(HttpStatus.CREATED)
   public void createMedicalRecord(@Valid @RequestBody Medicalrecords medicalrecord) {
     if (medicalrecord.getBirthdate() == null) {
-      Logger LOGGER = LogManager.getLogger(MedicalRecordsControllerImpl.class);
-      LOGGER.info("error - birthdate is mandatory.");
+      Logger logger = LogManager.getLogger(MedicalRecordsControllerImpl.class);
+      logger.info("error - birthdate is mandatory.");
       throw new InvalidArgumentException("birthdate is mandatory.");
     }
     medicalRecordsService.createMedicalRecord(medicalrecord);
   }
 
+  /**
+   * Method for DELETE /medicalRecord.
+   * this method will remove the given Medical Record from DB.
+   *
+   * @param medicalRecord the medical record to remove. firstName, lastName are mandatory.
+   */
   @Override
   @DeleteMapping("/medicalRecord")
   public void deleteMedicalRecord(@Valid @RequestBody Medicalrecords medicalRecord) {
@@ -52,6 +77,12 @@ public class MedicalRecordsControllerImpl implements MedicalRecordsController {
     medicalRecordsService.deleteMedicalRecord(medicalRecord);
   }
 
+  /**
+   * Method for PUT /medicalRecord.
+   * this method will update the given Medical Record from DB.
+   *
+   * @param medicalrecord the medicalrecord to update. firstName, lastName are mandatory.
+   */
   @Override
   @PutMapping("/medicalRecord")
   @ResponseStatus(HttpStatus.CREATED)
