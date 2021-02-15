@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation for MedicalRecordService.
+ * Contains method to process CRUD from controller.
+ */
 @Service
 public class MedicalRecordsServiceImpl implements MedicalRecordsService {
 
@@ -21,6 +25,12 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
   private final MedicalRecordDao medicalrecordDao;
   private static final Logger LOGGER = LogManager.getLogger(MedicalRecordsServiceImpl.class);
 
+  /**
+   * Instantiates a new Medical records service.
+   *
+   * @param dataRepository   the data repository
+   * @param medicalrecordDao the medicalrecord dao
+   */
   @Autowired
   public MedicalRecordsServiceImpl(
       DataRepository dataRepository, MedicalRecordDao medicalrecordDao) {
@@ -28,6 +38,16 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
     this.medicalrecordDao = medicalrecordDao;
   }
 
+  /**
+   * Gets person info from repository.
+   * This method takes firstName and lastName as parameters
+   * and find the corresponding person in repository.
+   * return the name, address, age, email, medication and allergies.
+   *
+   * @param firstName the first name
+   * @param lastName  the last name
+   * @return the person info
+   */
   @Override
   public PersonInfo getPersonInfo(String firstName, String lastName) {
     PersonInfo personInfo = new PersonInfo();
@@ -54,6 +74,15 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
     return personInfo;
   }
 
+  /**
+   * Create medical record by calling Dao.
+   * This method call for repository to check if the medical record and the person already exist.
+   * if medical record Doesn't exist and person exist : call Dao.
+   * Else, it will throw DataNotFindException or DataAlreadyExistException
+   *
+   * @param medicalrecord the medicalrecord
+   * @return true if success
+   */
   @Override
   public boolean createMedicalRecord(Medicalrecords medicalrecord) {
 
@@ -92,7 +121,15 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
             + " already exist.");
   }
 
-
+  /**
+   * Delete medical record by calling Dao.
+   * This method call for repository to check if the medical record already exist.
+   * if  medical record exist : call Dao.
+   * Else, it will throw DataNotFindException.
+   *
+   * @param medicalRecord the medicalrecord
+   * @return true if success
+   */
   @Override
   public boolean deleteMedicalRecord(Medicalrecords medicalRecord) {
 
@@ -113,12 +150,21 @@ public class MedicalRecordsServiceImpl implements MedicalRecordsService {
 
   }
 
+  /**
+   * Update medical record by calling Dao.
+   * This method call for repository to check if the medical record already exist.
+   * if medical record exist : call Dao.
+   * Else, it will throw DataNotFindException
+   *
+   * @param medicalrecord the medicalrecord
+   * @return true if success
+   */
   @Override
   public boolean updateMedicalRecord(Medicalrecords medicalrecord) {
 
-    for (Medicalrecords mRec : dataRepository.getMedicalrecords()) {
-      if (mRec.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
-          && mRec.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
+    for (Medicalrecords mrec : dataRepository.getMedicalrecords()) {
+      if (mrec.getFirstName().equalsIgnoreCase(medicalrecord.getFirstName())
+          && mrec.getLastName().equalsIgnoreCase(medicalrecord.getLastName())) {
         return medicalrecordDao.updateMedicalRecords(medicalrecord);
       }
     }

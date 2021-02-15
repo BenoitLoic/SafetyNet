@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The type Data repository.
+ * Data repository.
+ * This class contains method to retrieve, write, link data from DB
  */
 @Repository
 public class DataRepository {
@@ -114,7 +115,7 @@ public class DataRepository {
   }
 
   /**
-   * Gets the list of firestations saved i DB.
+   * Gets the list of firestations saved in DB.
    *
    * @return the firestations in DB
    */

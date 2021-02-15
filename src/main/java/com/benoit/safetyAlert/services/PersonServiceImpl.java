@@ -17,6 +17,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * The type Person service.
+ */
 @Service
 public class PersonServiceImpl implements PersonService {
 
@@ -25,6 +28,13 @@ public class PersonServiceImpl implements PersonService {
   private final CalculateAge calculateAge;
   private static final Logger LOGGER = LogManager.getLogger(PersonServiceImpl.class);
 
+  /**
+   * Instantiates a new Person service.
+   *
+   * @param dataRepository the data repository
+   * @param personDao      the person dao
+   * @param calculateAge   the calculate age
+   */
   @Autowired
   public PersonServiceImpl(
       DataRepository dataRepository,
@@ -35,6 +45,13 @@ public class PersonServiceImpl implements PersonService {
     this.calculateAge = calculateAge;
   }
 
+  /**
+   * This method gets all Person in repository and return a list of email
+   * of all person living in the city given as parameter.
+   *
+   * @param city the city
+   * @return a list of Email
+   */
   @Override
   public Collection<Persons> getCommunityEmail(String city) {
 
@@ -51,6 +68,14 @@ public class PersonServiceImpl implements PersonService {
     return collectionEmail;
   }
 
+  /**
+   * This method will process data from person repository
+   * to give a list of person living at the @param address.
+   * person information includes : firstName, lastName, Age, MedicalRecords and station.
+   *
+   * @param address the address
+   * @return collection of personInfo Dto
+   */
   @Override
   public Collection<PersonInfo> getFireAddress(String address) {
     List<PersonInfo> returnList = new ArrayList<>();
@@ -74,6 +99,15 @@ public class PersonServiceImpl implements PersonService {
     return returnList;
   }
 
+  /**
+   * This method process data from person repository
+   * to return a list of child (age<18) living at the address.
+   * child information includes : firstName, lastName, age
+   * and a list of other person living at this address.
+   *
+   * @param address the address
+   * @return collection of PersonInfo
+   */
   @Override
   public Collection<PersonInfo> getChildAlert(String address) {
     final int adultAge = 18;
@@ -113,6 +147,15 @@ public class PersonServiceImpl implements PersonService {
     return childAlertList;
   }
 
+  /**
+   * Create person by calling Dao.
+   * This method call for repository to check if the person already exist.
+   * if person doesn't exist : call Dao.
+   * Else, it will throw DataAlreadyExistException
+   *
+   * @param person the person to create
+   * @return true if success
+   */
   @Override
   public boolean createPerson(Persons person) {
 
@@ -135,6 +178,15 @@ public class PersonServiceImpl implements PersonService {
     }
   }
 
+  /**
+   * Delete person by calling Dao.
+   * This method call for repository to check if the person already exist.
+   * if person exist : call Dao.
+   * Else, it will throw DataNotFindException.
+   *
+   * @param person the person to delete
+   * @return true if success
+   */
   @Override
   public boolean deletePerson(Persons person) {
 
@@ -157,6 +209,15 @@ public class PersonServiceImpl implements PersonService {
     }
   }
 
+  /**
+   * Update person by calling Dao.
+   * This method call for repository to check if the person already exist.
+   * if person exist : call Dao.
+   * Else, it will throw DataNotFindException
+   *
+   * @param person the person to update
+   * @return true if success
+   */
   @Override
   public boolean updatePerson(Persons person) {
 

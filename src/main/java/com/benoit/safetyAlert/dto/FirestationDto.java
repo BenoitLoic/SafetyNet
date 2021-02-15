@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Data Transfer Object for firestation + List<personInfoDto>.
+ * Data Transfer Object for firestation + personInfo.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FirestationDto {

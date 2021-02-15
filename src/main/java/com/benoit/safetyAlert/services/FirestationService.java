@@ -8,6 +8,9 @@ import com.benoit.safetyAlert.model.Persons;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Interface for FirestationService.
+ */
 public interface FirestationService {
 
 

@@ -20,8 +20,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+
 /**
- * This class contains some method to extract fire station data from DataRepository.
+ * This class contains method to process data and logic for Firestation Controller.
  */
 @Service
 public class FirestationServiceImpl implements FirestationService {
@@ -30,12 +31,26 @@ public class FirestationServiceImpl implements FirestationService {
   private final FirestationDao firestationDao;
   private static final Logger LOGGER = LogManager.getLogger(FirestationServiceImpl.class);
 
+
+  /**
+   * Instantiates a new Firestation service.
+   *
+   * @param dataRepository the data repository
+   * @param firestationDao the firestation dao
+   */
   @Autowired
   public FirestationServiceImpl(DataRepository dataRepository, FirestationDao firestationDao) {
     this.dataRepository = dataRepository;
     this.firestationDao = firestationDao;
   }
 
+  /**
+   * This method gets the list of firestation from the linked repository and return the list of
+   * phone number for all person covered by this station.
+   *
+   * @param station the station number
+   * @return Collection of phone number
+   */
   @Override
   public Collection<Persons> getPhoneNumber(String station) {
     Collection<Persons> listOfPhoneNumber = new HashSet<>();
@@ -52,6 +67,13 @@ public class FirestationServiceImpl implements FirestationService {
     return listOfPhoneNumber;
   }
 
+  /**
+   * This method gets the list of firestation from the linked repository and return a list of
+   * person (name, age, address, phone) and the number of child and adult present.
+   *
+   * @param stationNumber the station number
+   * @return Collection of PersonInfo Dto
+   */
   @Override
   public Collection<PersonInfo> getPersonCoveredByFireStation(String stationNumber) {
     Collection<PersonInfo> listOfPersonCovered = new ArrayList<>();
@@ -86,6 +108,13 @@ public class FirestationServiceImpl implements FirestationService {
     return listOfPersonCovered;
   }
 
+  /**
+   * This method gets the list of firestation from the linked repository and return a list of
+   * person (name, age, phone and medical records) gathered by address.
+   *
+   * @param stations the list of station number
+   * @return Collection of FirestationDto
+   */
   @Override
   public Collection<FirestationDto> getFloodStations(List<String> stations) {
 
@@ -125,6 +154,15 @@ public class FirestationServiceImpl implements FirestationService {
     return firestationDtoListSorted;
   }
 
+  /**
+   * Create firestation by calling Dao.
+   * This method call for repository to check if the firestation already exist.
+   * if firestation doesn't exist : call Dao.
+   * Else, it will throw DataAlreadyExistException
+   *
+   * @param firestation the firestation
+   * @return true if success
+   */
   @Override
   public boolean createFirestation(Firestation firestation) {
 
@@ -145,6 +183,15 @@ public class FirestationServiceImpl implements FirestationService {
 
   }
 
+  /**
+   * Delete firestation by calling Dao.
+   * This method call for repository to check if the firestation already exist.
+   * if firestation doesn't exist : call Dao.
+   * Else, it will throw DataNotFindException
+   *
+   * @param firestation the firestation
+   * @return true if success
+   */
   @Override
   public boolean deleteFirestation(Firestation firestation) {
 
@@ -167,6 +214,15 @@ public class FirestationServiceImpl implements FirestationService {
 
   }
 
+  /**
+   * Update firestation by calling Dao.
+   * This method call for repository to check if the firestation already exist.
+   * if firestation exist : call Dao.
+   * Else, it will throw DataNotFindException
+   *
+   * @param firestation the firestation
+   * @return true if success
+   */
   @Override
   public boolean updateFirestation(Firestation firestation) {
 
