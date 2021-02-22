@@ -63,7 +63,7 @@ public class FirestationServiceImpl implements FirestationService {
         }
       }
     }
-
+    LOGGER.debug("OK _ FirestationService");
     return listOfPhoneNumber;
   }
 
@@ -105,6 +105,7 @@ public class FirestationServiceImpl implements FirestationService {
     count.setAllergies(null);
     count.setMedication(null);
     listOfPersonCovered.add(count);
+    LOGGER.debug("OK _ FirestationService");
     return listOfPersonCovered;
   }
 
@@ -150,7 +151,7 @@ public class FirestationServiceImpl implements FirestationService {
 
     List<FirestationDto> firestationDtoListSorted = new ArrayList<>(firestationDtoList);
     firestationDtoListSorted.sort(FirestationDto.comparator);
-
+    LOGGER.debug("OK _ FirestationService");
     return firestationDtoListSorted;
   }
 
@@ -173,8 +174,9 @@ public class FirestationServiceImpl implements FirestationService {
       return true;
 
     } else {
+      LOGGER.error("KO _ this Firestation already exist");
       throw new DataAlreadyExistException(
-          "this firestation "
+          "this firestation : number : "
               + firestation.getStation()
               + " / address : "
               + firestation.getAddress()
@@ -199,7 +201,7 @@ public class FirestationServiceImpl implements FirestationService {
       firestationDao.deleteFirestation(firestation);
       return true;
     } else {
-      LOGGER.info("this firestation "
+      LOGGER.error("this firestation : number : "
           + firestation.getStation()
           + "/ address : "
           + firestation.getAddress()
@@ -232,7 +234,7 @@ public class FirestationServiceImpl implements FirestationService {
         return firestationDao.updateFirestation(firestation);
       }
     }
-    LOGGER.info("error updating firestation ["
+    LOGGER.error("error updating firestation ["
         + firestation.getStation()
         + "] - address : "
         + firestation.getAddress()

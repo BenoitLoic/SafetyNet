@@ -12,7 +12,7 @@ import java.time.format.DateTimeParseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+
 class CalculateAgeTest {
 
   CalculateAge calc = new CalculateAge();

@@ -164,7 +164,7 @@ public class PersonServiceImpl implements PersonService {
       personDao.createPerson(person);
       return true;
     } else {
-      LOGGER.info("error :  "
+      LOGGER.error("error :  "
           + person.getFirstName()
           + " "
           + person.getLastName()
@@ -195,7 +195,7 @@ public class PersonServiceImpl implements PersonService {
       return true;
 
     } else {
-      LOGGER.info("error : "
+      LOGGER.error("error : "
           + person.getFirstName()
           + " "
           + person.getLastName()
@@ -225,7 +225,7 @@ public class PersonServiceImpl implements PersonService {
 
       return personDao.updatePerson(person);
     } else {
-      LOGGER.info(
+      LOGGER.error(
           "error updating person : "
               + person.getFirstName()
               + " "
