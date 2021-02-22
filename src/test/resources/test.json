@@ -1,0 +1,89 @@
+{
+  "persons": [
+    {
+      "firstName": "Mario",
+      "lastName": "Red",
+      "address": "1 castle rd",
+      "city": "Nintendo",
+      "zip": "00100",
+      "phone": "000-000-0000",
+      "email": "mario@email.com"
+    },
+    {
+      "firstName": "Luigi",
+      "lastName": "Green",
+      "address": "1 castle rd",
+      "city": "Nintendo",
+      "zip": "00100",
+      "phone": "111-111-1111",
+      "email": "luigi@email.com"
+    },
+    {
+      "firstName": "Toad",
+      "lastName": "Redandwhite",
+      "address": "5 mushroom av",
+      "city": "Nintendo",
+      "zip": "00100",
+      "phone": "222-222-2222",
+      "email": "toad@ymail.com"
+    },
+    {
+      "firstName": "Bowser",
+      "lastName": "Yellow",
+      "address": "1 Bad Turtle street",
+      "city": "Nintendo",
+      "zip": "00100",
+      "phone": "333-333-3333",
+      "email": "evil@email.com"
+    }
+  ],
+  "firestations": [
+    {
+      "address": "1 castle rd",
+      "station": "3"
+    },
+    {
+      "address": "5 mushroom av",
+      "station": "2"
+    },
+    {
+      "address": "1 Bad Turtle street",
+      "station": "3"
+    },
+    {
+      "address": "nobody street",
+      "station": "1"
+    }
+  ],
+  "medicalrecords": [
+    {
+      "firstName": "Mario",
+      "lastName": "Red",
+      "birthdate": "03/06/1984",
+      "medications": [
+        "aznol:350mg",
+        "hydrapermazol:100mg"
+      ],
+      "allergies": [
+        "nillacilan"
+      ]
+    },
+    {
+      "firstName": "Luigi",
+      "lastName": "Green",
+      "birthdate": "03/06/2014",
+      "medications": [
+        "noxidian:100mg",
+        "pharmacol:2500mg"
+      ],
+      "allergies": []
+    },
+    {
+      "firstName": "Toad",
+      "lastName": "Redandwhite",
+      "birthdate": "03/06/2000",
+      "medications": [],
+      "allergies": []
+    }
+  ]
+}
